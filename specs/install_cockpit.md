@@ -65,6 +65,11 @@
 - make sure the portforward script is inside the cockpit repo
 - use the cockpit name to create a telegram robot (or ask the name from user when already created in advance, whatever is easiest)
   - deploy the robot
+- get shell in a box running (systemd)
+- configure caddy with custom ssl key
+- ask if you want caddy to expose the cockpit ssh
+  - ask if long url or not  
+  - expose cockpit ssh over caddy: but use admin passwd in caddy & unique long url if required
   
 ## portforward script to get access to cockpit
   - in background start ssh portforward session 
