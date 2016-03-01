@@ -28,6 +28,7 @@
   - has portal
   - influxdb
   - caddy (generate non official ssl certificate)
+  - shellinabox
 - install by using our full build process (through cuisine) (WILL BE SANDBOX LATER)
 - based on ubuntu 15.10
 
