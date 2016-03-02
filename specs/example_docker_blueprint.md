@@ -12,13 +12,13 @@ vdc_uk2:
     account : "operations"
     vdcfarm : "ms1"
 
-dockerhost_demo2dh2:
+dockerhost_dh1:
     vdc : "uk2"
     mem: 8
 
 docker_mydocker1:
-    host: 'demo2dh'
-    docker.hub: 'despiegk/astersik11_freepbx12_isymphonyv3'
+    host: 'dh1'
+    image: 'despiegk/astersik11_freepbx12_isymphonyv3'
     domain: 'demo.barcelona.aydo.com'
     mem: 0.2  #we can limit mem
     expose: 80-8080  #expose 80 on docker to 8080 on VDC router
