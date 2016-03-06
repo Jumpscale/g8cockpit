@@ -194,7 +194,7 @@ def getSkydns(login, passwd):
         exit("Can't connect to Skydns")
 
 
-def registerDNS(dns_name, dnc_cl, vdc_cockpit):
+def registerDNS(dns_name, dns_cl, vdc_cockpit):
     def validateDNS(dns_name):
         printInfo("Test if dns name is available (%s)" % dns_name)
         exists, host = dns_cl.exists(dns_name)
