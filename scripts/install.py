@@ -23,7 +23,8 @@ def cli(debug):
 @click.option('--sshkey', help='Path to public ssh key to authorize on the G8Cockpit')
 @click.option('--portal-password', help='Admin password of the portal')
 @click.option('--expose-ssh', help='Expose ssh of the G8Cockpit over HTTP', is_flag=True)
-def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh):
+@click.option('--bot-token', help='Telegram token of your bot')
+def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh, bot_token):
     """
     Start installation process of a new G8Cockpit
     """
@@ -39,7 +40,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_
 
     printInfo('Test connectivity to Skydns')
     dns_cl = getSkydns(dns_login, dns_password)
-    registerDNS(dns_name, dns_cl, vdc_cockpit)
+    dns_name = registerDNS(dns_name, dns_cl, vdc_cockpit)
 
     key_pub = getSSHKey(sshkey)
 
@@ -56,6 +57,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_
     git_cl = j.clients.git.get(cockpitRepo)
     j.sal.fs.copyDirTree(j.sal.fs.joinPaths(templateRepo, 'ays_repo'), j.sal.fs.joinPaths(cockpitRepo, 'ays_repo'))
     git_cl.commit('init cockpit repo with templates')
+    git_cl.push()  # push init commit and create master branch.
 
     printInfo("Create cockpit VM")
     if 'cockpit' in vdc_cockpit.machines:
@@ -63,14 +65,16 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_
     else:
         machine = vdc_cockpit.machine_create('cockpit', memsize=2, disksize=50, image='Ubuntu 15.10')
     ssh_exec = machine.get_ssh_connection()
+
+    machine.create_portforwarding(80, 80)
+    machine.create_portforwarding(443, 443)
+
     printInfo('Authorize ssh key into VM')
     # authorize ssh into VM
     ssh_exec.cuisine.set_sudomode()
     ssh_exec.cuisine.ssh.authorize('root', key_pub)
     # reconnect as root
     ssh_exec = j.tools.executor.getSSHBased(ssh_exec.addr, ssh_exec.port, 'root')
-    printInfo("#### Cockpit machine deployed ###")
-    printInfo("     SSH: ssh root@%s -p %s" % (dns_name, ssh_exec.port))
 
     printInfo("Start installation of cockpit")
     ssh_exec.cuisine.package.mdupdate()
@@ -83,7 +87,6 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_
     ssh_exec.cuisine.package.install('shellinabox')
 
     printInfo("Start configuration of cockpit")
-    # TODO save dns_name in cockpit_config service
 
     printInfo("Configuration of mongodb")
     ssh_exec.cuisine.dir_ensure("$varDir/db/mongo")
@@ -114,7 +117,8 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_
                 return False
             return True
         portal_password = j.tools.console.askPassword("Admin password for the portal", confirm=True, regex=None, retry=2, validate=validate)
-    ssh_exec.cuisine.portal.start(portal_password)
+    ssh_exec.cuisine.portal.start()
+    ssh_exec.cuisine.run('jsuser passwd -ul admin -up %s' % portal_password)
 
     printInfo("Configuration of shellinabox")
     config = "-s '/:root:root:/:ssh root@localhost'"
@@ -126,10 +130,27 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_
     caddy_cfg(ssh_exec.cuisine, dns_name)
     ssh_exec.cuisine.processmanager.ensure('caddy', '$binDir/caddy -conf $varDir/cfg/caddy/caddyfile')
 
+    token = create_robot(bot_token)
+    cmd = "js 'j.atyourservice.telegramBot(\"%s\")'"  % token
+    ssh_exec.cuisine.processmanager.ensure('aysrobot', cmd)
 
-    # TODO create robot
+    print("Generate cockpit config service")
+    j.sal.fs.changeDir('/opt/code/github/zaibon/testg8cokpit/ays_repo/')
+    args = {
+        'dns': dns_name,
+        'node.addr': ssh_exec.addr,
+        'ssh.port': ssh_exec.port,
+        'bot.token': token,
+    }
+    r = j.atyourservice.getRecipe('cockpitconfig')
+    r.newInstance(args=args)
+    git_cl.commit('add cockpitconfig')
+    git_cl.push()
+    ssh_exec.cuisine.git.pullRepo(repo_url, branch='master', ssh=False)
 
-    from IPython import embed;embed()
+    printInfo("\nCockpit deployed")
+    printInfo("SSH: ssh root@%s -p %s" % (dns_name, ssh_exec.port))
+    printInfo("Portal: portal.%s" % (dns_name))
 
 
 def printErr(msg):
@@ -212,6 +233,7 @@ def registerDNS(dns_name, dns_cl, vdc_cockpit):
         dns_name = '%s.barcelona.aydo.com' % dns_name
     dns_cl.setRecordA(dns_name, vdc_cockpit.model['publicipaddress'], ttl=120) # TODO, set real TTL
     dns_cl.setRecordA("portal."+dns_name, vdc_cockpit.model['publicipaddress'], ttl=120) # TODO, set real TTL
+    return dns_name
 
 def getSSHKey(path):
     def validate(path):
@@ -227,9 +249,15 @@ def getSSHKey(path):
 
 def caddy_cfg(cuisine, hostname):
     url = j.data.idgenerator.generateXCharID(15)
-    # TODO remove :80 when tls key is available
+    cmd = "cd $varDir/cfg/caddy/; openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj /CN=%s" % dns_name
+    cuisine.run(cmd)
     tmpl = """
-portal.$hostname:80 {
+http://$ostname {
+    redir https://portal$hostname{uri}
+}
+
+https://portal.$hostname {
+    tls cert.pem key.pem
     proxy / 127.0.0.1:82
     gzip
     log /optvar/cfg/caddy/log/portal.access.log
@@ -247,12 +275,28 @@ $hostname:80 {
     tmpl = tmpl.replace("$hostname", hostname)
     tmpl = tmpl.replace("$url", url)
     cuisine.file_write('$varDir/cfg/caddy/caddyfile', tmpl)
+    cuisine.dir_ensure('$varDir/cfg/caddy/log', tmpl)
 
-def create_robot(cuisine):
+def create_robot(token):
     printInfo("AtYourService Robot creation")
     printInfo("Please connect to telegram and talk to @botfather.")
     printInfo("execute the command /newbot and choose a name and username for your bot")
     printInfo("@botfather should give you a token, paste it here please :")
+    if not token:
+        token = j.tools.console.askString("Token", defaultparam='', regex=None, retry=2, validate=None)
+    printInfo("add command description to your bot.")
+    printInfo("type '/setcommands' in @botfather, choose your bot and past these lines :")
+    print("""start - create your private environment
+project - manage your project (create, list, remove)
+blueprint - manage your blueprints project (list, get, remove)
+ays - perform some atyourservice actions on your project
+help - show you what I can do""")
+    resp = j.tools.console.askYesNo("is it done ?")
+    while not resp:
+        print("please do it")
+        resp = j.tools.console.askYesNo("is it done ?")
+
+    return token
 
 
 def exit(err, code=1):
