@@ -164,7 +164,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
 
     print("Generate cockpit config service")
     pwd = j.sal.fs.getcwd()
-    j.sal.fs.changeDir('/opt/code/github/zaibon/testg8cokpit/ays_repo/')
+    j.sal.fs.changeDir(j.sal.fs.joinPaths(cockpitRepo, 'ays_repo'))
     args = {
         'dns': dns_name,
         'node.addr': ssh_exec.addr,
