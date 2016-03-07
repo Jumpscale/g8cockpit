@@ -57,6 +57,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     cockpitRepo = j.do.pullGitRepo(url=repo_url, executor=cuisine.executor)
     printInfo('cloned in %s' % cockpitRepo)
     git_cl = j.clients.git.get(cockpitRepo)
+    import ipdb;ipdb.set_trace()
     j.sal.fs.copyDirTree(j.sal.fs.joinPaths(templateRepo, 'ays_repo'), j.sal.fs.joinPaths(cockpitRepo, 'ays_repo'))
     git_cl.commit('init cockpit repo with templates')
     git_cl.push()  # push init commit and create master branch.
@@ -164,7 +165,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
 
     print("Generate cockpit config service")
     pwd = j.sal.fs.getcwd()
-    j.sal.fs.changeDir('/opt/code/github/zaibon/testg8cokpit/ays_repo/')
+    j.sal.fs.changeDir(j.sal.fs.joinPaths(cockpitRepo, 'ays_repo'))
     args = {
         'dns': dns_name,
         'node.addr': ssh_exec.addr,
