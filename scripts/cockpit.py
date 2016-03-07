@@ -3,7 +3,7 @@
 from JumpScale import j
 import click
 import sys
-
+import time
 
 @click.group()
 @click.option('--debug', default=False, help='enable debug mode', is_flag=True)
@@ -113,11 +113,14 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     ssh_exec.cuisine.processmanager.ensure('influxdb', '$binDir/influxd -config $varDir/cfg/influxdb/influxdb.conf')
 
     printInfo("Configuration of g8os controller")
-    ssh_exec.cuisine.builder._startController()
-    for pf in machine.portforwardings:
-        if pf['publicPort'] == "18384":
-            machine.delete_portfowarding_by_id(pf['id'])  # remeove syncthing exposure after controller is configured
-            break
+    if ovc_url == 'www.mothership1.com':
+        ssh_exec.cuisine.builder._startController()
+        for pf in machine.portforwardings:
+            if pf['publicPort'] == "18384":
+                machine.delete_portfowarding_by_id(pf['id'])  # remeove syncthing exposure after controller is configured
+                break
+    else:
+        machine.delete_portforwarding("18384")
     # TODO add jumpscripts ??
 
     printInfo("Configuration of cockpit portal")
