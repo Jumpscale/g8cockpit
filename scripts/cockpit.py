@@ -131,8 +131,20 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
                 return False
             return True
         portal_password = j.tools.console.askPassword("Admin password for the portal", confirm=True, regex=None, retry=2, validate=validate)
-    ssh_exec.cuisine.portal.start()
-    ssh_exec.cuisine.run('jsuser passwd -ul admin -up %s' % portal_password)
+    ssh_exec.cuisine.portal.start(force=True)
+
+    # wait for the admin user to be created by portal
+    timeout = 60
+    start = time.time()
+    resp = ssh_exec.cuisine.run('jsuser list', showout=False)
+    while resp.find('admin') == -1 and start + timeout > time.time():
+            time.sleep(2)
+            resp = ssh_exec.cuisine.run('jsuser list', showout=False)
+
+    if resp.find('admin') == -1:
+        ssh_exec.cuisine.run('jsuser add --data admin:%s:admin:admin@mail.com:cockpit' % portal_password)
+    else:
+        ssh_exec.cuisine.run('jsuser passwd -ul admin -up %s' % portal_password)
 
     printInfo("Configuration of shellinabox")
     config = "-s '/:root:root:/:ssh root@localhost'"
