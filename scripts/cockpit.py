@@ -157,6 +157,11 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     git_cl.push()
     ssh_exec.cuisine.git.pullRepo(repo_url, branch='master', ssh=False)
 
+    # execute portforwardings
+    script = j.sal.fs.joinPaths(j.sal.fs.getDirName(__file__),'portforwards.py')
+    cmd = '%s --repo %s' % (script, j.sal.fs.joinPaths(cockpitRepo,'ays_repo'))
+    cuisine.run(cmd)
+
     printInfo("\nCockpit deployed")
     printInfo("SSH: ssh root@%s -p %s" % (dns_name, ssh_exec.port))
     printInfo("Shellinabox: https://%s/%s" % (dns_name, shellinbox_url))
