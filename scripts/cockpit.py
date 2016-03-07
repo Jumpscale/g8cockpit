@@ -175,7 +175,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     r.newInstance(args=args)
     git_cl.commit('add cockpitconfig')
     git_cl.push()
-    ssh_exec.cuisine.git.pullRepo(repo_url, branch='master', ssh=False)
+    ssh_exec.cuisine.git.pullRepo(repo_url, branch='master', ssh=False, depth=None)
     j.sal.fs.changeDir(pwd)
 
     # execute portforwardings
