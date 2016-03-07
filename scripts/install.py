@@ -136,8 +136,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     ssh_exec.cuisine.processmanager.ensure('shellinabox_cockpit', cmd=cmd)
 
     printInfo("Configuration of caddy proxy")
-    # TODO generate tls keys
-    caddy_cfg(ssh_exec.cuisine, dns_name)
+    shellinbox_url = caddy_cfg(ssh_exec.cuisine, dns_name)
     ssh_exec.cuisine.processmanager.ensure('caddy', '$binDir/caddy -conf $varDir/cfg/caddy/caddyfile')
 
     token = create_robot(bot_token)
@@ -160,7 +159,8 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
 
     printInfo("\nCockpit deployed")
     printInfo("SSH: ssh root@%s -p %s" % (dns_name, ssh_exec.port))
-    printInfo("Portal: portal.%s" % (dns_name))
+    printInfo("Shellinabox: https://%s/%s" % (dns_name, shellinbox_url))
+    printInfo("Portal: https://%s" % (dns_name))
 
 
 def printErr(msg):
@@ -241,7 +241,6 @@ def registerDNS(dns_name, dns_cl, vdc_cockpit):
     if not dns_name.endswith('.barcelona.aydo.com'): # TODO chagne DNS
         dns_name = '%s.barcelona.aydo.com' % dns_name
     dns_cl.setRecordA(dns_name, vdc_cockpit.model['publicipaddress'], ttl=120) # TODO, set real TTL
-    dns_cl.setRecordA("portal."+dns_name, vdc_cockpit.model['publicipaddress'], ttl=120) # TODO, set real TTL
     return dns_name
 
 def getSSHKey(path):
@@ -258,26 +257,29 @@ def getSSHKey(path):
 
 def caddy_cfg(cuisine, hostname):
     url = j.data.idgenerator.generateXCharID(15)
-    cmd = "cd $varDir/cfg/caddy/; openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj /CN=%s" % dns_name
+    cmd = "cd $varDir/cfg/caddy/; openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj /CN=%s" % hostname
     cuisine.run(cmd)
     tmpl = """
-http://$ostname {
-    redir https://portal$hostname{uri}
+http://$hostname {
+    redir https://$hostname{uri}
 }
 
-https://portal.$hostname {
-    tls cert.pem key.pem
-    proxy / 127.0.0.1:82
+https://$hostname {
+    tls /optvar/cfg/caddy/cert.pem /optvar/cfg/caddy/key.pem
+
     gzip
+
     log /optvar/cfg/caddy/log/portal.access.log
     errors {
         log /optvar//cfg/caddy/log/portal.errors.log
     }
-}
 
-$hostname:80 {
+    # portal
+    proxy / 127.0.0.1:82
+
+    # shellinabox
     proxy /$url 127.0.0.1:4200 {
-        without /$url
+       without /$url
     }
 }
 """
@@ -285,6 +287,7 @@ $hostname:80 {
     tmpl = tmpl.replace("$url", url)
     cuisine.file_write('$varDir/cfg/caddy/caddyfile', tmpl)
     cuisine.dir_ensure('$varDir/cfg/caddy/log', tmpl)
+    return url
 
 def create_robot(token):
     printInfo("AtYourService Robot creation")
