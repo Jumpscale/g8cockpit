@@ -17,6 +17,7 @@ def cli(debug):
 @click.option('--ovc-login', help='Login of your account on Gener8 where to deploy cockpit')
 @click.option('--ovc-password', help='Password of your account on the Gener8 where to deploy cockpit')
 @click.option('--ovc-vdc', help='Name of the Virtual Data center where to deploy the G8Cockpit')
+@click.option('--ovc-location', help='Location of the vdc')
 @click.option('--dns-login', help='Password of your account on the Skydns cluster')
 @click.option('--dns-password', help='Password of your account on the Skydns cluster')
 @click.option('--dns-name', help='Dns to give to the cockpit. Name will be append with .cockpit.aydo.com')
@@ -24,7 +25,7 @@ def cli(debug):
 @click.option('--portal-password', help='Admin password of the portal')
 @click.option('--expose-ssh', help='Expose ssh of the G8Cockpit over HTTP', is_flag=True)
 @click.option('--bot-token', help='Telegram token of your bot')
-def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh, bot_token):
+def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh, bot_token):
     """
     Start installation process of a new G8Cockpit
     """
@@ -36,7 +37,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, dns_login, dns_
 
     # connection to Gener8 + get vdc client
     printInfo('Test connectivity to Gener8')
-    vdc_cockpit = getVDC(ovc_url, ovc_login, ovc_password, ovc_vdc)
+    vdc_cockpit = getVDC(ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location)
 
     printInfo('Test connectivity to Skydns')
     dns_cl = getSkydns(dns_login, dns_password)
@@ -161,7 +162,7 @@ def printInfo(msg):
     msg = '[+]: %s' % msg
     click.echo(click.style(msg, fg='blue'))
 
-def getVDC(url, login, passwd, vdc_name):
+def getVDC(url, login, passwd, vdc_name, location):
     vdc = None
     if not url:
         url = j.tools.console.askString("Url of the Gener8 where to deploy cockpit", defaultparam='', regex=None, retry=2)
@@ -178,13 +179,12 @@ def getVDC(url, login, passwd, vdc_name):
         if len(ovc_cl.locations) == 1:
             location = ovc_cl.locations[0]['name']
         else:
-            # TODO @ASK location
-            raise("can't decide location,...Not implemented")
+            if not location:
+                location = j.tools.console.askString("Location of the vdc", defaultparam='', regex=None, retry=2, validate=None)
 
         account = ovc_cl.account_get(login)
         vdc = account.space_get(vdc_name, location, create=True)
     except Exception as e:
-        import ipdb; ipdb.set_trace()
         printErr("Error While Trying to connec to Gener8 (%s). account:%s, vdc:%s" % (url, login, vdc_name))
         exit(e)
 
