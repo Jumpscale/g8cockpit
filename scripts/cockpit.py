@@ -25,7 +25,8 @@ def cli(debug):
 @click.option('--portal-password', help='Admin password of the portal')
 @click.option('--expose-ssh', help='Expose ssh of the G8Cockpit over HTTP', is_flag=True)
 @click.option('--bot-token', help='Telegram token of your bot')
-def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh, bot_token):
+@click.option('--dev', help='Use staging environment for caddy. Enable this during testing to avoid running up adgains letsencrypt rate limits', is_flag=True)
+def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh, bot_token, dev):
     """
     Start installation process of a new G8Cockpit
     """
@@ -137,7 +138,10 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
 
     printInfo("Configuration of caddy proxy")
     shellinbox_url = caddy_cfg(ssh_exec.cuisine, dns_name)
-    ssh_exec.cuisine.processmanager.ensure('caddy', '$binDir/caddy -conf $varDir/cfg/caddy/caddyfile')
+    cmd = '$binDir/caddy -conf $varDir/cfg/caddy/caddyfile'
+    if dev:  # enable stating environment
+        cmd += ' -ca https://acme-staging.api.letsencrypt.org/directory'
+    ssh_exec.cuisine.processmanager.ensure('caddy', cmd)
 
     token = create_robot(bot_token)
     cmd = "js 'j.atyourservice.telegramBot(\"%s\")'"  % token
@@ -262,16 +266,8 @@ def getSSHKey(path):
 
 def caddy_cfg(cuisine, hostname):
     url = j.data.idgenerator.generateXCharID(15)
-    cmd = "cd $varDir/cfg/caddy/; openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj /CN=%s" % hostname
-    cuisine.run(cmd)
     tmpl = """
-http://$hostname {
-    redir https://$hostname{uri}
-}
-
-https://$hostname {
-    tls /optvar/cfg/caddy/cert.pem /optvar/cfg/caddy/key.pem
-
+$hostname {
     gzip
 
     log /optvar/cfg/caddy/log/portal.access.log
