@@ -163,6 +163,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     ssh_exec.cuisine.processmanager.ensure('aysrobot', cmd)
 
     print("Generate cockpit config service")
+    pwd = j.sal.fs.getcwd()
     j.sal.fs.changeDir('/opt/code/github/zaibon/testg8cokpit/ays_repo/')
     args = {
         'dns': dns_name,
@@ -175,10 +176,11 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     git_cl.commit('add cockpitconfig')
     git_cl.push()
     ssh_exec.cuisine.git.pullRepo(repo_url, branch='master', ssh=False)
+    j.sal.fs.changeDir(pwd)
 
     # execute portforwardings
     script = j.sal.fs.joinPaths(j.sal.fs.getDirName(__file__),'portforwards.py')
-    cmd = '%s --repo %s' % (script, j.sal.fs.joinPaths(cockpitRepo,'ays_repo'))
+    cmd = 'jspython %s --repo %s' % (script, j.sal.fs.joinPaths(cockpitRepo,'ays_repo'))
     cuisine.run(cmd)
 
     printInfo("\nCockpit deployed")
