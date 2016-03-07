@@ -67,8 +67,13 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
         machine = vdc_cockpit.machine_create('cockpit', memsize=2, disksize=50, image='Ubuntu 15.10')
     ssh_exec = machine.get_ssh_connection()
 
-    machine.create_portforwarding(80, 80)
-    machine.create_portforwarding(443, 443)
+    exists = [pf['publicPort']for pf in machine.portforwardings]
+    if '80' not in exists:
+        machine.create_portforwarding(80, 80)
+    if '443' not in exists:
+        machine.create_portforwarding(443, 443)
+    if '18384' not in exists:
+        machine.create_portforwarding(18384, 18384)  # temporary create portforwardings for syncthing
 
     printInfo('Authorize ssh key into VM')
     # authorize ssh into VM
@@ -108,6 +113,10 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
 
     printInfo("Configuration of g8os controller")
     ssh_exec.cuisine.builder._startController()
+    for pf in machine.portforwardings:
+        if pf['publicPort'] == "18384":
+            machine.delete_portfowarding_by_id(pf['id'])  # remeove syncthing exposure after controller is configured
+            break
     # TODO add jumpscripts ??
 
     printInfo("Configuration of cockpit portal")
