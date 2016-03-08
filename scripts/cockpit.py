@@ -16,7 +16,8 @@ def update():
     printInfo("Update required git repository to last version")
     repos = [
         'https://github.com/Jumpscale/ays_jumpscale8.git',
-        'https://github.com/Jumpscale/jumpscale_core8.git'
+        'https://github.com/Jumpscale/jumpscale_core8.git',
+        'https://github.com/0-complexity/g8cockpit.git'
     ]
     cuisine = j.tools.cuisine.local
     for url in repos:
