@@ -166,7 +166,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
         ssh_exec.cuisine.run('jsuser passwd -ul admin -up %s' % portal_password)
 
     printInfo("Configuration of shellinabox")
-    config = "-s '/:root:root:/:ssh root@localhost'"
+    config = "-s '/:root:root:/:/bin/bash'"
     cmd = 'shellinaboxd --disable-ssl --port 4200 %s ' % config
     ssh_exec.cuisine.processmanager.ensure('shellinabox_cockpit', cmd=cmd)
 
