@@ -12,6 +12,17 @@ def cli(debug):
 
 
 @click.command()
+def update():
+    printInfo("Update required git repository to last version")
+    repos = [
+        'https://github.com/Jumpscale/ays_jumpscale8.git',
+        'https://github.com/Jumpscale/jumpscale_core8.git'
+    ]
+    cuisine = j.tools.cuisine.local
+    for url in repos:
+        j.do.pullGitRepo(url=url, executor=cuisine.executor)
+
+@click.command()
 @click.option('--repo-url', help='Url of the git repository where to store the ays repo.')
 @click.option('--ovc-url', help='Url of the Gener8 where to deploy cockpit')
 @click.option('--ovc-login', help='Login of your account on Gener8 where to deploy cockpit')
@@ -30,6 +41,8 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     """
     Start installation process of a new G8Cockpit
     """
+    update()
+
     cuisine = j.tools.cuisine.local
     tmpl_repo = "https://github.com/0-complexity/g8cockpit.git"
 
@@ -348,6 +361,7 @@ def exit(err, code=1):
 
 # Register Command
 cli.add_command(install)
+cli.add_command(update)
 
 if __name__ == '__main__':
     cli()
