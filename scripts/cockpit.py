@@ -57,7 +57,12 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     cockpitRepo = j.do.pullGitRepo(url=repo_url, executor=cuisine.executor)
     printInfo('cloned in %s' % cockpitRepo)
     git_cl = j.clients.git.get(cockpitRepo)
-    j.sal.fs.copyDirTree(j.sal.fs.joinPaths(templateRepo, 'ays_repo'), j.sal.fs.joinPaths(cockpitRepo, 'ays_repo'))
+
+    src = j.sal.fs.joinPaths(templateRepo, 'ays_repo')
+    dest = j.sal.fs.joinPaths(cockpitRepo, 'ays_repo')
+    if not j.sal.fs.exists(src):
+        exit("%s doesn't exist. template repo is propably not valid")
+    j.sal.fs.copyDirTree(src, dest)
     git_cl.commit('init cockpit repo with templates')
     git_cl.push()  # push init commit and create master branch.
 
@@ -217,7 +222,11 @@ def getVDC(url, login, passwd, vdc_name, location):
             if not location:
                 location = j.tools.console.askString("Location of the vdc", defaultparam='', regex=None, retry=2, validate=None)
 
-        account = ovc_cl.account_get(login)
+        if len(ovc_cl.accounts) == 1:
+            account = ovc_cl.accounts[0]
+        else:
+            resp = j.tools.console.askChoice(ovc_cl.accounts, descr='Choose which account to use', sort=True, maxchoice=60, height=40, autocomplete=False)
+            account = ovc_cl.account_get(resp)
         vdc = account.space_get(vdc_name, location, create=True)
     except Exception as e:
         printErr("Error While Trying to connec to Gener8 (%s). account:%s, vdc:%s" % (url, login, vdc_name))
