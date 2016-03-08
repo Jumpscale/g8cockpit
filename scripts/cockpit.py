@@ -21,7 +21,7 @@ def cli(debug):
 @click.option('--dns-login', help='Password of your account on the dns cluster')
 @click.option('--dns-password', help='Password of your account on the dns cluster')
 @click.option('--dns-name', help='Dns to give to the cockpit. Name will be append with .cockpit.aydo.com')
-@click.option('--sshkey', help='Path to public ssh key to authorize on the G8Cockpit')
+@click.option('--sshkey', help='Name of the ssh key to authorize on the G8Cockpit. key are fetch from ssh-agent.')
 @click.option('--portal-password', help='Admin password of the portal')
 @click.option('--expose-ssh', help='Expose ssh of the G8Cockpit over HTTP', is_flag=True)
 @click.option('--bot-token', help='Telegram token of your bot')
@@ -269,17 +269,15 @@ def registerDNS(dns_name, dns_cl, vdc_cockpit):
     dns_cl.setRecordA(dns_name, vdc_cockpit.model['publicipaddress'], ttl=120) # TODO, set real TTL
     return dns_name
 
-def getSSHKey(path):
-    def validate(path):
-        if not j.sal.fs.exists(path):
-            printErr("Path %s doesn't exists")
+def getSSHKey(name):
+    def validate(name):
+        if not name:
             return False
-        # TODO check if key is valid
         return True
 
-    if not path:
-        path = j.tools.console.askString("Path to public ssh key to authorize on the G8Cockpit", defaultparam='/root/.ssh/id_rsa.pub', regex=None, retry=2, validate=validate)
-    return j.sal.fs.fileGetContents(path)
+    if not name:
+        name = j.tools.console.askString("Name of the ssh key to authorize on the G8Cockpit. key are fetch from ssh-agent.", defaultparam='id_rsa', regex=None, retry=3, validate=validate)
+    return j.do.getSSHKeyFromAgentPub(name)
 
 def caddy_cfg(cuisine, hostname):
     url = j.data.idgenerator.generateXCharID(15)
