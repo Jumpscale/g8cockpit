@@ -1,0 +1,22 @@
+vdcfarm_cockpit:
+    apiurl: 'du-conv-3.demo.greenitglobe.com'
+    login: "login"
+    passwd: "XXXX"
+    description: "g8cockpit blueprint"
+    account: "myaccount"
+
+vdc_duconv3:
+    location: "du-conv-3"
+    vdcfarm : "cockpit"
+
+sshkey_cockpitkey:
+    key.passphrase: ''
+
+dockerhost_dh1:
+    vdc: "duconv3"
+    aysfs: True
+    os.image: 'ubuntu 15.10'
+
+docker_docker1:
+    host: 'dh1'
+    ports: '5555:5555'
