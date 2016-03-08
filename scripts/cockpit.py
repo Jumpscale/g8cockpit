@@ -291,22 +291,23 @@ def getSSHKey(name):
 def caddy_cfg(cuisine, hostname):
     url = j.data.idgenerator.generateXCharID(15)
     tmpl = """
-$hostname {
-    gzip
+$hostname
+gzip
 
-    log /optvar/cfg/caddy/log/portal.access.log
-    errors {
-        log /optvar//cfg/caddy/log/portal.errors.log
-    }
-
-    # portal
-    proxy / 127.0.0.1:82
-
-    # shellinabox
-    proxy /$url 127.0.0.1:4200 {
-       without /$url
-    }
+log /optvar/cfg/caddy/log/portal.access.log
+errors {
+    log /optvar//cfg/caddy/log/portal.errors.log
 }
+
+# shellinabox
+proxy /$url 127.0.0.1:4200 {
+   without /$url
+}
+
+# portal
+# proty to / need to be last declared proxy
+proxy / 127.0.0.1:82
+
 """
     tmpl = tmpl.replace("$hostname", hostname)
     tmpl = tmpl.replace("$url", url)
