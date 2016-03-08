@@ -33,3 +33,13 @@ You can start the script with all the options filled in like
 
 Or you can just run the script without any options and it will interactively ask you the information as the installation is going.
 `./cockpit.py install`
+
+
+remarks for mothership1 usage
+- mothership 1 gener8 url = www.mothership1.com
+- virtual datacenter needs to exist, can be the default one
+- locations are: ca1,uk1,eu1 (to know location of your space got to space settings [https://www.mothership1.com/wiki_gcb/CloudSpaceSettings#/list] it will print e.g. canada
+
+
+
+
