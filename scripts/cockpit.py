@@ -18,8 +18,8 @@ def cli(debug):
 @click.option('--ovc-password', help='Password of your account on the Gener8 where to deploy cockpit')
 @click.option('--ovc-vdc', help='Name of the Virtual Data center where to deploy the G8Cockpit')
 @click.option('--ovc-location', help='Location of the vdc')
-@click.option('--dns-login', help='Password of your account on the Skydns cluster')
-@click.option('--dns-password', help='Password of your account on the Skydns cluster')
+@click.option('--dns-login', help='Password of your account on the dns cluster')
+@click.option('--dns-password', help='Password of your account on the dns cluster')
 @click.option('--dns-name', help='Dns to give to the cockpit. Name will be append with .cockpit.aydo.com')
 @click.option('--sshkey', help='Path to public ssh key to authorize on the G8Cockpit')
 @click.option('--portal-password', help='Admin password of the portal')
@@ -40,8 +40,8 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
     printInfo('Test connectivity to Gener8')
     vdc_cockpit = getVDC(ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location)
 
-    printInfo('Test connectivity to Skydns')
-    dns_cl = getSkydns(dns_login, dns_password)
+    printInfo('Test connectivity to dns server')
+    dns_cl = getDNS(dns_login, dns_password)
     dns_name = registerDNS(dns_name, dns_cl, vdc_cockpit)
 
     key_pub = getSSHKey(sshkey)
@@ -225,12 +225,12 @@ def getVDC(url, login, passwd, vdc_name, location):
 
     return vdc
 
-def getSkydns(login, passwd):
+def getDNS(login, passwd):
     client = None
     if not login:
-        login = j.tools.console.askString("Login of your account on the Skydns cluster", defaultparam='', regex=None, retry=2)
+        login = j.tools.console.askString("Login of your account on the DNS cluster", defaultparam='', regex=None, retry=2)
     if not passwd:
-        passwd = j.tools.console.askPassword("Password of your account on the Skydns cluster", confirm=True, regex=None, retry=2)
+        passwd = j.tools.console.askPassword("Password of your account on the DNS cluster", confirm=True, regex=None, retry=2)
 
     url = 'https://dns%d.aydo.com/etcd'
     for i in range(1, 4):
@@ -241,13 +241,13 @@ def getSkydns(login, passwd):
             return client
         except Exception as e:
             if i > 3:
-                printErr("Can't connect to Skydns")
+                printErr("Can't connect to DNS")
                 exit(e)
             else:
                 continue
     if not client:
-        printErr("Can't connect to Skydns")
-        exit("Can't connect to Skydns")
+        printErr("Can't connect to DNS")
+        exit("Can't connect to DNS")
 
 
 def registerDNS(dns_name, dns_cl, vdc_cockpit):
