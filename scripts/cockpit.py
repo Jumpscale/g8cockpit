@@ -193,11 +193,15 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ov
     r = j.atyourservice.getRecipe('cockpitconfig')
     r.newInstance(args=args)
     git_cl.push()
-    ssh_exec.cuisine.git.pullRepo(repo_url, branch='master', ssh=False)
+
+    j.sal.fs.copyFile("./portforwards.py", cockpitRepo, createDirIfNeeded=False, overwriteFile=True)
+    dest = 'root@%s:%s' % (ssh_exec.addr, cockpitRepo)
+    ssh_exec.cuisine.dir_ensure(cockpitRepo)
+    j.do.copyTree(cockpitRepo, dest, sshport=ssh_exec.port, ssh=True)
     j.sal.fs.changeDir(pwd)
 
     # execute portforwardings
-    script = j.sal.fs.joinPaths(j.sal.fs.getDirName(__file__),'portforwards.py')
+    script = './portforwards.py'
     cmd = 'jspython %s --repo %s' % (script, j.sal.fs.joinPaths(cockpitRepo,'ays_repo'))
     cuisine.run(cmd)
 
