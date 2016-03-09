@@ -13,6 +13,10 @@ def cli(debug):
 
 @click.command()
 def update():
+    """
+    Update the git repo used during installation of the cockpit.
+    Run that before doing install to be sure to have last code.
+    """
     printInfo("Update required git repository to last version")
     repos = [
         'https://github.com/Jumpscale/ays_jumpscale8.git',
