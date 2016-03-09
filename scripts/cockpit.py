@@ -82,8 +82,6 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ov
     if not j.sal.fs.exists(src):
         exit("%s doesn't exist. template repo is propably not valid")
     j.sal.fs.copyDirTree(src, dest)
-    git_cl.commit('init cockpit repo with templates')
-    git_cl.push()  # push init commit and create master branch.
 
     printInfo("Create cockpit VM")
     if 'cockpit' in vdc_cockpit.machines:
@@ -189,6 +187,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ov
     print("Generate cockpit config service")
     pwd = j.sal.fs.getcwd()
     j.sal.fs.changeDir(j.sal.fs.joinPaths(cockpitRepo, 'ays_repo'))
+    j.atyourservice.basepath = j.sal.fs.joinPaths(cockpitRepo, 'ays_repo')
     args = {
         'dns': dns_name,
         'node.addr': ssh_exec.addr,
@@ -197,7 +196,6 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ov
     }
     r = j.atyourservice.getRecipe('cockpitconfig')
     r.newInstance(args=args)
-    git_cl.commit('add cockpitconfig')
     git_cl.push()
     ssh_exec.cuisine.git.pullRepo(repo_url, branch='master', ssh=False)
     j.sal.fs.changeDir(pwd)
