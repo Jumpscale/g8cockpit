@@ -117,10 +117,6 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ov
 
     printInfo("Start configuration of cockpit")
 
-    printInfo("Configuration of mongodb")
-    ssh_exec.cuisine.dir_ensure("$varDir/db/mongo")
-    ssh_exec.cuisine.processmanager.ensure('mongodb', '$binDir/mongod --dbpath $varDir/db/mongo')
-
     printInfo("Configuration of influxdb")
     ssh_exec.cuisine.dir_ensure("$varDir/db/influx")
     ssh_exec.cuisine.dir_ensure("$varDir/db/influx/meta")
