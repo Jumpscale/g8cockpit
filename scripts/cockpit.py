@@ -27,11 +27,13 @@ def update():
     for url in repos:
         j.do.pullGitRepo(url=url, executor=cuisine.executor)
 
+
 @click.command()
 @click.option('--repo-url', help='Url of the git repository where to store the ays repo.')
 @click.option('--ovc-url', help='Url of the Gener8 where to deploy cockpit')
 @click.option('--ovc-login', help='Login of your account on Gener8 where to deploy cockpit')
 @click.option('--ovc-password', help='Password of your account on the Gener8 where to deploy cockpit')
+@click.option('--ovc-account', help='Account to use on the Gener8 where to deploy cockpit')
 @click.option('--ovc-vdc', help='Name of the Virtual Data center where to deploy the G8Cockpit')
 @click.option('--ovc-location', help='Location of the vdc')
 @click.option('--dns-login', help='Password of your account on the dns cluster')
@@ -42,12 +44,11 @@ def update():
 @click.option('--expose-ssh', help='Expose ssh of the G8Cockpit over HTTP', is_flag=True)
 @click.option('--bot-token', help='Telegram token of your bot')
 @click.option('--dev', help='Use staging environment for caddy. Enable this during testing to avoid running up adgains letsencrypt rate limits', is_flag=True)
-def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh, bot_token, dev):
+def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ovc_location, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh, bot_token, dev):
     """
     Start installation process of a new G8Cockpit
     """
-    update()
-
+    # update()
     cuisine = j.tools.cuisine.local
     tmpl_repo = "https://github.com/0-complexity/g8cockpit.git"
 
@@ -56,7 +57,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location, d
 
     # connection to Gener8 + get vdc client
     printInfo('Test connectivity to Gener8')
-    vdc_cockpit = getVDC(ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_location)
+    vdc_cockpit = getVDC(ovc_url, ovc_login, ovc_password, ovc_vdc, ovc_account, ovc_location)
 
     printInfo('Test connectivity to dns server')
     dns_cl = getDNS(dns_login, dns_password)
@@ -220,7 +221,7 @@ def printInfo(msg):
     msg = '[+]: %s' % msg
     click.echo(click.style(msg, fg='blue'))
 
-def getVDC(url, login, passwd, vdc_name, location):
+def getVDC(url, login, passwd, vdc_name, ovc_account, location):
     vdc = None
     if not url:
         url = j.tools.console.askString("Url of the Gener8 where to deploy cockpit", defaultparam='', regex=None, retry=2)
@@ -234,6 +235,11 @@ def getVDC(url, login, passwd, vdc_name, location):
     try:
         ovc_cl = j.clients.openvcloud.get(url, login, passwd)
 
+    except Exception as e:
+        printErr("Error While Trying to connec to Gener8 (%s). account:%s, vdc:%s" % (url, login, vdc_name))
+        exit(e)
+
+    try:
         if len(ovc_cl.locations) == 1:
             location = ovc_cl.locations[0]['name']
         else:
@@ -243,11 +249,16 @@ def getVDC(url, login, passwd, vdc_name, location):
         if len(ovc_cl.accounts) == 1:
             account = ovc_cl.accounts[0]
         else:
-            resp = j.tools.console.askChoice(ovc_cl.accounts, descr='Choose which account to use', sort=True, maxchoice=60, height=40, autocomplete=False)
-            account = ovc_cl.account_get(resp)
+            if ovc_account is None or ovc_account == '':
+                choices = [acc.model['name'] for acc in ovc_cl.accounts]
+                resp = j.tools.console.askChoice(choices, descr='Choose which account to use', sort=False, maxchoice=60, height=40, autocomplete=False)
+                account = ovc_cl.account_get(resp)
+            else:
+                account = ovc_cl.account_get(ovc_account)
+
         vdc = account.space_get(vdc_name, location, create=True)
     except Exception as e:
-        printErr("Error While Trying to connec to Gener8 (%s). account:%s, vdc:%s" % (url, login, vdc_name))
+        printErr("Error While Trying to have access to vdc %s with account:%s" % (vdc_name, account))
         exit(e)
 
     return vdc
