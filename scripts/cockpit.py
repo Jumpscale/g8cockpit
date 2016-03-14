@@ -43,8 +43,9 @@ def update():
 @click.option('--portal-password', help='Admin password of the portal')
 @click.option('--expose-ssh', help='Expose ssh of the G8Cockpit over HTTP', is_flag=True)
 @click.option('--bot-token', help='Telegram token of your bot')
+@click.option('--gid', help='Grid ID to give to the controller')
 @click.option('--dev', help='Use staging environment for caddy. Enable this during testing to avoid running up adgains letsencrypt rate limits', is_flag=True)
-def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ovc_location, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh, bot_token, dev):
+def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ovc_location, dns_login, dns_password, dns_name, sshkey, portal_password, expose_ssh, bot_token, gid, dev):
     """
     Start installation process of a new G8Cockpit
     """
@@ -73,9 +74,11 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ov
         repo_url = j.tools.console.askString("Url of the git repository where to store the ays repo.", defaultparam='', regex=None, retry=2)
 
     printInfo('cloning cockpit repo (%s)' % repo_url)
-    cockpitRepo = j.do.pullGitRepo(url=repo_url, executor=cuisine.executor)
+q    cockpitRepo = j.do.pullGitRepo(url=repo_url, executor=cuisine.executor, reset=True)
     printInfo('cloned in %s' % cockpitRepo)
     git_cl = j.clients.git.get(cockpitRepo)
+    cuisine.dir_remove(cockpitRepo+"/*")
+    git_cl.commit('init commit')
 
     src = j.sal.fs.joinPaths(templateRepo, 'ays_repo')
     dest = j.sal.fs.joinPaths(cockpitRepo, 'ays_repo')
@@ -90,56 +93,40 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ov
         machine = vdc_cockpit.machine_create('cockpit', memsize=2, disksize=50, image='Ubuntu 15.10')
     ssh_exec = machine.get_ssh_connection()
 
-    exists = [pf['publicPort']for pf in machine.portforwardings]
-    if '80' not in exists:
+    exists_pf = [pf['publicPort']for pf in machine.portforwardings]
+    if '80' not in exists_pf:
         machine.create_portforwarding(80, 80)
-    if '443' not in exists:
+    if '443' not in exists_pf:
         machine.create_portforwarding(443, 443)
-    if '18384' not in exists:
+    if '18384' not in exists_pf:
         machine.create_portforwarding(18384, 18384)  # temporary create portforwardings for syncthing
 
     printInfo('Authorize ssh key into VM')
     # authorize ssh into VM
-    ssh_exec.cuisine.set_sudomode()
     ssh_exec.cuisine.ssh.authorize('root', key_pub)
     # reconnect as root
     ssh_exec = j.tools.executor.getSSHBased(ssh_exec.addr, ssh_exec.port, 'root')
 
     printInfo("Start installation of cockpit")
-    ssh_exec.cuisine.package.mdupdate()
-    ssh_exec.cuisine.installerdevelop.jumpscale8()
-    ssh_exec.cuisine.builder.mongodb(start=False)
-    ssh_exec.cuisine.builder.influxdb(start=False)
-    ssh_exec.cuisine.builder.controller(start=False)
-    ssh_exec.cuisine.builder.caddy(start=False)
-    ssh_exec.cuisine.portal.install(start=False, minimal=True)
-    ssh_exec.cuisine.package.install('shellinabox')
+    printInfo("installation of docker")
+    ssh_exec.cuisine.docker.install()
+    ssh_exec.cuisine.installer.jumpscale8()
+    # ssh_exec.cuisine.dir_ensure("/optvar/data")
+    # cmd = 'docker run -dt --name g8cockpit -p 80:80 -p 443:443 -p 18384:18384 -p 9022:9022 -v /optvar/data:/optvar/data jumpscale/g8cockpit'
+    container_conn_str = ssh_exec.cuisine.docker.ubuntu(name='g8cockpit', image='jumpscale/g8cockpit', ports="80:80 443:443 18384:18384", volumes="/optvar/data:/optvar/data", pubkey=key_pub, aydofs=False)
+
+    addr, port = container_conn_str.split(":")
+    if port not in exists_pf:
+        machine.create_portforwarding(port, port) # expose ssh of docker
+    container_cuisine = j.tools.cuisine.get("%s:%s" % (ssh_exec.addr, port))
 
     printInfo("Start configuration of cockpit")
-
     printInfo("Configuration of influxdb")
-    ssh_exec.cuisine.dir_ensure("$varDir/db/influx")
-    ssh_exec.cuisine.dir_ensure("$varDir/db/influx/meta")
-    ssh_exec.cuisine.dir_ensure("$varDir/db/influx/data")
-    ssh_exec.cuisine.dir_ensure("$varDir/db/influx/wal")
-    content = ssh_exec.cuisine.file_read('$varDir/cfg/influxdb/influxdb.conf.org')
-    cfg = j.data.serializer.toml.loads(content)
-    cfg['meta']['dir'] = "$varDir/db/influx/meta"
-    cfg['data']['dir'] = "$varDir/db/influx/data"
-    cfg['data']['wal-dir'] = "$varDir/db/influx/data"
-    ssh_exec.cuisine.file_write('$varDir/cfg/influxdb/influxdb.conf', j.data.serializer.toml.dumps(cfg))
-    ssh_exec.cuisine.processmanager.ensure('influxdb', '$binDir/influxd -config $varDir/cfg/influxdb/influxdb.conf')
+    container_cuisine.builder._start_influxdb()
+    container_cuisine.builder._startMongodb()
 
     printInfo("Configuration of g8os controller")
-    if ovc_url == 'www.mothership1.com':
-        ssh_exec.cuisine.builder._startController()
-        for pf in machine.portforwardings:
-            if pf['publicPort'] == "18384":
-                machine.delete_portfowarding_by_id(pf['id'])  # remeove syncthing exposure after controller is configured
-                break
-    else:
-        machine.delete_portforwarding("18384")
-    # TODO add jumpscripts ??
+    container_cuisine.builder._startController()
 
     printInfo("Configuration of cockpit portal")
     if not portal_password:
@@ -149,55 +136,73 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ov
                 return False
             return True
         portal_password = j.tools.console.askPassword("Admin password for the portal", confirm=True, regex=None, retry=2, validate=validate)
-    ssh_exec.cuisine.portal.start(force=True)
+    # link cockpit portal
+    container_cuisine.dir_ensure('$cfgDir/portals/example/base/')
+    container_cuisine.file_link("/opt/code/github/jumpscale/jumpscale_portal8/apps/gridportal/base/AYS", "$cfgDir/portals/example/base/AYS")
+    container_cuisine.file_link("/opt/code/github/jumpscale/jumpscale_portal8/apps/gridportal/base/Cockpit", "$cfgDir/portals/example/base/Cockpit")
+    container_cuisine.file_link("/opt/code/github/jumpscale/jumpscale_portal8/apps/gridportal/base/system__atyourservice", "$cfgDir/portals/example/base/system__atyourservice")
+    container_cuisine.portal.start()
 
     # wait for the admin user to be created by portal
     timeout = 60
     start = time.time()
-    resp = ssh_exec.cuisine.run('jsuser list', showout=False)
+    resp = container_cuisine.run('jsuser list', showout=False, force=True)
     while resp.find('admin') == -1 and start + timeout > time.time():
+        try:
             time.sleep(2)
-            resp = ssh_exec.cuisine.run('jsuser list', showout=False)
+            resp = container_cuisine.run('jsuser list', showout=False, force=True)
+        except:
+            continue
 
     if resp.find('admin') == -1:
-        ssh_exec.cuisine.run('jsuser add --data admin:%s:admin:admin@mail.com:cockpit' % portal_password)
+        container_cuisine.run('jsuser add --data admin:%s:admin:admin@mail.com:cockpit' % portal_password)
     else:
-        ssh_exec.cuisine.run('jsuser passwd -ul admin -up %s' % portal_password)
+        container_cuisine.run('jsuser passwd -ul admin -up %s' % portal_password)
 
     printInfo("Configuration of shellinabox")
     config = "-s '/:root:root:/:/bin/bash'"
     cmd = 'shellinaboxd --disable-ssl --port 4200 %s ' % config
-    ssh_exec.cuisine.processmanager.ensure('shellinabox_cockpit', cmd=cmd)
+    container_cuisine.processmanager.ensure('shellinabox_cockpit', cmd=cmd)
 
     printInfo("Configuration of caddy proxy")
-    shellinbox_url = caddy_cfg(ssh_exec.cuisine, dns_name)
-    cmd = '$binDir/caddy -conf $varDir/cfg/caddy/caddyfile'
+    shellinbox_url = caddy_cfg(container_cuisine, dns_name)
+    cmd = '$binDir/caddy -conf $varDir/cfg/caddy/caddyfile -email mail@fake.com'
     if dev:  # enable stating environment
         cmd += ' -ca https://acme-staging.api.letsencrypt.org/directory'
-    ssh_exec.cuisine.processmanager.ensure('caddy', cmd)
+    container_cuisine.processmanager.ensure('caddy', cmd)
 
-    token = create_robot(bot_token)
+    if not bot_token:
+        token = create_robot(bot_token)
+    else:
+        token = bot_token
     cmd = "js 'j.atyourservice.telegramBot(\"%s\")'"  % token
-    ssh_exec.cuisine.processmanager.ensure('aysrobot', cmd)
+    container_cuisine.processmanager.ensure('aysrobot', cmd)
 
     print("Generate cockpit config service")
+    if gid is None:
+        gid = j.tools.console.askInteger("Choose grid id for your controller", defaultValue=1, minValue=1, maxValue=None, retry=-1, validate=None)
+
     pwd = j.sal.fs.getcwd()
     j.sal.fs.changeDir(j.sal.fs.joinPaths(cockpitRepo, 'ays_repo'))
     j.atyourservice.basepath = j.sal.fs.joinPaths(cockpitRepo, 'ays_repo')
     args = {
         'dns': dns_name,
-        'node.addr': ssh_exec.addr,
-        'ssh.port': ssh_exec.port,
+        'node.addr': container_cuisine.executor.addr,
+        'ssh.port': int(container_cuisine.executor.port),
         'bot.token': token,
+        'gid': int(gid),
     }
     r = j.atyourservice.getRecipe('cockpitconfig')
     r.newInstance(args=args)
     git_cl.push()
 
-    j.sal.fs.copyFile("./portforwards.py", cockpitRepo, createDirIfNeeded=False, overwriteFile=True)
-    dest = 'root@%s:%s' % (ssh_exec.addr, cockpitRepo)
-    ssh_exec.cuisine.dir_ensure(cockpitRepo)
-    j.do.copyTree(cockpitRepo, dest, sshport=ssh_exec.port, ssh=True)
+    content = "grid.id = %d\nnode.id = 0" % int(gid)
+    container_cuisine.file_append(location="$hrdDir/system/system.hrd", content=content)
+
+    # j.sal.fs.copyFile("portforwards.py", cockpitRepo, createDirIfNeeded=False, overwriteFile=True)
+    dest = 'root@%s:%s' % (container_cuisine.executor.addr, cockpitRepo)
+    container_cuisine.dir_ensure(cockpitRepo)
+    j.do.copyTree(cockpitRepo, dest, sshport=container_cuisine.executor.port, ssh=True)
     j.sal.fs.changeDir(pwd)
 
     # execute portforwardings
@@ -244,6 +249,7 @@ def getVDC(url, login, passwd, vdc_name, ovc_account, location):
             if not location:
                 location = j.tools.console.askString("Location of the vdc", defaultparam='', regex=None, retry=2, validate=None)
 
+        account = None
         if len(ovc_cl.accounts) == 1:
             account = ovc_cl.accounts[0]
         else:
