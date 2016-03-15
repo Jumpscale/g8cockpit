@@ -211,8 +211,8 @@ q    cockpitRepo = j.do.pullGitRepo(url=repo_url, executor=cuisine.executor, res
     cuisine.run(cmd)
 
     printInfo("\nCockpit deployed")
-    printInfo("SSH: ssh root@%s -p %s" % (dns_name, ssh_exec.port))
-    printInfo("Shellinabox: https://%s/%s" % (dns_name, shellinbox_url))
+    printInfo("SSH: ssh root@%s -p %s" % (dns_name, container_cuisine.executor.port))
+    # printInfo("Shellinabox: https://%s/%s" % (dns_name, shellinbox_url))
     printInfo("Portal: https://%s" % (dns_name))
 
 
