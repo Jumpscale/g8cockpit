@@ -48,6 +48,7 @@ def creates_portforwards(repo):
         'controller': 9066,
         'portal': 82,
         'syncthing': 18384,
+        'grafana': 3000,
     }
     for name, port in ports.items():
         cmd = 'autossh -o "StrictHostKeyChecking no" -NL 0.0.0.0:{remote_port}:localhost:{local_port} root@{remote_address} -p {remote_connection_port}'\
