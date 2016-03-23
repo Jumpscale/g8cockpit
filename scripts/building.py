@@ -54,8 +54,8 @@ def build(host, sshkey):
     container.builder.controller(start=False)
     container.builder.caddy(start=False)
     container.package.install('shellinabox')
-    bin_path = c.bash.cmdGetPath('shellinaboxd')
-    c.file_copy(bin_path, "$binDir")
+    bin_path = cuisine.bash.cmdGetPath('shellinaboxd')
+    cuisine.file_copy(bin_path, "$binDir")
 
     printInfo('clean before creating image')
     container.dir_remove("$goDir/src/*")
