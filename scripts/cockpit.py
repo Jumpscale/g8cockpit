@@ -2,6 +2,7 @@
 
 from JumpScale import j
 import click
+import sys
 
 deployer = None
 

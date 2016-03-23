@@ -26,11 +26,10 @@ def creates_portforwards(repo):
     count = 0
     if cockpit_cfg is None and count < 3:
         while cockpit_cfg is None:
-            import ipdb; ipdb.set_trace()
             printErr("Can't find service cockpitconfig, are you in the cockpit ays repo ?")
             repo = j.tools.console.askString("Please enter the path to the ays repo that contains cockpitconfig service", defaultparam='', regex=None, retry=2)
             if not j.sal.fs.exists(repo):
-                contnue
+                continue
             j.sal.fs.changeDir(repo)
             j.atyourservice.basepath = repo
             cockpit_cfg = j.atyourservice.getService(role='cockpitconfig', instance='main', die=False)
@@ -51,8 +50,8 @@ def creates_portforwards(repo):
         'grafana': 3000,
     }
     for name, port in ports.items():
-        cmd = 'autossh -o "StrictHostKeyChecking no" -NL 0.0.0.0:{remote_port}:localhost:{local_port} root@{remote_address} -p {remote_connection_port}'\
-        .format(remote_port=port, local_port=port, remote_address=remote_address, remote_connection_port=remote_connection_port)
+        cmd = 'autossh -o "StrictHostKeyChecking no" -NL 0.0.0.0:{remote_port}:localhost:{local_port} root@{remote_address} -p {remote_connection_port}'.format(
+            remote_port=port, local_port=port, remote_address=remote_address, remote_connection_port=remote_connection_port)
         cuisine.processmanager.ensure(name, cmd=cmd)
         cuisine.processmanager.start(name)
 
