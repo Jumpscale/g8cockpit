@@ -5,6 +5,7 @@ import click
 
 deployer = None
 
+
 @click.group()
 @click.option('--debug', default=False, help='enable debug mode', is_flag=True)
 def cli(debug):
@@ -70,7 +71,7 @@ def install(repo_url, ovc_url, ovc_login, ovc_password, ovc_account, ovc_vdc, ov
     cockpit_repo_path = deployer.deploy()
 
     # execute portforwardings
-    cmd = 'jspython portforwards.py --repo %s' % j.sal.fs.joinPaths(cockpit_repo_path,'ays_repo'))
+    cmd = 'jspython portforwards.py --repo %s' % j.sal.fs.joinPaths(cockpit_repo_path,'ays_repo')
     printInfo("to enable port forward to your cockpit execute\n%s" % cmd)
 
 
@@ -81,7 +82,7 @@ def printErr(msg):
 
 def printInfo(msg):
     msg = '[+]: %s' % msg
-    click.echo(click.style(msg, fg='blue'))
+    click.echo(click.style(msg, fg='green'))
 
 
 def exit(err, code=1):
