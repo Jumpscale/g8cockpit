@@ -6,7 +6,7 @@ import click
 
 import telegram
 from telegram import Updater
-from telegram.dispatcher import run_async
+from telegram.ext.dispatcher import run_async
 
 # import logging
 # logging.basicConfig(level=logging.DEBUG, format='[+][%(levelname)s] %(name)s: %(message)s')
