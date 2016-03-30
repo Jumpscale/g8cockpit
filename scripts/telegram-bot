@@ -1,0 +1,16 @@
+#!/usr/local/bin/jspython
+
+from JumpScale import j
+import click
+
+
+@click.command()
+@click.option('--config', '-c', help='path to the config file', default='config.toml')
+def cli(config):
+    cfg = j.data.serializer.toml.load(config)
+    bot = j.clients.cockpit.installer.getBot()
+    bot.init(cfg)
+    bot.run()
+
+if __name__ == '__main__':
+    cli()
