@@ -1,5 +1,30 @@
-# Usage
+# Scripts
 
+This directory contains three Scripts:
+- buiding.py:
+It generates the cockpit docker image from scratch
+- cockpit.py:
+Used to manually deploy a cockpit.
+- telegram-bot:
+Start a small telegram bot that allow client to deploy a cockpit over telegram.
+
+
+## Usage
+### building.py
+```
+Usage: building.py [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --debug  enable debug mode
+  --help   Show this message and exit.
+
+Commands:
+  build    Build g8cockpit docker image
+  update   Update the git repo used during installation...
+  upgrade  upgrade the jumpscale/g8cockpit docker image.
+
+```
+### cockpit.py
 ```
 Usage: cockpit.py install [OPTIONS]
 
@@ -45,3 +70,36 @@ remarks for mothership1 usage
 - mothership 1 gener8 url = www.mothership1.com
 - virtual datacenter needs to exist, can be the default one
 - locations are: ca1,uk1,eu1 (to know location of your space got to space settings [https://www.mothership1.com/wiki_gcb/CloudSpaceSettings#/list] it will print e.g. canada
+
+
+## telegram-bot
+```
+./telegram-bot --help
+Usage: telegram-bot [OPTIONS]
+
+Options:
+  -c, --config TEXT  path to the config file
+  --help             Show this message and exit.
+```
+
+Config file example for the telegram bot:
+
+```toml
+[bot]
+# bot token from @botfather
+token = "CHANGEME"
+
+# address of the G8 you want to propose to the users
+# during deployment.
+[g8.be-conv-2]
+adress = "be-conv-2.demo.greenitglobe.com"
+[g8.be-conv-3]
+adress = "be-conv-3.demo.greenitglobe.com"
+
+# credentials for the dns cluster.
+# if you don't specify the credentials, they will be ask to the user during deployment
+[dns]
+login = "admin"
+password = "CHANGEME"
+
+```
