@@ -60,10 +60,10 @@ Options:
 
 You can start the script with all the options filled in like  
 ```
-./cockpit2.py  --debug install  --ovc-url be-conv-2.demo.greenitglobe.com --ovc-login ovclogin --ovc-password secret --ovc-vdc cockpit --dns-login login --dns-password secret --domain mycockpit --repo-url https://github.com/user/repo --sshkey id_rsa --portal-password secret --gid 1 --bot-token telegramtoken```
+./cockpit2.py  --debug install  --ovc-url be-conv-2.demo.greenitglobe.com --ovc-login ovclogin --ovc-password secret --ovc-vdc cockpit --dns-login login --dns-password secret --domain mycockpit --repo-url https://github.com/user/repo --sshkey id_rsa --portal-password secret --gid 1 --bot-token telegramtoken
+```
 
-Or you can just run the script without any options and it will interactively ask you the information as the installation is going.
-`./cockpit.py install`
+Or you can just run the script without any options and it will interactively ask you the information as the installation is going. `./cockpit.py install`
 
 
 remarks for mothership1 usage
@@ -73,6 +73,7 @@ remarks for mothership1 usage
 
 
 ## telegram-bot
+
 ```
 ./telegram-bot --help
 Usage: telegram-bot [OPTIONS]
@@ -80,9 +81,10 @@ Usage: telegram-bot [OPTIONS]
 Options:
   -c, --config TEXT  path to the config file
   --help             Show this message and exit.
-```
+```  
 
 Config file example for the telegram bot:
+
 
 ```toml
 [bot]
@@ -101,5 +103,4 @@ adress = "be-conv-3.demo.greenitglobe.com"
 [dns]
 login = "admin"
 password = "CHANGEME"
-
 ```
