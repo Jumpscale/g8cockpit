@@ -8,6 +8,12 @@ Used to manually deploy a cockpit.
 - telegram-bot:
 Start a small telegram bot that allow client to deploy a cockpit over telegram.
 
+## requirements
+
+```
+pip3 install python-telegram-bot
+```
+
 
 ## Usage
 ### building.py
