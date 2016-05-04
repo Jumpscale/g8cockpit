@@ -35,15 +35,25 @@ type: 'eco'
 guid : '762d6f24-8b50-4e46-8cb6-fa6d0f56f1fd'
 gid: 1
 nid: 10
-epoch: 1462275396
-code : |
-from JumpScale import j
-print('hello world')
+pid: 239
+app_name: 'myapp'
+eco_type: 'BUG'
+state: 'NEW'
+error_msg: 'error internal'
+error_pub: 'Something went wrong, sorry'
+category: 'eco.category'
 func_name: 'hello'
 func_filename: 'main.py'
 line_nbr: 23
-category: 'eco.category'
-error_msg: 'here the error msg'
+code: |
+from JumpScale import j
+print('hello world')
+backtrace: |
+backtrace here
+extra: 'extra detail'
+last_time: 1462275396
+close_time: 1462275496
+occurence: 2
 tags: 'list of tags here'
 ```
 
@@ -60,47 +70,36 @@ epoch: 1462275396
 
 
 #### telegram
+Telegram can send different type of event but we try to keep the event created generic.
+Based on the io and the action, the subscriber can expect different data in the 'args' dictionnary.
 
-List of events:  
-- **Input event**
-Authentification request
+e.g. repo creation:
 ```yaml
-type: 'telegram.auth'
-username: 'myusername'
+type: telegram
+io: input
+action: repo.create
+args:
+ name:'env du-conv2'
 ```
-AYS repo management 
-- create
+e.g. blueprint creation:
 ```yaml
-type: 'telegram.repo.create'
-name: 'env du-conv2'
+type: telegram
+io: input
+action: bp.create
+args:
+ name:'1_nodes.yaml'
+ content: |
+ here the content of the blueprint
 ```
-- delete
+e.g. service action execution:
 ```yaml
-type: 'telegram.repo.delete'
-name: 'env du-conv2'
+type: telegram
+io: input
+action: service.execute
+args:
+ name:'node!cpu1'
+ action: 'monitor'
 ```
-Blueprint management 
-- create
-```yaml
-type: 'telegram.bp.create'
-name: '1_bp.yaml'
-content: |
-service1__main:
-   description: 'foo'
-```
-- delete
-```yaml
-type: 'telegram.bp.delete'
-name: '1_bp.yaml'
-```
-- Service
-- execute action
-```yaml
-type: 'telegram.service.action'
-service: 'service!instance'
-action: 'install'
-```
-
 #### email
 
 - files stored in CuisineStor enabled over http site with browsing off
