@@ -1,0 +1,124 @@
+#%RAML 1.0
+title: ays rest
+baseUri: http://pla.pla/{version}
+version: v1
+
+/project:
+    description: a project
+    get:
+        description: list all projects
+    post:
+        description: create a new project
+        body:
+            application/json:
+                properties:
+                    path:
+                        type: string
+    delete:
+        description: delete a project
+        queryparameters:
+            path:
+                description: the path of the ays project
+                type: string
+                required: true
+
+/blueprint:
+    description: a blueprint inside a project
+    get:
+        description: list all blueprint
+        queryparameters:
+            path:
+                description: the path of the ays project
+                type: string
+                required: true
+    post:
+        description: create a new blueprint
+        queryparameters:
+            path:
+                description: the path of the ays project
+                type: string
+                required: true
+        body:
+            application/json:
+                properties:
+                    name:
+                        type: string
+    /{name}:
+        get:
+            description: get a blueprint
+            queryparameters:
+                path:
+                    description: the path of the ays project
+                    type: string
+                    required: true
+        delete:
+            description: delete blueprint
+            queryparameters:
+                path:
+                    description: the path of the ays project
+                    type: string
+                    required: true
+
+/service:
+    description: a service
+    get:
+        description: list all services
+        queryparameters:
+            path:
+                description: the path of the ays project
+                type: string
+                required: true
+    /{name}:
+        get:
+            description: get a services
+            queryparameters:
+                path:
+                    description: the path of the ays project
+                    type: string
+                    required: true
+        /actionlist:
+            get:
+                description: get the action list of a services
+                queryparameters:
+                    path:
+                        description: the path of the ays project
+                        type: string
+                        required: true
+        /{action}:
+            post:
+                description: perform an action on a services
+                queryparameters:
+                    path:
+                        description: the path of the ays project
+                        type: string
+                        required: true
+
+/template:
+    description: a template of a service
+    get:
+        description: list all templates
+        queryparameters:
+            path:
+                description: the path of the ays project
+                type: string
+                required: true
+    post:
+        description: create new template
+        queryparameters:
+            path:
+                description: the path of the ays project
+                type: string
+                required: true
+        body:
+            application/json:
+                properties:
+                    name:
+                        type: string
+    /{name}:
+        get:
+            description: get a template
+            queryparameters:
+                path:
+                    description: the path of the ays project
+                    type: string
+                    required: true
