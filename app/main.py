@@ -7,6 +7,7 @@ import sys
 from JumpScale import j
 
 import ays_api
+import webhooks_api
 import telegrambot
 import mail
 import falcon_api
@@ -52,14 +53,15 @@ class ServerRack(object):
                     traceback.print_exc()
 
 if __name__ == '__main__':
-    token = '205766488:AAHdHmuUuR6mvLDk4YRACcuQiC6zlRJF1Zg'
+    token = 'CHANGEME'
 
     # start all sub servers
     rack = ServerRack([
         WSGIServer(('', 5000), ays_api.app),
+        WSGIServer(('', 5001), webhooks_api.app),
+        WSGIServer(('', 5002), falcon_api.app),
+        mail.Server(("0.0.0.0", 25)),
         telegrambot.TGBot(token),
-        mail.Server(("127.1", 25)),
-        WSGIServer(('', 5001), falcon_api.app),
         ays_bot.AYSBot(),
     ])
     rack.start()
