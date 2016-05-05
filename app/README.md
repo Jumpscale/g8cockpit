@@ -25,6 +25,7 @@ Commands that generate generate events.
 Any number of WSGI server can be added. Most of the time it's REST server that generates event based on the request they receive.
 
 ## How to Start
+Proper configuration is not implemented yet. Change the config in the main.py file itself for now. Then start all the servers.
 ```
 jspython main.py
 ```
