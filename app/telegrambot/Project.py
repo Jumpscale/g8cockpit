@@ -109,7 +109,7 @@ class ProjectMgmt:
             self._setCurrentProject(username, project)
 
             message = "This project already exists, `%s` is now your current working project." % project
-            return bot.sendMessage(chat_id=chatid, text=message, parse_mode="Markdown")
+            return bot.sendMessage(chat_id=chatid, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         # creating new project
         self.init_repo(username, project)
@@ -117,7 +117,7 @@ class ProjectMgmt:
         self._addProject(username, project)
 
         message = "Project `%s` created, it's now your current working project." % project
-        bot.sendMessage(chat_id=chatid, text=message, parse_mode="Markdown")
+        bot.sendMessage(chat_id=chatid, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def list(self, bot, update):
         self.bot.logger.debug('listing projects')
@@ -134,7 +134,7 @@ class ProjectMgmt:
         # projects list
         if len(projects) == 0:
             message = "You don't have any project for now, create the first one with: `/project [name]`"
-            return bot.sendMessage(chat_id=chatid, text=message, parse_mode="Markdown")
+            return bot.sendMessage(chat_id=chatid, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         ln = len(projects)
         projectsList = ["I have %d project%s for you:" % (ln, "s" if ln > 1 else "")]
@@ -153,7 +153,7 @@ class ProjectMgmt:
         for project in projects:
             if project not in self._getProjects(username):
                 message = "Sorry, I can't find any project named `%s` :/" % project
-                bot.sendMessage(chat_id=chatid, text=message, parse_mode="Markdown")
+                bot.sendMessage(chat_id=chatid, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
                 continue
 
             if project == self._currentProject(username):
@@ -175,7 +175,7 @@ class ProjectMgmt:
             self.bot.send_event(evt.to_json())
 
             message = "Project `%s` removed" % project
-            bot.sendMessage(chat_id=chatid, text=message, parse_mode="Markdown")
+            bot.sendMessage(chat_id=chatid, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
     # UI interaction
     def choose_action(self, bot, update):

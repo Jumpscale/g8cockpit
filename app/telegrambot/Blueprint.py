@@ -81,7 +81,7 @@ class BlueprintMgmt(object):
         }
         self.bot.send_event(evt.to_json())
 
-        message = "This look like a blueprint, I saved it to: %s"
+        message = "This look like a blueprint, I saved it to: %s" % local
         bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
     def list(self, bot, update, project):

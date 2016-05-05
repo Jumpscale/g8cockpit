@@ -86,6 +86,12 @@ class TGBot():
         self.logger.debug("event received on channel %s" % channel)
         # TODO: actually do something with the event
 
+    def _sanitize_md(self, msg):
+        to_escape = ['\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '#', '+', '-', '.', '!']
+        for char in to_escape:
+            msg = msg.replace(char, "\%s" % char)
+        return msg
+
     def _event_handler_telegram(self, msg):
         evt = j.data.models.cockpit_event.Telegram.from_json(msg['data'].decode())
 
@@ -97,7 +103,8 @@ class TGBot():
 
         chat_id = evt.args['chat_id']
         msg = evt.args['msg']
-        self.bot.sendMessage(chat_id=chat_id, text=msg)
+        msg = self._sanitize_md(msg)
+        self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def send_event(self, payload):
         self._rediscl.publish('telegram', payload)
@@ -149,7 +156,7 @@ class TGBot():
             "This message was given by `/help`, have fun with me !",
         ]
 
-        bot.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode="Markdown")
+        bot.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode=telegram.ParseMode.MARKDOWN)
 
     # initialize
     def start_cmd(self, bot, update):
@@ -186,7 +193,7 @@ class TGBot():
             "For more information, just type `/help` :)"
         ]
 
-        bot.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode="Markdown")
+        bot.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode=telegram.ParseMode.MARKDOWN)
 
     # project manager
     def unknown_cmd(self, bot, update):

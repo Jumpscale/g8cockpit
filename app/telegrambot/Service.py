@@ -34,7 +34,7 @@ class ServiceMgmt(object):
                 'chat_id': update.message.chat_id,
                 'service': service.key,
                 'action': action,
-                'project_path': self._currentProjectPath(username),
+                'repo': self._currentProjectPath(username),
             }
             self.bot.send_event(evt.to_json())
 
@@ -46,27 +46,18 @@ class ServiceMgmt(object):
         j.atyourservice.basepath = project_path
         services = j.atyourservice.findServices()
 
-        services_list = []
-        for service in services:
-            services_list.append("- %s" % service.key)
-
-        if len(services_list) <= 0:
+        if len(services) <= 0:
             bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains services for now.")
             return
 
-        # def cb(bot, update):
-        #     message = update.message
-        #     if message.text in services_list:
-        #         content = j.sal.fs.fileGetContents(j.sal.fs.joinPaths(blueprint_path, message.text))
-        #         text = '```\n%s\n```' % content
-        #         bot.sendMessage(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=telegram.ReplyKeyboardHide())
-        #     else:
-        #         bot.sendMessage(chat_id=update.message.chat_id, text="%s is not a valid Blueprint name" % message.text, reply_markup=telegram.ReplyKeyboardHide())
-        # self.callbacks[username] = cb
+        doc = j.data.markdown.getDocument(content='')
+        doc.addMDHeader(level=1, title='Services instance of the project %s' % self._currentProject(username))
+        services_list = []
+        for service in services:
+            doc.addMDListItem(1, service.key)
 
-        # reply_markup = telegram.ReplyKeyboardMarkup([services_list])
-        # bot.sendMessage(chat_id=update.message.chat_id, text="Click on the blueprint you want to inspect", reply_markup=reply_markup)
-        bot.sendMessage(chat_id=update.message.chat_id, text='\n'.join(services_list))
+        # TODO: bug telegram can't parse markdown
+        bot.sendMessage(chat_id=update.message.chat_id, text=str(doc), parse_mode=telegram.ParseMode.MARKDOWN)
 
     def delete(self, bot, update, project, names):
         username = update.message.from_user.username
