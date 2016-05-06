@@ -53,7 +53,20 @@ class ServerRack(object):
                     traceback.print_exc()
 
 if __name__ == '__main__':
-    token = 'CHANGEME'
+    if j.core.db.get("cockpit.config.telegram.token")==None:
+        doc="""
+        AtYourService Robot creation
+        Please connect to telegram and talk to @botfather.
+        execute the command /newbot and choose a name and username for your bot
+        @botfather should give you a token, paste it here please.
+        """
+
+        print(doc)
+        token=j.tools.console.askString("Bot token")
+        j.core.db.set("cockpit.config.telegram.token",token)
+
+    token=j.core.db.get("cockpit.config.telegram.token").decode().strip()
+
 
     # start all sub servers
     rack = ServerRack([
