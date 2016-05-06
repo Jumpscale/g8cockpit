@@ -48,9 +48,9 @@ class TGBot():
 
         # commands
         dispatcher.addHandler(CommandHandler('start', self.start_cmd))
-        dispatcher.addHandler(CommandHandler('project', self.project_mgmt.handler))
-        dispatcher.addHandler(CommandHandler('blueprint', self.blueprint_mgmt.handler))
-        dispatcher.addHandler(CommandHandler('service', self.service_mgmt.handler))
+        dispatcher.addHandler(CommandHandler('project', self.project_mgmt.handler, pass_args=True))
+        dispatcher.addHandler(CommandHandler('blueprint', self.blueprint_mgmt.handler, pass_args=True))
+        dispatcher.addHandler(CommandHandler('service', self.service_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('help', self.help_cmd))
 
         # messages
@@ -89,10 +89,8 @@ class TGBot():
         # TODO: actually do something with the event
 
     def _sanitize_md(self, msg):
-        to_escape = ['\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '#', '+', '-', '.', '!']
-        for char in to_escape:
-            msg = msg.replace(char, "\%s" % char)
-        return msg
+        # telegram Markdown parser use simple * for bold text
+        return msg.replace('**', '*')
 
     def _event_handler_telegram(self, msg):
         evt = j.data.models.cockpit_event.Telegram.from_json(msg['data'].decode())

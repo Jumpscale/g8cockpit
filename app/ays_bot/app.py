@@ -67,15 +67,15 @@ class EventHandler:
             service.getAction(action_name)(force=True)
 
     def _event_handler_telegram(self, msg):
-        self.bot.logger.debug("event received on channel telegram for execute action")
+        self.bot.logger.debug("event received on channel telegram")
         evt = j.data.models.cockpit_event.Telegram.from_json(msg['data'].decode())
 
         # this handler is specific action execution trigger from telegram
         if evt.io == 'input':
             if evt.action == 'service.execute':
                 self._execute_action(evt, notify_tg=True)
-            elif evt.action == 'repo.create':
-                self._load_aysrepos([evt.args['repo_path']])
+            elif evt.action == 'bp.create':
+                self._load_aysrepos([evt.args['path']])
 
     def _execute_action(self, evt, notify_tg=False):
         keys = ['repo', 'service', 'action']
@@ -91,19 +91,21 @@ class EventHandler:
         action = service.getAction(evt.args['action'])
 
         # TODO helper method to send data to telegram
-        msg = "start execution of action **%s** on service **%s**" % (evt.args['action'], evt.args['service'])
+        msg = "start execution of action *%s* on service *%s*" % (evt.args['action'], evt.args['service'])
         self.send_tg_msg(chat_id=evt.args['chat_id'], msg=msg)
 
         # TODO: execute in greenlet
         result = action()
 
-        msg = "result of action **%s** on service **%s**\n\n```\n%s\n```" % (evt.args['action'], evt.args['service'], result)
-        self.send_tg_msg(chat_id=evt.args['chat_id'], msg=msg)
+        if result is not None or result != '':
+            msg = "result of action *%s* on service *%s*\n\n```\n%s\n```" % (evt.args['action'], evt.args['service'], result)
+            self.send_tg_msg(chat_id=evt.args['chat_id'], msg=msg)
 
     def send_tg_msg(self, chat_id, msg):
         out_evt = j.data.models.cockpit_event.Telegram()
         out_evt.io = 'output'
         out_evt.action = 'message'
+        msg.replace('**', '*')
         out_evt.args = {
             'chat_id': chat_id,
             'msg': msg
@@ -124,6 +126,8 @@ class EventHandler:
             repos_path = list(j.atyourservice.findAYSRepos())
 
         for repo in repos_path:
+            if not j.sal.fs.isDir(repo):
+                repo = j.sal.fs.getParent(repo)
             self.bot.logger.debug("load service events from repo %s" % repo)
             j.atyourservice.basepath = repo
             for service in j.atyourservice.findServices():
