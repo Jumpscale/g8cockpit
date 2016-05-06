@@ -22,30 +22,12 @@ class BlueprintMgmt(object):
     def _currentBlueprintsPath(self, username):
         return self._blueprintsPath(username, self.bot.project_mgmt._currentProject(username))
 
-    # def _blueprintGetAll(self, bot, update, project):
-    #     files = j.sal.fs.listFilesInDir(self._blueprintsPath(username, project))
-    #     print("blueprints: %s" % files)
-    #
-    #     for file in files:
-    #         name = j.sal.fs.getBaseName(file)
-    #         self._blueprintGet(bot, update, name, project)
-    #
-    # def _blueprintGet(self, bot, update, name, project):
-    #     username = update.message.from_user.username
-    #     blueprint = '%s/%s' % (self._blueprintsPath(username, project), name)
-    #
-    #     print('grabbing: %s' % blueprint)
-    #
-    #     if not j.sal.fs.exists(blueprint):
-    #         message = "Sorry, I don't find this blueprint, you can list them with `/blueprint`"
-    #         return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
-    #
-    #     content = j.sal.fs.fileGetContents(blueprint)
-    #     self.bulkSend(bot, update, content)
-
     # blueprint management
     def create(self, bot, update, project):
         username = update.message.from_user.username
+        chat_id = update.message.chat_id
+        bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+
         if not self._currentProject(username):
             message = "No project selected, you need to select a project before sending me blueprint. See /project"
             return bot.sendMessage(chat_id=update.message.chat_id, text=message)
@@ -67,25 +49,41 @@ class BlueprintMgmt(object):
             return bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
         # saving blueprint
-        custom = generate_unique_name()
-        local = '%s/%s' % (self._currentBlueprintsPath(username), custom)
-        j.sal.fs.writeFile(local, update.message.text)
+        try:
+            custom = generate_unique_name()
+            bp_dir = self._currentBlueprintsPath(username)
+            bp_path = '%s/%s' % (bp_dir, custom)
+            j.sal.fs.writeFile(bp_path, update.message.text)
+
+            # execute blueprint
+            j.atyourservice.basepath = bp_dir
+            bp = j.atyourservice.getBlueprint(bp_path)
+
+            msg = 'Start execution of your blueprint...'
+            bot.sendMessage(chat_id=chat_id, text=msg)
+            bp.execute()
+            message = "Blueprint deployed. Check your service with `/service list`"
+            bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+        except Exception as e:
+            j.sal.fs.remove(bp_path)
+            msg = 'Error during blueprint execution, check validity of your blueprint'
+            return bot.sendMessage(chat_id=chat_id, text=msg)
 
         evt = j.data.models.cockpit_event.Telegram()
         evt.io = 'input'
         evt.action = 'bp.create'
         evt.args = {
             'username': username,
-            'path': local,
+            'path': bp_dir,
             'content': update.message.text,
         }
         self.bot.send_event(evt.to_json())
 
-        message = "This look like a blueprint, I saved it to: %s" % local
-        bot.sendMessage(chat_id=update.message.chat_id, text=message)
-
     def list(self, bot, update, project):
         username = update.message.from_user.username
+        chat_id = update.message.chat_id
+        bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+
         blueprint_path = self._currentBlueprintsPath(username)
         blueprints = j.sal.fs.listFilesInDir(blueprint_path)
 
@@ -113,6 +111,8 @@ class BlueprintMgmt(object):
 
     def delete(self, bot, update, project, names):
         username = update.message.from_user.username
+        chat_id = update.message.chat_id
+        bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
         # ays uninstall before
         # self._ays_sync(bot, update, args=['do', 'uninstall'])
@@ -145,13 +145,13 @@ class BlueprintMgmt(object):
 
                 if not j.sal.fs.exists(blueprint):
                     message = "Sorry, I don't find any blueprint named `%s`, you can list them with `/blueprint`" % name
-                    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
+                    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
                     continue
 
                 delete_bp(blueprint)
 
                 message = "Blueprint `%s` removed from `%s`" % (name, project)
-                bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
+                bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         # cleaning
         j.sal.fs.removeDirTree('%s/alog' % self._currentProjectPath(username))
@@ -214,31 +214,28 @@ class BlueprintMgmt(object):
 
         if not self._currentProject(username):
             message = "Sorry, you are not working on a project currently, use `/project [name]` to create a new one"
-            return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
+            return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         # no arguments
         if len(args) == 0:
             self.choose_action(bot, update)
             return
-            # return self.list(bot, update, self._currentProject(username))
+        else:
+            # add blueprints
+            if args[0] == "add" or args[0] == 'create':
+                return self.create_prompt(bot, update)
 
-        # list blueprints
-        if args[0] == "list":
-            return self.list(bot, update, self._currentProject(username))
+            # list blueprints
+            if args[0] == "list":
+                return self.list(bot, update, self._currentProject(username))
 
-        # delete a blueprints
-        if (args[0] == "delete" or args[0] == "remove") and len(args) == 1:
-            return self.delete_prompt(bot, update, self._currentProject(username))
+            # delete a blueprints
+            if (args[0] == "delete" or args[0] == "remove") and len(args) == 1:
+                return self.delete_prompt(bot, update, self._currentProject(username))
 
-        if (args[0] == "delete" or args[0] == "remove") and len(args) > 1:
-            args.pop(0)
-            return self.delete(bot, update, self._currentProject(username), args)
-
-        if args[0] == "all":
-            return self._blueprintGetAll(bot, update, self._currentProject(username))
-
-        # retreive blueprint
-        return self._blueprintGet(bot, update, args[0], self._currentProject(username))
+            if (args[0] == "delete" or args[0] == "remove") and len(args) > 1:
+                args.pop(0)
+                return self.delete(bot, update, self._currentProject(username), args)
 
     def document(self, bot, update):
         username = update.message.from_user.username
@@ -248,7 +245,7 @@ class BlueprintMgmt(object):
 
         if not self._currentProject(username):
             message = "Sorry, you are not working on a project currently, use `/project [name]` to create a new one"
-            return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
+            return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         if j.sal.fs.exists(local):
             j.sal.fs.remove(local)

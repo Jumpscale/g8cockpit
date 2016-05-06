@@ -24,6 +24,8 @@ class ServiceMgmt(object):
 
     def execute(self, bot, update, services, action):
         username = update.message.from_user.username
+        chat_id = update.message.chat_id
+        bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
         for service in services:
             evt = j.data.models.cockpit_event.Telegram()
@@ -42,6 +44,9 @@ class ServiceMgmt(object):
 
     def list(self, bot, update, project):
         username = update.message.from_user.username
+        chat_id = update.message.chat_id
+        bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+
         project_path = self._currentProjectPath(username)
         j.atyourservice.basepath = project_path
         services = j.atyourservice.findServices()
@@ -50,17 +55,17 @@ class ServiceMgmt(object):
             bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains services for now.")
             return
 
-        doc = j.data.markdown.getDocument(content='')
-        doc.addMDHeader(level=1, title='Services instance of the project %s' % self._currentProject(username))
         services_list = []
         for service in services:
-            doc.addMDListItem(1, service.key)
+            services_list.append('- %s' % service.key)
 
-        # TODO: bug telegram can't parse markdown
-        bot.sendMessage(chat_id=update.message.chat_id, text=str(doc), parse_mode=telegram.ParseMode.MARKDOWN)
+        msg = '\n'.join(services_list)
+        bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def delete(self, bot, update, project, names):
         username = update.message.from_user.username
+        chat_id = update.message.chat_id
+        bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
         # ays uninstall before
         # self._ays_sync(bot, update, args=['do', 'uninstall'])
@@ -140,14 +145,17 @@ class ServiceMgmt(object):
             actions.sort()
             keys = list(chunks(actions, 4))
             reply_markup = telegram.ReplyKeyboardMarkup(keys, resize_keyboard=True, one_time_keyboard=True)
-            msg = 'Select the actions you want to execute'
+            msg = 'Select the action you want to execute'
             bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
             self.callbacks[username] = execute
 
         self.callbacks[username] = select_action
-        project_path = self._currentProjectPath(username)
-        j.atyourservice.basepath = project_path
+        j.atyourservice.basepath = self._currentProjectPath(username)
         services = list(j.atyourservice.services.keys())
+        if len(services) <= 0:
+            msg = "There is not service instance in this project yet. Deploy a blueprint to create service instances"
+            return bot.sendMessage(chat_id=update.message.chat_id, txt=msg)
+
         reply_markup = telegram.ReplyKeyboardMarkup([services], resize_keyboard=True, one_time_keyboard=True)
         msg = """
         Choose a service to execution action on or type a key to match multiple service.

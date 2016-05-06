@@ -7,6 +7,8 @@ from .Service import ServiceMgmt
 import telegram
 from telegram.ext import Updater
 from telegram.ext.dispatcher import run_async
+from telegram.ext import CommandHandler, RegexHandler
+from telegram.ext import MessageHandler, Filters
 import time
 import re
 import sys
@@ -50,17 +52,17 @@ class TGBot():
         self.service_mgmt = ServiceMgmt(self)
 
         # commands
-        dispatcher.addTelegramCommandHandler('start', self.start_cmd)
-        dispatcher.addTelegramCommandHandler('project', self.project_mgmt.handler)
-        dispatcher.addTelegramCommandHandler('blueprint', self.blueprint_mgmt.handler)
-        dispatcher.addTelegramCommandHandler('service', self.service_mgmt.handler)
-        dispatcher.addTelegramCommandHandler('help', self.help_cmd)
+        dispatcher.addHandler(CommandHandler('start', self.start_cmd))
+        dispatcher.addHandler(CommandHandler('project', self.project_mgmt.handler, pass_args=True))
+        dispatcher.addHandler(CommandHandler('blueprint', self.blueprint_mgmt.handler, pass_args=True))
+        dispatcher.addHandler(CommandHandler('service', self.service_mgmt.handler, pass_args=True))
+        dispatcher.addHandler(CommandHandler('help', self.help_cmd))
 
         # messages
-        dispatcher.addTelegramMessageHandler(self.message_cmd)
+        dispatcher.addHandler(MessageHandler([Filters.text], self.message_cmd))
 
         # internal
-        dispatcher.addUnknownTelegramCommandHandler(self.unknown_cmd)
+        dispatcher.addHandler(RegexHandler(r'/.*', self.unknown_cmd))
 
         self.logger.debug("projects will be saved to: %s" % rootpath)
         j.sal.fs.createDir(rootpath)
@@ -92,10 +94,8 @@ class TGBot():
         # TODO: actually do something with the event
 
     def _sanitize_md(self, msg):
-        to_escape = ['\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '#', '+', '-', '.', '!']
-        for char in to_escape:
-            msg = msg.replace(char, "\%s" % char)
-        return msg
+        # telegram Markdown parser use simple * for bold text
+        return msg.replace('**', '*')
 
     def _event_handler_telegram(self, msg):
         evt = j.data.models.cockpit_event.Telegram.from_json(msg['data'].decode())
