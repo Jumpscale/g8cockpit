@@ -1,6 +1,6 @@
 from JumpScale import j
 
-from .Project import ProjectMgmt
+from .Repo import RepoMgmt
 from .Blueprint import BlueprintMgmt
 from .Service import ServiceMgmt
 
@@ -27,6 +27,9 @@ class TGBot():
         self.rootpath = rootpath
         self.logger = j.logger.get('j.app.cockpit.bot')
 
+        self.logger.debug("projects will be saved to: %s" % rootpath)
+        j.sal.fs.createDir(rootpath)
+
         self.question_callbacks = {}
 
         self.logger.info("initializing telegram bot")
@@ -42,13 +45,13 @@ class TGBot():
         # if not j.sal.process.checkProcessRunning('ssh-agent'):
         #     j.do.execute('eval `ssh-agent`')
 
-        self.project_mgmt = ProjectMgmt(self)
+        self.repo_mgmt = RepoMgmt(self)
         self.blueprint_mgmt = BlueprintMgmt(self)
         self.service_mgmt = ServiceMgmt(self)
 
         # commands
         dispatcher.addHandler(CommandHandler('start', self.start_cmd))
-        dispatcher.addHandler(CommandHandler('project', self.project_mgmt.handler, pass_args=True))
+        dispatcher.addHandler(CommandHandler('project', self.repo_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('blueprint', self.blueprint_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('service', self.service_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('help', self.help_cmd))
@@ -58,9 +61,6 @@ class TGBot():
 
         # internal
         dispatcher.addHandler(RegexHandler(r'/.*', self.unknown_cmd))
-
-        self.logger.debug("projects will be saved to: %s" % rootpath)
-        j.sal.fs.createDir(rootpath)
 
     def _register_event_handlers(self):
         evt_map = {
@@ -174,7 +174,7 @@ class TGBot():
         if not j.sal.fs.exists(userpath):
             j.sal.fs.createDir(userpath)
 
-        if not self.project_mgmt.users.get(username):
+        if not self.repo_mgmt.users.get(username):
             hello = "Hello %s !" % update.message.from_user.first_name
             self.users[username] = {'current': None, 'projects': []}
 

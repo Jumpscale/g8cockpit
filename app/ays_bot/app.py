@@ -63,8 +63,12 @@ class EventHandler:
             return
 
         for repo, service, action_name in self._services_events[channel]:
-            j.atyourservice.basepath = repo
-            service.getAction(action_name)(force=True)
+            action = service.getAction(action_name)
+            if action is not None:
+                try:
+                    action()
+                except Exception as e:
+                    self.logger.error("Error occur during execution of action %s on %s:\n%s" % (action_name, service.key, str(e)))
 
     def _event_handler_telegram(self, msg):
         self.bot.logger.debug("event received on channel telegram")
@@ -83,14 +87,13 @@ class EventHandler:
             if k not in evt.args:
                 self.bot.logger.warning("execute action event bad format. Missing %s" % k)
                 return
-        # this needs to be improved, it's too slow.
-        # but ays doesn't support anything else at the moment
-        j.atyourservice.basepath = evt.args['repo']
 
-        service = j.atyourservice.getServiceFromKey(evt.args['service'])
+        name = j.sal.fs.getBaseName(evt.args['repo'])
+        repo = j.atyourservice.get(name=name)
+
+        service = repo.getServiceFromKey(evt.args['service'])
         action = service.getAction(evt.args['action'])
 
-        # TODO helper method to send data to telegram
         msg = "start execution of action *%s* on service *%s*" % (evt.args['action'], evt.args['service'])
         self.send_tg_msg(chat_id=evt.args['chat_id'], msg=msg)
 
@@ -112,7 +115,7 @@ class EventHandler:
         }
         self._rediscl.publish('telegram', out_evt.to_json())
 
-    def _load_aysrepos(self, repos_path=[]):
+    def _load_aysrepos(self, repos=[]):
         if self._services_events == {}:
             self._services_events = {
                 'email': set(),
@@ -122,20 +125,17 @@ class EventHandler:
                 'generic': set(),
             }
 
-        if repos_path == []:
-            repos_path = list(j.atyourservice.findAYSRepos())
+        if repos == []:
+            repos = j.atyourservice.repos.values()
 
-        for repo in repos_path:
-            if not j.sal.fs.isDir(repo):
-                repo = j.sal.fs.getParent(repo)
-            self.bot.logger.debug("load service events from repo %s" % repo)
-            j.atyourservice.basepath = repo
-            for service in j.atyourservice.findServices():
+        for repo in repos:
+            for service in repo.findServices():
                 evts = service.hrd.getDictFromPrefix('events')
                 for event_name, actions in evts.items():
                     if event_name not in self._services_events.keys():
                         self.bot.logger.warning("service %s try to register to non existing event %s" % (service, event_name))
                         continue
                     for action_name in actions:
+                        self.bot.logger.debug("register service events from repo %s, service %s" % (repo.basepath, service.key))
                         data = (repo, service, action_name)
                         self._services_events[event_name].add(data)

@@ -1,6 +1,6 @@
 from JumpScale import j
 import telegram
-
+from .utils import chunks
 
 class BlueprintMgmt(object):
 
@@ -10,26 +10,29 @@ class BlueprintMgmt(object):
         self.callbacks = bot.question_callbacks
 
     #helpers
-    def _blueprintsPath(self, username, project):
-        return '%s/%s/%s/blueprints' % (self.rootpath, username, project)
+    def _blueprintsPath(self, repo_name):
+        repo = j.atyourservice.get(name=repo_name)
+        return '%s/blueprints' % (repo.basepath)
 
-    def _currentProject(self, username):
-        return self.bot.project_mgmt._currentProject(username)
+    def _currentRepo(self, username):
+        return self.bot.repo_mgmt._currentRepo(username)
 
-    def _currentProjectPath(self, username):
-        return self.bot.project_mgmt._projectPath(username, self.bot.project_mgmt._currentProject(username))
+    def _currentRepoPath(self, username):
+        repo = j.atyourservice.get(name=self._currentRepo(username))
+        return repo.basepath
 
     def _currentBlueprintsPath(self, username):
-        return self._blueprintsPath(username, self.bot.project_mgmt._currentProject(username))
+        return self._blueprintsPath(self._currentRepo(username))
 
     # blueprint management
-    def create(self, bot, update, project):
+    def create(self, bot, update, repo):
+        import ipdb; ipdb.set_trace()
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
-        if not self._currentProject(username):
-            message = "No project selected, you need to select a project before sending me blueprint. See /project"
+        if not self._currentRepo(username):
+            message = "No repo selected, you need to select a repo before sending me blueprint. See /repo"
             return bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
         def generate_unique_name():
@@ -56,12 +59,15 @@ class BlueprintMgmt(object):
             j.sal.fs.writeFile(bp_path, update.message.text)
 
             # execute blueprint
-            j.atyourservice.basepath = bp_dir
-            bp = j.atyourservice.getBlueprint(bp_path)
+            repo = j.atyourservice.get(name=self._currentRepo(username))
+            bp = repo.getBlueprint(bp_path)
 
             msg = 'Start execution of your blueprint...'
             bot.sendMessage(chat_id=chat_id, text=msg)
-            bp.execute()
+
+            bp.load()
+            repo.init()
+
             message = "Blueprint deployed. Check your service with `/service list`"
             bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
         except Exception as e:
@@ -79,11 +85,10 @@ class BlueprintMgmt(object):
         }
         self.bot.send_event(evt.to_json())
 
-    def list(self, bot, update, project):
+    def list(self, bot, update):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-
         blueprint_path = self._currentBlueprintsPath(username)
         blueprints = j.sal.fs.listFilesInDir(blueprint_path)
 
@@ -106,10 +111,10 @@ class BlueprintMgmt(object):
                 bot.sendMessage(chat_id=update.message.chat_id, text="%s is not a valid Blueprint name" % message.text, reply_markup=telegram.ReplyKeyboardHide())
         self.callbacks[username] = cb
 
-        reply_markup = telegram.ReplyKeyboardMarkup([bluelist])
+        reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(bluelist, 4)), resize_keyboard=True, one_time_keyboard=True)
         bot.sendMessage(chat_id=update.message.chat_id, text="Click on the blueprint you want to inspect", reply_markup=reply_markup)
 
-    def delete(self, bot, update, project, names):
+    def delete(self, bot, update, repo, names):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
@@ -121,7 +126,7 @@ class BlueprintMgmt(object):
             j.sal.fs.remove(blueprint)
             evt = j.data.models.cockpit_event.Telegram()
             evt.io = 'input'
-            evt.action = 'bp.create'
+            evt.action = 'bp.delete'
             evt.args = {
                 'username': username,
                 'path': path,
@@ -139,7 +144,7 @@ class BlueprintMgmt(object):
                 bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
             else:
-                blueprint = '%s/%s' % (self._blueprintsPath(username, project), name)
+                blueprint = '%s/%s' % (self._blueprintsPath(repo), name)
 
                 self.bot.logger.debug('deleting: %s' % blueprint)
 
@@ -150,14 +155,14 @@ class BlueprintMgmt(object):
 
                 delete_bp(blueprint)
 
-                message = "Blueprint `%s` removed from `%s`" % (name, project)
+                message = "Blueprint `%s` removed from `%s`" % (name, repo)
                 bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         # cleaning
-        j.sal.fs.removeDirTree('%s/alog' % self._currentProjectPath(username))
-        j.sal.fs.removeDirTree('%s/recipes' % self._currentProjectPath(username))
-        j.sal.fs.removeDirTree('%s/services' % self._currentProjectPath(username))
-        j.sal.fs.createDir('%s/services' % self._currentProjectPath(username))
+        j.sal.fs.removeDirTree('%s/alog' % self._currentRepoPath(username))
+        j.sal.fs.removeDirTree('%s/recipes' % self._currentRepoPath(username))
+        j.sal.fs.removeDirTree('%s/services' % self._currentRepoPath(username))
+        j.sal.fs.createDir('%s/services' % self._currentRepoPath(username))
 
     # UI interaction
     def choose_action(self, bot, update):
@@ -169,13 +174,13 @@ class BlueprintMgmt(object):
     def dispatch_choice(self, bot, update):
         message = update.message
         username = update.message.from_user.username
-        project = self._currentProject(username)
+        repo = self._currentRepo(username)
         if message.text == "add":
             self.create_prompt(bot, update)
         elif message.text == 'list':
-            self.list(bot, update, project)
+            self.list(bot, update)
         elif message.text == 'delete':
-            self.delete_prompt(bot, update, project)
+            self.delete_prompt(bot, update)
 
     def create_prompt(self, bot, update):
         def cb(bot, update):
@@ -183,7 +188,7 @@ class BlueprintMgmt(object):
         self.callbacks[update.message.from_user.username] = cb
         return bot.sendMessage(chat_id=update.message.chat_id, text="Please paste your blueprint here now.")
 
-    def delete_prompt(self, bot, update, project):
+    def delete_prompt(self, bot, update):
         username = update.message.from_user.username
         blueprints = j.sal.fs.listFilesInDir(self._currentBlueprintsPath(username))
 
@@ -197,7 +202,7 @@ class BlueprintMgmt(object):
             return bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
 
         def cb(bot, update):
-            self.delete(bot, update, self._currentProject(username), [update.message.text])
+            self.delete(bot, update, self._currentRepo(username), [update.message.text])
         self.callbacks[username] = cb
 
         custom_keyboard = [bluelist]
@@ -209,11 +214,11 @@ class BlueprintMgmt(object):
         username = update.message.from_user.username
 
         self.bot.logger.debug('blueprint management for: %s' % username)
-        if not self.bot.project_mgmt._userCheck(bot, update):
+        if not self.bot.repo_mgmt._userCheck(bot, update):
             return
 
-        if not self._currentProject(username):
-            message = "Sorry, you are not working on a project currently, use `/project [name]` to create a new one"
+        if not self._currentRepo(username):
+            message = "Sorry, you are not working on a repo currently, use `/repo [name]` to create a new one"
             return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         # no arguments
@@ -227,15 +232,15 @@ class BlueprintMgmt(object):
 
             # list blueprints
             if args[0] == "list":
-                return self.list(bot, update, self._currentProject(username))
+                return self.list(bot, update)
 
             # delete a blueprints
             if (args[0] == "delete" or args[0] == "remove") and len(args) == 1:
-                return self.delete_prompt(bot, update, self._currentProject(username))
+                return self.delete_prompt(bot, update, self._currentRepo(username))
 
             if (args[0] == "delete" or args[0] == "remove") and len(args) > 1:
                 args.pop(0)
-                return self.delete(bot, update, self._currentProject(username), args)
+                return self.delete(bot, update, self._currentRepo(username), args)
 
     def document(self, bot, update):
         username = update.message.from_user.username
@@ -243,8 +248,8 @@ class BlueprintMgmt(object):
         item = bot.getFile(doc.file_id)
         local = '%s/%s' % (self._currentBlueprintsPath(username), doc.file_name)
 
-        if not self._currentProject(username):
-            message = "Sorry, you are not working on a project currently, use `/project [name]` to create a new one"
+        if not self._currentRepo(username):
+            message = "Sorry, you are not working on a repo currently, use `/repo [name]` to create a new one"
             return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         if j.sal.fs.exists(local):
