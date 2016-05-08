@@ -22,8 +22,13 @@ import logging
 class TGBot():
 
     # initializing
-    def __init__(self, token, rootpath='/opt/code/telegram-projects/', redis=None):
+    def __init__(self, token, rootpath='', redis=None):
         self.token = token
+
+        if rootpath=="":
+            rootpath=j.sal.fs.joinPaths(j.dirs.varDir,"cockpit","project")
+            j.sal.fs.createDir(rootpath)
+
         self.rootpath = rootpath
         self.logger = j.logger.get('j.app.cockpit.bot')
 
