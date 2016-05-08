@@ -26,7 +26,7 @@ class TGBot():
         self.token = token
 
         if rootpath=="":
-            rootpath=j.sal.fs.joinPaths(j.dirs.varDir,"cockpit","project")
+            rootpath=j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit", "project")
             j.sal.fs.createDir(rootpath)
 
         self.rootpath = rootpath
@@ -181,7 +181,7 @@ class TGBot():
 
         if not self.repo_mgmt.users.get(username):
             hello = "Hello %s !" % update.message.from_user.first_name
-            self.users[username] = {'current': None, 'projects': []}
+            self.repo_mgmt.users[username] = {'current': None, 'projects': []}
 
         else:
             hello = "Welcome back %s !" % update.message.from_user.first_name
