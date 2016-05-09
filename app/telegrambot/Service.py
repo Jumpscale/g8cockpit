@@ -152,7 +152,7 @@ class ServiceMgmt(object):
         services.sort()
         if len(repo.services) <= 0:
             msg = "There is not service instance in this repo yet. Deploy a blueprint to create service instances"
-            return bot.sendMessage(chat_id=update.message.chat_id, txt=msg)
+            return bot.sendMessage(chat_id=update.message.chat_id, text=msg)
 
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(services, 4)), resize_keyboard=True, one_time_keyboard=True)
         msg = """
