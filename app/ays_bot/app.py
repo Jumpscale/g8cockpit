@@ -23,6 +23,7 @@ class AYSBot(object):
 
 
 class EventHandler:
+
     def __init__(self, bot):
         self.bot = bot
         self._rediscl = bot._rediscl
@@ -55,6 +56,18 @@ class EventHandler:
         ps.subscribe(**evt_map)
         return ps
 
+    def _load_event(self, channel, payload):
+        if channel == 'email':
+            return j.data.models.cockpit_event.Email.from_json(payload)
+        elif channel == 'telegram':
+            return j.data.models.cockpit_event.Telegram.from_json(payload)
+        elif channel == 'alarm':
+            return j.data.models.cockpit_event.Alarm.from_json(payload)
+        elif channel == 'eco':
+            return j.data.models.system.Errorcondition.from_json(payload)
+        elif channel == 'generic':
+            return j.data.models.cockpit_event.Generic.from_json(payload)
+
     def _event_handler(self, msg):
         channel = msg['channel'].decode()
         self.bot.logger.debug("event received on channel %s" % channel)
@@ -62,13 +75,17 @@ class EventHandler:
             self.bot.logger.warning("received event on channel not supported (%s)" % channel)
             return
 
+        # TODO: at the moment service method that use the @action decorator
+        # only supports native type as argument. so we can't passe model object.
+        # load model object
+        # evt = self._load_event(channel, msg['data'].decode())
+
+        gls = []
         for repo, service, action_name in self._services_events[channel]:
             action = service.getAction(action_name)
             if action is not None:
-                try:
-                    action()
-                except Exception as e:
-                    self.logger.error("Error occur during execution of action %s on %s:\n%s" % (action_name, service.key, str(e)))
+                arg = msg['data'].decode()
+                gls.append(gevent.spawn(action, arg, **{'die': False}))
 
     def _event_handler_telegram(self, msg):
         self.bot.logger.debug("event received on channel telegram")
@@ -77,11 +94,11 @@ class EventHandler:
         # this handler is specific action execution trigger from telegram
         if evt.io == 'input':
             if evt.action == 'service.execute':
-                self._execute_action(evt, notify_tg=True)
+                self._execute_action(evt, notify_tg=True, wait=True)
             elif evt.action == 'bp.create':
                 self._load_aysrepos([evt.args['path']])
 
-    def _execute_action(self, evt, notify_tg=False):
+    def _execute_action(self, evt, notify_tg=False, wait=False):
         keys = ['repo', 'service', 'action']
         for k in keys:
             if k not in evt.args:
@@ -94,15 +111,23 @@ class EventHandler:
         service = repo.getServiceFromKey(evt.args['service'])
         action = service.getAction(evt.args['action'])
 
-        msg = "start execution of action *%s* on service *%s*" % (evt.args['action'], evt.args['service'])
-        self.send_tg_msg(chat_id=evt.args['chat_id'], msg=msg)
-
-        # TODO: execute in greenlet
-        result = action()
-
-        if result is not None or result != '':
-            msg = "result of action *%s* on service *%s*\n\n```\n%s\n```" % (evt.args['action'], evt.args['service'], result)
+        if notify_tg:
+            msg = "start execution of action *%s* on service *%s*" % (evt.args['action'], evt.args['service'])
             self.send_tg_msg(chat_id=evt.args['chat_id'], msg=msg)
+
+        gl = gevent.spawn(action, **{'die': False})
+
+        if wait:
+            gl.join()
+            if notify_tg:
+                if gl.successful():
+                    if gl.value is not None or gl.value != '':
+                        msg = "Action *%s* on service *%s* successful. Result:\n\n```\n%s\n```" % (evt.args['action'], evt.args['service'], gl.value)
+                    else:
+                        msg = "Action *%s* on service *%s* successful." % (evt.args['action'], evt.args['service'])
+                else:
+                    msg = "Error happened on action *%s* on service *%s*\n\n```\n%s\n```" % (evt.args['action'], evt.args['service'], gl.exception)
+                self.send_tg_msg(chat_id=evt.args['chat_id'], msg=msg)
 
     def send_tg_msg(self, chat_id, msg):
         out_evt = j.data.models.cockpit_event.Telegram()
@@ -130,8 +155,7 @@ class EventHandler:
 
         for repo in repos:
             for service in repo.findServices():
-                evts = service.hrd.getDictFromPrefix('events')
-                for event_name, actions in evts.items():
+                for event_name, actions in service.state.events.items():
                     if event_name not in self._services_events.keys():
                         self.bot.logger.warning("service %s try to register to non existing event %s" % (service, event_name))
                         continue
