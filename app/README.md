@@ -41,7 +41,7 @@ Proper configuration is not implemented yet. Change the config in the main.py fi
 
 ```
 start - Start discussion with the bot
-project - Manage your project
+repo - Manage your AYS repositories
 blueprint - Manage your blueprints project
 service - Perform actions on your service instances
 help - Show you what I can do
