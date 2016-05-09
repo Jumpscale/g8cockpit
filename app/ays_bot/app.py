@@ -19,6 +19,7 @@ class AYSBot(object):
         self.event_handler.start()
 
     def stop(self):
+        self.logger.info('jscockpit bot stopping')
         self.running = False
 
 
@@ -29,19 +30,43 @@ class EventHandler:
         self._rediscl = bot._rediscl
         self._pubsub = None
         self._services_events = {}
+        self._services_reccurring = {}
 
         self._load_aysrepos()
 
     def start(self):
         self._pubsub = self._register_event_handlers()
+        event_gl = gevent.spawn(self._event_loop)
+        recurring_gl = gevent.spawn(self._recurring_loop)
+        gevent.joinall([event_gl, recurring_gl])
 
+    def _event_loop(self):
         while self.bot.running is True:
             msg = self._pubsub.get_message()
             if msg is not None:
                 # if we arrive here, something is wrong,
                 # event handlers should have handler the message already
                 self.bot.logger.warning("unhandled message. %s" % msg)
-            gevent.sleep(0.001)
+            gevent.sleep(0.01)
+
+    def _recurring_loop(self):
+
+        while self.bot.running is True:
+            now = j.data.time.epoch
+            for service, actions in self._services_reccurring.items():
+                for action_name, info in actions.items():
+
+                    sec = j.data.time.getDeltaTime(info['period'])
+                    last = info['last']
+
+                    if last is None or now > (last + sec):
+                        action = service.getAction(action_name)
+                        if action is not None:
+                            self._services_reccurring[service][action_name]['last'] = now
+                            # TODO: race condition, sometime other action from other service is executed
+                            gevent.spawn(action, **{'die': False})
+
+            gevent.sleep(1)
 
     def _register_event_handlers(self):
         evt_map = {
@@ -163,3 +188,8 @@ class EventHandler:
                         self.bot.logger.debug("register service events from repo %s, service %s" % (repo.basepath, service.key))
                         data = (repo, service, action_name)
                         self._services_events[event_name].add(data)
+
+                for action_name, period in service.state.recurring.items():
+                    if service.key not in self._services_reccurring:
+                        self._services_reccurring[service] = {}
+                    self._services_reccurring[service][action_name] = {'period': period[0], 'last': None}
