@@ -1,0 +1,16 @@
+g8client__main:
+  g8.url: 'be-scale-1.demo.greenitglobe.com'
+  g8.login: 'zaibon'
+  g8.password: 'coucou01'
+
+cockpit__pilot:
+  telegram.token: 'asdasd'
+  cockpit.name: 'default'
+  portal.password: 'coucou01'
+  dns.login: 'admin'
+  dns.password: 'barcelona007'
+  g8.account: 'zaibon'
+  g8.url: 'be-scale-1.demo.greenitglobe.com'
+  g8.login: 'zaibon'
+  g8.password: 'coucou01'
+  dns.domain: 'zaibon2'
