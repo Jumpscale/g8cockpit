@@ -56,7 +56,7 @@ class TGBot():
 
         # commands
         dispatcher.addHandler(CommandHandler('start', self.start_cmd))
-        dispatcher.addHandler(CommandHandler('project', self.repo_mgmt.handler, pass_args=True))
+        dispatcher.addHandler(CommandHandler('repo', self.repo_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('blueprint', self.blueprint_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('service', self.service_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('help', self.help_cmd))
