@@ -10,7 +10,7 @@ class AYSBot(object):
     def __init__(self, redis=None):
         self.logger = j.logger.get('j.cockpit.bot')
         self.running = False
-        self._rediscl = redis if redis else j.clients.redis.get(ipaddr='localhost', port='6379')
+        self._rediscl = redis if redis else j.core.db
         self.event_handler = EventHandler(self)
 
     def start(self):

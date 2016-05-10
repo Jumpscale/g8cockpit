@@ -43,7 +43,7 @@ class TGBot():
         dispatcher = self.updater.dispatcher
 
         # redis
-        self._rediscl = redis if redis else j.clients.redis.get(ipaddr='localhost', port=6379)
+        self._rediscl = redis if redis else j.core.db
         self._register_event_handlers()
 
         self.logger.debug("make sure ssh-agent is running")

@@ -13,7 +13,7 @@ class Server(SMTPServer):
     def __init__(self, localaddr, redis=None):
         super(Server, self).__init__(localaddr)
         self._parser = Parser()
-        self._rediscl = redis if redis else j.clients.redis.get(ipaddr='localhost', port='6379')
+        self._rediscl = redis if redis else j.core.db
 
     def _parse_mail(self, data):
         """
