@@ -26,7 +26,6 @@ class BlueprintMgmt(object):
 
     # blueprint management
     def create(self, bot, update, repo):
-        import ipdb; ipdb.set_trace()
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
