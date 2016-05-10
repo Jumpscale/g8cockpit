@@ -16,7 +16,7 @@ version: v1
                         type: string
     delete:
         description: delete a project
-        queryparameters:
+        queryParameters:
             path:
                 description: the path of the ays project
                 type: string
@@ -26,14 +26,14 @@ version: v1
     description: a blueprint inside a project
     get:
         description: list all blueprint
-        queryparameters:
+        queryParameters:
             path:
                 description: the path of the ays project
                 type: string
                 required: true
     post:
         description: create a new blueprint
-        queryparameters:
+        queryParameters:
             path:
                 description: the path of the ays project
                 type: string
@@ -46,14 +46,14 @@ version: v1
     /{name}:
         get:
             description: get a blueprint
-            queryparameters:
+            queryParameters:
                 path:
                     description: the path of the ays project
                     type: string
                     required: true
         delete:
             description: delete blueprint
-            queryparameters:
+            queryParameters:
                 path:
                     description: the path of the ays project
                     type: string
@@ -63,7 +63,7 @@ version: v1
     description: a service
     get:
         description: list all services
-        queryparameters:
+        queryParameters:
             path:
                 description: the path of the ays project
                 type: string
@@ -71,7 +71,7 @@ version: v1
     /{name}:
         get:
             description: get a services
-            queryparameters:
+            queryParameters:
                 path:
                     description: the path of the ays project
                     type: string
@@ -79,7 +79,7 @@ version: v1
         /actionlist:
             get:
                 description: get the action list of a services
-                queryparameters:
+                queryParameters:
                     path:
                         description: the path of the ays project
                         type: string
@@ -87,7 +87,7 @@ version: v1
         /{action}:
             post:
                 description: perform an action on a services
-                queryparameters:
+                queryParameters:
                     path:
                         description: the path of the ays project
                         type: string
@@ -97,14 +97,14 @@ version: v1
     description: a template of a service
     get:
         description: list all templates
-        queryparameters:
+        queryParameters:
             path:
                 description: the path of the ays project
                 type: string
                 required: true
     post:
         description: create new template
-        queryparameters:
+        queryParameters:
             path:
                 description: the path of the ays project
                 type: string
@@ -117,7 +117,7 @@ version: v1
     /{name}:
         get:
             description: get a template
-            queryparameters:
+            queryParameters:
                 path:
                     description: the path of the ays project
                     type: string
