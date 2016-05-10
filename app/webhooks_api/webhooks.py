@@ -16,4 +16,14 @@ def webhooks_github_post():
 
     key = '%s.%s.%s' % (request.headers.get('X-GitHub-Event'), request.headers.get('X-GitHub-Delivery'), j.data.time.epoch)
     j.core.db.hset('webhooks', key, j.data.serializer.json.dumps(request.json))
+
+    # send event to notify reception of webhooks
+    event = j.data.models.cockpit_event.Generic()
+    event.args = {
+        'source': 'github',
+        'event': request.headers.get('X-GitHub-Event'),
+        'key': key,
+    }
+    j.core.db.publish('generic', event.to_json())
+
     return '', 201
