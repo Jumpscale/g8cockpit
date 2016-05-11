@@ -74,8 +74,8 @@ if __name__ == '__main__':
         WSGIServer(('', 5001), webhooks_api.app),
         WSGIServer(('', 5002), falcon_api.app),
         mail.Server(("0.0.0.0", 25)),
-        telegrambot.TGBot(token),
         ays_bot.AYSBot(),
+        telegrambot.TGBot(token),
     ])
     rack.start()
 

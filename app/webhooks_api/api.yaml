@@ -1,9 +1,0 @@
-#%RAML 1.0
-title: webhooks api
-baseUri: http://pla.pla/{version}
-version: v1
-
-/webhooks:
-    /github:
-        post:
-            description: endpoint that receives the events from github

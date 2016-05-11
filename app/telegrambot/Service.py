@@ -135,7 +135,7 @@ class ServiceMgmt(object):
 
             actions = set()
             for s in services:
-                for action_name in list(s.recipe.action_methods.keys()):
+                for action_name in list(s.action_methods.keys()):
                     actions.add(action_name)
 
             actions = list(actions)

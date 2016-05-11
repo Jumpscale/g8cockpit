@@ -21,12 +21,14 @@ class AYSBot(object):
     def stop(self):
         self.logger.info('jscockpit bot stopping')
         self.running = False
+        self.event_handler.stop()
 
 
 class EventHandler:
 
     def __init__(self, bot):
         self.bot = bot
+        self._gls = []
         self._rediscl = bot._rediscl
         self._pubsub = None
         self._services_events = {}
@@ -36,9 +38,11 @@ class EventHandler:
 
     def start(self):
         self._pubsub = self._register_event_handlers()
-        event_gl = gevent.spawn(self._event_loop)
-        recurring_gl = gevent.spawn(self._recurring_loop)
-        gevent.joinall([event_gl, recurring_gl])
+        self._gls.append(gevent.spawn(self._event_loop))
+        self._gls.append(gevent.spawn(self._recurring_loop))
+
+    def stop(self):
+        gevent.joinall(self._gls)
 
     def _event_loop(self):
         while self.bot.running is True:

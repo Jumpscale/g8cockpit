@@ -14,9 +14,11 @@ import re
 import sys
 import redis
 import gevent
+from gevent import monkey
+monkey.patch_all()
 
 import logging
-# logging.basicConfig(level=logging.DEBUG, format='[+][%(levelname)s] %(name)s: %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='[+][%(levelname)s] %(name)s: %(message)s')
 
 
 class TGBot():
@@ -206,7 +208,6 @@ class TGBot():
 
     # management
     def start(self):
-        # self._signal_handler()
         self.updater.start_polling()
         self.logger.info("bot is listening")
 
@@ -215,5 +216,4 @@ class TGBot():
 
     # @run_async
     # def _signal_handler(self):
-    #     self.updater.idle()
     #     self.updater.stop()

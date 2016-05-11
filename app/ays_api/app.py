@@ -1,19 +1,24 @@
-from flask import Flask
-
-from .blueprint import blueprint_api
-from .project import project_api
-from .service import service_api
-from .template import template_api
-from .oauth import oauth_api
+from flask import Flask, send_from_directory
+import wtforms_json
+from ays import ays_api
+from oauth import oauth_api
+from webhooks import webhooks_api
 
 
 app = Flask(__name__)
 
-app.register_blueprint(blueprint_api)
-app.register_blueprint(project_api)
-app.register_blueprint(service_api)
-app.register_blueprint(template_api)
+app.config["WTF_CSRF_ENABLED"] = False
+wtforms_json.init()
+
+app.register_blueprint(ays_api)
 app.register_blueprint(oauth_api)
+app.register_blueprint(webhooks_api)
+
+
+
+@app.route('/apidocs/<path:path>')
+def send_js(path):
+    return send_from_directory('apidocs', path)
 
 
 if __name__ == "__main__":
