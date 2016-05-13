@@ -1,8 +1,8 @@
 from flask import Flask, send_from_directory
 import wtforms_json
-from ays import ays_api
-from oauth import oauth_api
-from webhooks import webhooks_api
+from .ays import ays_api
+from .oauth import oauth_api
+from .webhooks import webhooks_api
 
 
 app = Flask(__name__)
@@ -18,7 +18,8 @@ app.register_blueprint(webhooks_api)
 
 @app.route('/apidocs/<path:path>')
 def send_js(path):
-    return send_from_directory('apidocs', path)
+    root = j.sal.fs.joinPaths(__file__, 'apidocs')
+    return send_from_directory(root, path)
 
 
 if __name__ == "__main__":

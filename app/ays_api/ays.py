@@ -2,12 +2,12 @@ from flask import Blueprint as fBlueprint, jsonify, request, json, Response
 from JumpScale import j
 
 
-from Repository import Repository
+from .Repository import Repository
 
 # from BlueprintPostReqBody import BlueprintPostReqBody
-from Blueprint import Blueprint
+from .Blueprint import Blueprint
 
-from Template import Template
+from .Template import Template
 
 
 ays_api = fBlueprint('ays_api', __name__)
