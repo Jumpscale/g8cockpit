@@ -6,7 +6,7 @@ Components communicate using publish/subscribe mechanism.
 Event object can be found at https://github.com/Jumpscale/jumpscale_core8/blob/ays8fix/lib/JumpScale/data/models/CockpitEventModels.py
 
 ## main module
-The main module (main.py) has the only role of loading configuration and starting all the component.
+The main module has the only role of loading configuration and starting all the component.
 Any class with a start and stop method can be added as a server. The start method should not be blocking
 
 ### ays_bot
@@ -28,7 +28,21 @@ Commands that generate generate events.
 Any number of WSGI server can be added. Most of the time it's REST server that generates event based on the request they receive.
 
 ## How to Start
-Proper configuration is not implemented yet. Change the config in the main.py file itself for now. Then start all the servers.  
+create a configuration file. Format used for config file is toml. Here is an example:
+```toml
+[bot]
+# token from telegram
+token='205766488:AAFBNvCFzNUaKBwND7oHkriEkmFvnVsfLMeg'
+
+[mail]
+# listen port of the SMTP server
+port=25
+
+[api]
+# listen address and port of the REST API
+host="0.0.0.0"
+port=5000
+```
 
 **Generate telegram bot token.**
 - connect to telegram and talk to @botfather.
@@ -48,6 +62,6 @@ help - Show you what I can do
 ```
 
 **Start cockpit**
-```
-jspython main.py
+```bash
+jspython cockpit --config config.toml
 ```
