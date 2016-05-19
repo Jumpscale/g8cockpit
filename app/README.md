@@ -38,8 +38,11 @@ token='205766488:AAFBNvCFzNUaKBwND7oHkriEkmFvnVsfLMeg'
 # listen port of the SMTP server
 port=25
 
+
 [api]
+[api.ays]
 # listen address and port of the REST API
+active=true
 host="0.0.0.0"
 port=5000
 ```

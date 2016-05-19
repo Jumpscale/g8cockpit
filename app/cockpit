@@ -72,10 +72,12 @@ def get_components(config):
         port = config['mail'].get('port', 25)
         sub_servers.append(mail.Server((host, port)))
 
-    if 'api' in config and config['api'].get('active', True):
-        host = config['api'].get('host', '127.0.0.1')
-        port = config['api'].get('port', 5000)
-        sub_servers.append(WSGIServer((host, port), ays_api.app))
+    if 'api' in config:
+        if 'ays' in config['api'] and config['api'].get('active', True):
+            host = config['api']['ays'].get('host', '127.0.0.1')
+            port = config['api']['ays'].get('port', 5000)
+            ays_api.config.update(config['api']['ays'])
+            sub_servers.append(WSGIServer((host, port), ays_api.app))
 
     if 'bot' in config and config['bot'].get('active', True):
         if 'token' not in config['bot'] or config['bot']['token'] == '':
@@ -112,4 +114,5 @@ def main(config):
         rack.stop()
 
 if __name__ == '__main__':
+    # from IPython import embed;embed()
     main()
