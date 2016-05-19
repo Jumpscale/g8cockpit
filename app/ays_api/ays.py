@@ -165,6 +165,9 @@ def ays_repository_byRepository_blueprint_byBlueprint_post(blueprint, repository
 
     try:
         bp.load()
+        repo.init()
+        run = repo.getRun(action="install")
+        run.execute()
     except Exception as e:
         return jsonify(error="Error during execution of the blueprint:\n %s" % str(e)), 500
 
