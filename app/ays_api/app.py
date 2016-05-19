@@ -21,10 +21,10 @@ def process_token():
         'jwt',
         request.headers.get(
             'Authorization',
-            jwt.encode({'exp': 0}, app.config.get('JTW_KEY'))
+            jwt.encode({'exp': 0}, app.config.get('jwt_key'))
         ))
     try:
-        payload = jwt.decode(token, app.config.get('JTW_KEY'))
+        payload = jwt.decode(token, app.config.get('jwt_key'))
         if 'scope' not in payload or \
            payload['scope'].find('user:memberOf:%s' % app.config.get('organization')) == -1:
             response = make_response('Unauthorized')
