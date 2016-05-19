@@ -76,7 +76,7 @@ def get_components(config):
         if 'ays' in config['api'] and config['api'].get('active', True):
             host = config['api']['ays'].get('host', '127.0.0.1')
             port = config['api']['ays'].get('port', 5000)
-            ays_api.config.update(config['api']['ays'])
+            ays_api.app.config.update(config['api']['ays'])
             sub_servers.append(WSGIServer((host, port), ays_api.app))
 
     if 'bot' in config and config['bot'].get('active', True):
