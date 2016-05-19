@@ -24,23 +24,23 @@ class ServiceMgmt(object):
     def _currentBlueprintsPath(self, username):
         return self._blueprintsPath(self._currentRepo(username))
 
-    def execute(self, bot, update, services, action):
+    def execute(self, bot, update, action, role='', instance=''):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
-        for service in services:
-            evt = j.data.models.cockpit_event.Telegram()
-            evt.io = 'input'
-            evt.action = 'service.execute'
-            evt.args = {
-                'username': username,
-                'chat_id': update.message.chat_id,
-                'service': service.key,
-                'action': action,
-                'repo': self._currentRepoPath(username),
-            }
-            self.bot.send_event(evt.to_json())
+        evt = j.data.models.cockpit_event.Telegram()
+        evt.io = 'input'
+        evt.action = 'service.execute'
+        evt.args = {
+            'username': username,
+            'chat_id': update.message.chat_id,
+            'role': role,
+            'instance': instance,
+            'action': action,
+            'repo': self._currentRepoPath(username),
+        }
+        self.bot.send_event(evt.to_json())
 
     def list(self, bot, update, repo_name):
         username = update.message.from_user.username
@@ -127,12 +127,11 @@ class ServiceMgmt(object):
 
         def select_action(bot, update):
             domain, name, instance, role = j.atyourservice._parseKey(update.message.text)
-            services = repo.findServices(instance=instance, role=role, templatename=name)
+            services = repo.findServices(instance=instance, role=role)
 
             def execute(bot, update):
                 action_name = update.message.text
-                self.execute(bot, update, services, action_name)
-
+                self.execute(bot, update, action_name, role, instance)
             actions = set()
             for s in services:
                 for action_name in list(s.action_methods.keys()):

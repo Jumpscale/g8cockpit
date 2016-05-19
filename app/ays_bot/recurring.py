@@ -30,11 +30,9 @@ class AysRecurring:
                     last = info['last']
 
                     if last is None or now > (last + sec):
-                        action = service.getAction(action_name)
-                        if action is not None:
-                            self._services_reccurring[service][action_name]['last'] = now
-                            # TODO: race condition, sometime other action from other service is executed
-                            gevent.spawn(action, **{'die': False})
+                        run = service.aysrepo.getRun(role=service.role, instance=service.instance, action=action_name, force=True)
+                        self._services_reccurring[service][action_name]['last'] = now
+                        gevent.spawn(run.execute)
 
             gevent.sleep(1)
 

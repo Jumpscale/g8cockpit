@@ -29,25 +29,6 @@ class EventDispatcher:
                 self.bot.logger.warning("unhandled message. %s" % msg)
             gevent.sleep(0.01)
 
-    def _recurring_loop(self):
-
-        while self.bot.running is True:
-            now = j.data.time.epoch
-            for service, actions in self._services_reccurring.items():
-                for action_name, info in actions.items():
-
-                    sec = j.data.time.getDeltaTime(info['period'])
-                    last = info['last']
-
-                    if last is None or now > (last + sec):
-                        action = service.getAction(action_name)
-                        if action is not None:
-                            self._services_reccurring[service][action_name]['last'] = now
-                            # TODO: race condition, sometime other action from other service is executed
-                            gevent.spawn(action, **{'die': False})
-
-            gevent.sleep(1)
-
     def _register_event_handlers(self):
         evt_map = {
             'email': self._event_handler,
@@ -86,10 +67,13 @@ class EventDispatcher:
         # evt = self._load_event(channel, msg['data'].decode())
 
         gls = []
+        # check if any service is subscribe to this event
+        # if yes execute registred action
         for repo, service, action_name in self._services_events[channel]:
             action = service.getAction(action_name)
             if action is not None:
                 arg = msg['data'].decode()
+                arg['service'] = service
                 gls.append(gevent.spawn(action, arg, **{'die': False}))
 
     def _event_handler_telegram(self, msg):
@@ -104,34 +88,36 @@ class EventDispatcher:
                 self._load_aysrepos([evt.args['path']])
 
     def _execute_action(self, evt, notify_tg=False, wait=False):
-        keys = ['repo', 'service', 'action']
+        keys = ['repo', 'role', 'instance', 'action']
         for k in keys:
             if k not in evt.args:
                 self.bot.logger.warning("execute action event bad format. Missing %s" % k)
                 return
 
-        name = j.sal.fs.getBaseName(evt.args['repo'])
-        repo = j.atyourservice.get(name=name)
+        repo_name = j.sal.fs.getBaseName(evt.args['repo'])
+        repo = j.atyourservice.get(name=repo_name)
 
-        service = repo.getServiceFromKey(evt.args['service'])
-        action = service.getAction(evt.args['action'])
+        run = repo.getRun(role=evt.args['role'], instance=evt.args['instance'], action=evt.args['action'])
 
         if notify_tg:
-            msg = "start execution of action *%s* on service *%s*" % (evt.args['action'], evt.args['service'])
+            msg = "start execution of action *%s* on role `%s` instance `%s`" % (evt.args['action'], evt.args['role'], evt.args['instance'])
             self.send_tg_msg(chat_id=evt.args['chat_id'], msg=msg)
 
-        gl = gevent.spawn(action, **{'die': False})
+        gl = gevent.spawn(run.execute)
 
         if wait:
             gl.join()
             if notify_tg:
                 if gl.successful():
                     if gl.value is not None or gl.value != '':
-                        msg = "Action *%s* on service *%s* successful. Result:\n\n```\n%s\n```" % (evt.args['action'], evt.args['service'], gl.value)
+                        msg = "Execution of action *%s* on service role `%s` instance `%s` successful. Result:\n\n```\n%s\n```" % \
+                            (evt.args['action'], evt.args['role'], evt.args['instance'], gl.value)
                     else:
-                        msg = "Action *%s* on service *%s* successful." % (evt.args['action'], evt.args['service'])
+                        msg = "Execution of action *%s* on service `%s` instance `%s` successful" % \
+                            (evt.args['action'], evt.args['role'], evt.args['instance'])
                 else:
-                    msg = "Error happened on action *%s* on service *%s*\n\n```\n%s\n```" % (evt.args['action'], evt.args['service'], gl.exception)
+                    msg = "Error happened on action *%s* on role *%s* instance *%s*\n\n```\n%s\n```" % \
+                        (evt.args['action'], evt.args['role'], evt.args['instance'], gl.exception)
                 self.send_tg_msg(chat_id=evt.args['chat_id'], msg=msg)
 
     def send_tg_msg(self, chat_id, msg):
