@@ -17,25 +17,31 @@ app.register_blueprint(webhooks_api)
 
 @app.before_request
 def process_token():
-    token = request.cookies.get(
+    authorization = request.cookies.get(
         'jwt',
         request.headers.get(
             'Authorization',
             jwt.encode({'exp': 0}, app.config.get('jwt_key'))
         ))
-    try:
-        payload = jwt.decode(token, app.config.get('jwt_key'))
-        if 'scope' not in payload or \
-           payload['scope'].find('user:memberOf:%s' % app.config.get('organization')) == -1:
-            response = make_response('Unauthorized')
+    type, token = authorization.split(' ', 1)
+    if type.lower == 'bearer':
+        try:
+            payload = jwt.decode(token, app.config.get('jwt_key'))
+            if 'scope' not in payload or \
+               payload['scope'].find('user:memberOf:%s' % app.config.get('organization')) == -1:
+                response = make_response('Unauthorized')
+                response.status_code = 401
+                return response
+
+        except jwt.ExpiredSignatureError as e:
+            response = make_response('Your JWT has expired')
             response.status_code = 401
             return response
-
-    except jwt.ExpiredSignatureError as e:
-        response = make_response('Your JWT has expired')
-        response.status_code = 401
-        return response
-    except jwt.DecodeError as e:
+        except jwt.DecodeError as e:
+            response = make_response('Your JWT is invalid')
+            response.status_code = 401
+            return response
+    else:
         response = make_response('Your JWT is invalid')
         response.status_code = 401
         return response
