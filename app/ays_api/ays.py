@@ -42,7 +42,7 @@ def ays_repository_post():
 
     path = j.sal.fs.joinPaths(j.dirs.codeDir, name)
     j.atyourservice.createAYSRepo(path)
-    return jsonify(name=name, path=path)
+    return jsonify(name=name, path=path), 201
 
 
 @ays_api.route('/ays/repository/<repository>', methods=['GET'])
@@ -117,7 +117,7 @@ def ays_repository_byRepository_blueprint_post(repository):
     bp_path = j.sal.fs.joinPaths(repo.basepath, 'blueprints', inputs.name.data)
     j.sal.fs.writeFile(bp_path, content)
 
-    return jsonify(name=new_name, content=content)
+    return jsonify(name=new_name, content=content), 201
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>', methods=['GET'])
@@ -352,7 +352,7 @@ def ays_repository_byRepository_template_post(repository):
     if actions_py != '' and actions_py is not None:
         j.sal.fs.writeFile(j.sal.fs.joinPaths(dir_path, 'actions.py'), actions_py)
 
-    return jsonify(name=name, action_py=actions_py, schema_hrd=schema_hrd), 200
+    return jsonify(name=name, action_py=actions_py, schema_hrd=schema_hrd), 201
 
 
 @ays_api.route('/ays/repository/<repository>/template/<template>', methods=['GET'])
