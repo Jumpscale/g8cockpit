@@ -68,6 +68,7 @@ def ays_repository_byRepository_delete(repository):
         return jsonify(error='Repository not found with name %s' % repository), 404
 
     repo = j.atyourservice.repos[repository]
+    repo.uninstall()
     del j.atyourservice.repos[repository]
     j.sal.fs.removeDirTree(repo.basepath)
     return '', 204
@@ -194,7 +195,11 @@ def ays_repository_byRepository_blueprint_byBlueprint_delete(blueprint, reposito
     if bp is None:
         return jsonify(error="No blueprint found with this name '%s'" % blueprint), 404
 
-    # TODO: walk blueprint and remove services
+    for service in bp.services:
+        repo.uninstall(role=service.role, instance=service.instance)
+    for service in bp.services:
+        j.sal.fs.removeDirTree(service.path)
+
     j.sal.fs.remove(bp.path)
     repo.blueprints.remove(bp)
 
