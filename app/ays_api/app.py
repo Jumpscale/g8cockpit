@@ -30,28 +30,32 @@ def process_token():
         return response
 
     type, token = authorization.split(' ', 1)
+    msg = ""
     if type.lower() == 'bearer':
         try:
             headers = jwt.get_unverified_header(token)
             payload = jwt.decode(token, app.config.get('jwt_key'), algorithm=headers['alg'], audience=app.config['organization'], issuer='itsyouonline')
-            if 'scope' not in payload or \
-               'user:memberOf:%s' % app.config.get('organization') not in payload['scope'].split(','):
-                response = make_response('Unauthorized')
-                response.status_code = 401
-                return response
+            # case JWT is for an organization
+            if 'globalid' in payload and payload['globalid'] == app.config.get('organization'):
+                return
 
+            # case JWT is for a user
+            if 'scope' in payload and 'user:memberOf:%s' % app.config.get('organization') in payload['scope'].split(','):
+                return
+
+            msg = 'Unauthorized'
         except jwt.ExpiredSignatureError as e:
-            response = make_response('Your JWT has expired')
-            response.status_code = 401
-            return response
+            msg = 'Your JWT has expired'
+
         except jwt.DecodeError as e:
-            response = make_response('Your JWT is invalid')
-            response.status_code = 401
-            return response
+            msg = 'Your JWT is invalid'
+
     else:
-        response = make_response('Your JWT is invalid')
-        response.status_code = 401
-        return response
+        msg = 'Your JWT is invalid'
+
+    response = make_response(msg)
+    response.status_code = 401
+    return response
 
 
 
