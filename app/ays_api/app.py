@@ -21,14 +21,21 @@ def process_token():
         'jwt',
         request.headers.get(
             'Authorization',
-            jwt.encode({'exp': 0}, app.config.get('jwt_key'))
+            None
         ))
+
+    if authorization is None:
+        response = make_response('Not JWT token')
+        response.status_code = 401
+        return response
+
     type, token = authorization.split(' ', 1)
-    if type.lower == 'bearer':
+    if type.lower() == 'bearer':
         try:
-            payload = jwt.decode(token, app.config.get('jwt_key'))
+            headers = jwt.get_unverified_header(token)
+            payload = jwt.decode(token, app.config.get('jwt_key'), algorithm=headers['alg'], audience=app.config['organization'], issuer='itsyouonline')
             if 'scope' not in payload or \
-               payload['scope'].find('user:memberOf:%s' % app.config.get('organization')) == -1:
+               'user:memberOf:%s' % app.config.get('organization') not in payload['scope'].split(','):
                 response = make_response('Unauthorized')
                 response.status_code = 401
                 return response
@@ -45,6 +52,7 @@ def process_token():
         response = make_response('Your JWT is invalid')
         response.status_code = 401
         return response
+
 
 
 @app.route('/apidocs/<path:path>')
