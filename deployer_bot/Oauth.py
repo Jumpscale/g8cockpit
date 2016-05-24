@@ -66,6 +66,7 @@ def callback():
     call back of oauth authorize call
     It is handler for GET /oauth
     '''
+    import ipdb; ipdb.set_trace()
     code = request.args['code']
     state = request.args['state']
     if not j.core.db.hexists(STATE_KEY, state):
@@ -92,7 +93,6 @@ def oauthurl():
     call back of oauth authorize call
     It is handler for GET /oauth
     '''
-
     organization = request.args.get('organization', None)
     if not organization:
         return "bad request", 400

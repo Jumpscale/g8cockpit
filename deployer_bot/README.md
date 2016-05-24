@@ -26,7 +26,7 @@ token = "205766488:AAEizHUvxZddhL-G21oOM5JL1lmOf9slh4s"
 # address of the G8 you want to propose to the users
 # during deployment.
 [g8.be-scale-1]
-adress = "be-scale-1.demo.greenitglobe.com"
+address = "be-scale-1.demo.greenitglobe.com"
 
 # credentials for the dns cluster.
 # if you don't specify the credentials, they will be ask to the user during deployment

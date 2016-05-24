@@ -233,8 +233,8 @@ class CockpitDeployerBot:
             'bot': {'token': 'CHANGEME'},
             'dns': {'login': 'admin', 'password': 'CHANGEME'},
             'g8': {
-                'be-conv-2': {'adress': 'be-conv-2.demo.greenitglobe.com'},
-                'be-conv-3': {'adress': 'be-conv-3.demo.greenitglobe.com'}
+                'be-conv-2': {'address': 'be-conv-2.demo.greenitglobe.com'},
+                'be-conv-3': {'address': 'be-conv-3.demo.greenitglobe.com'}
             }
         }
         j.data.serializer.toml.dump(path, cfg)
@@ -259,7 +259,7 @@ class CockpitDeployerBot:
             deployer.args._dns_password = self.config['dns'].get('password', None)
 
         if 'g8' in self.config:
-            choices = [g['adress'] for g in self.config['g8'].values()]
+            choices = [g['address'] for g in self.config['g8'].values()]
             deployer.args.asker.g8_choices = choices
 
     def _attache_logger(self, deployer, chat_id):
@@ -301,7 +301,7 @@ class CockpitDeployerBot:
             args._dns_password = self.config['dns'].get('password', None)
 
         if 'g8' in self.config:
-            choices = [g['adress'] for g in self.config['g8'].values()]
+            choices = [g['address'] for g in self.config['g8'].values()]
             args.asker.g8_choices = choices
 
         self.bot.sendMessage(chat_id=chat_id, text=self.templates['welcome'].format(username=username))
