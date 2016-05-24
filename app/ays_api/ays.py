@@ -264,16 +264,18 @@ def ays_repository_byRepository_service_byRole_byInstance_get(instance, role, re
     service = {
         'role': s.role,
         'name': s.recipe.name,
-        'instance': s.instance
+        'instance': s.instance,
+        'instance.hrd': s.hrd.getHRDAsDict()
     }
-    paths = {
-        'action.py': j.sal.fs.joinPaths(s.path, 'actions.py'),
-        'state': j.sal.fs.joinPaths(s.path, 'state.yaml'),
-        'instance.hrd': j.sal.fs.joinPaths(s.path, 'instance.hrd')
-    }
-    for k, p in paths.items():
-        if j.sal.fs.exists(p):
-            service[k] = j.sal.fs.fileGetContents(p)
+
+    state_path = j.sal.fs.joinPaths(s.path, 'state.yaml')
+    if j.sal.fs.exists(state_path):
+        state_json = j.data.serializer.yaml.load(state_path)
+        service['state'] = state_json
+
+    action_path = j.sal.fs.joinPaths(s.path, 'actions.py')
+    if j.sal.fs.exists(action_path):
+        service['action.py'] = j.sal.fs.fileGetContents(action_path)
 
     return json.dumps(service), 200, {'Content-Type': 'application/json'}
 
