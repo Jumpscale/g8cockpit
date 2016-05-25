@@ -115,10 +115,37 @@ def ays_repository_byRepository_blueprint_post(repository):
     if new_name in names:
         return jsonify(error="blueprint with the name %s' already exsits" % new_name), 409
 
-    bp_path = j.sal.fs.joinPaths(repo.basepath, 'blueprints', inputs.name.data)
+    bp_path = j.sal.fs.joinPaths(repo.basepath, 'blueprints', new_name)
     j.sal.fs.writeFile(bp_path, content)
 
     return jsonify(name=new_name, content=content), 201
+
+
+@ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>', methods=['PUT'])
+def UpdateBlueprint(blueprint, repository):
+    '''
+    Update existing blueprint
+    It is handler for PUT /ays/repository/<repository>/blueprint/<blueprint>
+    '''
+    if repository not in j.atyourservice.repos:
+        return jsonify(error='Repository not found with name %s' % repository), 404
+
+    repo = j.atyourservice.repos[repository]
+
+    inputs = Blueprint.from_json(request.get_json())
+    if not inputs.validate():
+        return jsonify(errors=inputs.errors), 400
+
+    name = inputs.name.data
+    content = inputs.content.data
+    names = [bp.name for bp in repo.blueprints]
+    if name not in names:
+        return jsonify(error="blueprint with the name %s' not found" % name), 404
+
+    bp_path = j.sal.fs.joinPaths(repo.basepath, 'blueprints', name)
+    j.sal.fs.writeFile(bp_path, content)
+
+    return jsonify(), 204
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>', methods=['GET'])
