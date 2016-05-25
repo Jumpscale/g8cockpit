@@ -326,6 +326,17 @@ types:
                                     body:
                                         application/json:
                                           type: Error
+                        delete:
+                            displayName: DeleteServiceByInstance
+                            description: uninstall and delete a service
+                            responses:
+                                204:
+                                    description: service deleted
+                                404:
+                                    description: Service instance not found
+                                    body:
+                                        application/json:
+                                          type: Error
                         /action:
                             get:
                                 displayName: ListServiceActions

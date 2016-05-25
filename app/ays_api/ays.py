@@ -336,6 +336,30 @@ def ays_repository_byRepository_service_byRole_byInstance_byAction_post(action, 
     return jsonify()
 
 
+@ays_api.route('/ays/repository/<repository>/service/<role>/<instance>', methods=['DELETE'])
+def ays_repository_byRepository_service_byRole_byInstance_delete(instance, role, repository):
+    '''
+    uninstall and delete service
+    It is handler for DELETE /ays/repository/<repository>/service/<role>/<instance>
+    '''
+    if repository not in j.atyourservice.repos:
+        return jsonify(error='Repository not found with name %s' % repository), 404
+
+    repo = j.atyourservice.repos[repository]
+    service = repo.getService(role=role, instance=instance, die=False)
+    if service is None:
+        return jsonify(error='Service role:%s instance:%s not found in the repo %s' % (role, instance, repository)), 404
+
+    try:
+        repo.uninstall(role=role, instance=instance)
+        del repo.services[service.key]
+        j.sal.fs.removeDirTree(service.path)
+    except Exception as e:
+        return jsonify(error='unexpected error happend: %s' % str(e)), 500
+
+    return jsonify(), 204
+
+
 @ays_api.route('/ays/repository/<repository>/template', methods=['GET'])
 def ays_repository_byRepository_template_get(repository):
     '''
