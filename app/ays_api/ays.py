@@ -3,18 +3,16 @@ from JumpScale import j
 
 
 from .Repository import Repository
-
-# from BlueprintPostReqBody import BlueprintPostReqBody
 from .Blueprint import Blueprint
-
 from .Template import Template
 
 
 ays_api = fBlueprint('ays_api', __name__)
+logger = j.logger.get('j.app.cockpit.api')
 
 
 @ays_api.route('/ays/repository', methods=['GET'])
-def ays_repository_get():
+def ListRepositories():
     '''
     list all repositorys
     It is handler for GET /ays/repository
@@ -26,7 +24,7 @@ def ays_repository_get():
 
 
 @ays_api.route('/ays/repository', methods=['POST'])
-def ays_repository_post():
+def CreateNewRepository():
     '''
     create a new repository
     It is handler for POST /ays/repository
@@ -40,13 +38,13 @@ def ays_repository_post():
     if name in j.atyourservice.repos:
         return jsonify(error='repo with this name already exsits'), 409
 
-    path = j.sal.fs.joinPaths(j.dirs.codeDir, name)
+    path = j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit", "project", name)
     j.atyourservice.createAYSRepo(path)
     return jsonify(name=name, path=path), 201
 
 
 @ays_api.route('/ays/repository/<repository>', methods=['GET'])
-def ays_repository_byRepository_get(repository):
+def GetRepository(repository):
     '''
     Get information of a repository
     It is handler for GET /ays/repository/<repository>
@@ -59,7 +57,7 @@ def ays_repository_byRepository_get(repository):
 
 
 @ays_api.route('/ays/repository/<repository>', methods=['DELETE'])
-def ays_repository_byRepository_delete(repository):
+def DeleteRepository(repository):
     '''
     Delete a repository
     It is handler for DELETE /ays/repository/<repository>
@@ -75,7 +73,7 @@ def ays_repository_byRepository_delete(repository):
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint', methods=['GET'])
-def ays_repository_byRepository_blueprint_get(repository):
+def ListBlueprints(repository):
     '''
     List all blueprint
     It is handler for GET /ays/repository/<repository>/blueprint
@@ -94,7 +92,7 @@ def ays_repository_byRepository_blueprint_get(repository):
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint', methods=['POST'])
-def ays_repository_byRepository_blueprint_post(repository):
+def CreateNewBlueprint(repository):
     '''
     Create a new blueprint
     It is handler for POST /ays/repository/<repository>/blueprint
@@ -149,7 +147,7 @@ def UpdateBlueprint(blueprint, repository):
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>', methods=['GET'])
-def ays_repository_byRepository_blueprint_byBlueprint_get(blueprint, repository):
+def GetBlueprint(blueprint, repository):
     '''
     Get a blueprint
     It is handler for GET /ays/repository/<repository>/blueprint/<blueprint>
@@ -172,7 +170,7 @@ def ays_repository_byRepository_blueprint_byBlueprint_get(blueprint, repository)
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>', methods=['POST'])
-def ays_repository_byRepository_blueprint_byBlueprint_post(blueprint, repository):
+def ExecuteBlueprint(blueprint, repository):
     '''
     Execute the blueprint
     It is handler for POST /ays/repository/<repository>/blueprint/<blueprint>
@@ -192,18 +190,32 @@ def ays_repository_byRepository_blueprint_byBlueprint_post(blueprint, repository
         return jsonify(error="No blueprint found with this name '%s'" % blueprint), 404
 
     try:
+        # TODO execute action async
         bp.load()
         repo.init()
         run = repo.getRun(action="install")
         run.execute()
+
+        # notify bot new services have been created
+        # TODO: unify event for telegram and REST
+        evt = j.data.models.cockpit_event.Telegram()
+        evt.io = 'input'
+        evt.action = 'bp.create'
+        evt.args = {
+            'path': bp.path,
+            'content': bp.content,
+        }
+        j.core.db.publish('telegram', evt.to_json())
     except Exception as e:
+        j.sal.fs.remove(bp.path)
+        logger.error("Error during execution of the blueprint:\n %s" % str(e))
         return jsonify(error="Error during execution of the blueprint:\n %s" % str(e)), 500
 
     return jsonify(msg="blueprint %s initialized" % repo.name)
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>', methods=['DELETE'])
-def ays_repository_byRepository_blueprint_byBlueprint_delete(blueprint, repository):
+def DeleteBlueprint(blueprint, repository):
     '''
     delete blueprint
     It is handler for DELETE /ays/repository/<repository>/blueprint/<blueprint>
@@ -222,8 +234,13 @@ def ays_repository_byRepository_blueprint_byBlueprint_delete(blueprint, reposito
     if bp is None:
         return jsonify(error="No blueprint found with this name '%s'" % blueprint), 404
 
-    for service in bp.services:
-        repo.uninstall(role=service.role, instance=service.instance)
+    try:
+        for service in bp.services:
+            repo.uninstall(role=service.role, instance=service.instance)
+    except j.exceptions.Input as e:
+        # sevice not properly inited. just remove without unintall
+        logger.warning(str(e))
+
     for service in bp.services:
         j.sal.fs.removeDirTree(service.path)
 
@@ -234,7 +251,7 @@ def ays_repository_byRepository_blueprint_byBlueprint_delete(blueprint, reposito
 
 
 @ays_api.route('/ays/repository/<repository>/service', methods=['GET'])
-def ays_repository_byRepository_service_get(repository):
+def ListServices(repository):
     '''
     List all services in the repository
     It is handler for GET /ays/repository/<repository>/service
@@ -265,7 +282,7 @@ def ays_repository_byRepository_service_get(repository):
 
 
 @ays_api.route('/ays/repository/<repository>/service/<role>/action/<action>', methods=['POST'])
-def ays_repository_byRepository_service_byRole_action_byAction_post(action, role, repository):
+def ListServicesByRole(action, role, repository):
     '''
     Perform an action on all service with the role 'role'
     It is handler for POST /ays/repository/<repository>/service/<role>/action/<action>
@@ -275,7 +292,7 @@ def ays_repository_byRepository_service_byRole_action_byAction_post(action, role
 
 
 @ays_api.route('/ays/repository/<repository>/service/<role>/<instance>', methods=['GET'])
-def ays_repository_byRepository_service_byRole_byInstance_get(instance, role, repository):
+def GetServiceByInstance(instance, role, repository):
     '''
     Get a service instance
     It is handler for GET /ays/repository/<repository>/service/<role>/<instance>
@@ -308,7 +325,7 @@ def ays_repository_byRepository_service_byRole_byInstance_get(instance, role, re
 
 
 @ays_api.route('/ays/repository/<repository>/service/<role>/<instance>/action', methods=['GET'])
-def ays_repository_byRepository_service_byRole_byInstance_action_get(instance, role, repository):
+def ListServiceActions(instance, role, repository):
     '''
     Get list of action available on this service
     It is handler for GET /ays/repository/<repository>/service/<role>/<instance>/action
@@ -327,7 +344,7 @@ def ays_repository_byRepository_service_byRole_byInstance_action_get(instance, r
 
 
 @ays_api.route('/ays/repository/<repository>/service/<role>/<instance>/<action>', methods=['POST'])
-def ays_repository_byRepository_service_byRole_byInstance_byAction_post(action, instance, role, repository):
+def ExecuteServiceActionByInstance(action, instance, role, repository):
     '''
     Perform an action on a services
     It is handler for POST /ays/repository/<repository>/service/<role>/<instance>/<action>
@@ -337,7 +354,7 @@ def ays_repository_byRepository_service_byRole_byInstance_byAction_post(action, 
 
 
 @ays_api.route('/ays/repository/<repository>/service/<role>/<instance>', methods=['DELETE'])
-def ays_repository_byRepository_service_byRole_byInstance_delete(instance, role, repository):
+def DeleteServiceByInstance(instance, role, repository):
     '''
     uninstall and delete service
     It is handler for DELETE /ays/repository/<repository>/service/<role>/<instance>
@@ -351,17 +368,19 @@ def ays_repository_byRepository_service_byRole_byInstance_delete(instance, role,
         return jsonify(error='Service role:%s instance:%s not found in the repo %s' % (role, instance, repository)), 404
 
     try:
-        repo.uninstall(role=role, instance=instance)
+        scope = request.args.getlist('scope')
+        producerRoles = ','.join(scope) if scope else '*'
+        repo.uninstall(role=role, instance=instance, producerRoles=producerRoles)
         del repo.services[service.key]
         j.sal.fs.removeDirTree(service.path)
     except Exception as e:
-        return jsonify(error='unexpected error happend: %s' % str(e)), 500
+        return jsonify(error='unexpected error happened: %s' % str(e)), 500
 
     return jsonify(), 204
 
 
 @ays_api.route('/ays/repository/<repository>/template', methods=['GET'])
-def ays_repository_byRepository_template_get(repository):
+def ListTemplates(repository):
     '''
     list all templates
     It is handler for GET /ays/repository/<repository>/template
@@ -377,7 +396,7 @@ def ays_repository_byRepository_template_get(repository):
 
 
 @ays_api.route('/ays/repository/<repository>/template', methods=['POST'])
-def ays_repository_byRepository_template_post(repository):
+def CreateNewTemplate(repository):
     '''
     Create new template
     It is handler for POST /ays/repository/<repository>/template
@@ -414,7 +433,7 @@ def ays_repository_byRepository_template_post(repository):
 
 
 @ays_api.route('/ays/repository/<repository>/template/<template>', methods=['GET'])
-def ays_repository_byRepository_template_byTemplate_get(template, repository):
+def GetTemplate(template, repository):
     '''
     Get a template
     It is handler for GET /ays/repository/<repository>/template/<template>

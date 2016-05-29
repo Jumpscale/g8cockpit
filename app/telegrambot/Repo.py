@@ -2,7 +2,6 @@ from JumpScale import j
 from .utils import chunks
 import telegram
 import re
-# from JumpScale.baselib.atyourservice.robot.ActionRequest import *
 
 
 class RepoMgmt:
@@ -10,35 +9,14 @@ class RepoMgmt:
     def __init__(self, bot):
         self.bot = bot
         self.rootpath = bot.rootpath
-        self.users = self.restore()
         self.callbacks = bot.question_callbacks
 
         self.reg_repo = re.compile(r'^[a-zA-Z0-9-_]+$')
 
-    def restore(self):
-        usersList = j.sal.fs.listDirsInDir(self.rootpath)
-        users = {}
-
-        for user in usersList:
-            username = j.sal.fs.getBaseName(user)
-            users[username] = {
-                'current': None,
-                'repos': []
-            }
-
-            for repo in j.sal.fs.listDirsInDir(user):
-                repoName = j.sal.fs.getBaseName(repo)
-                users[username]['repos'].append(repoName)
-
-        self.bot.logger.debug('users loaded: %s' % users)
-        return users
-
-    # def init_repo(self, username, repo):
     def init_repo(self, update, bot, name):
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
-        # repopath = '%s/%s/%s' % (self.rootpath, username, repo)
         repopath = '%s/%s' % (self.rootpath, name)
         self.bot.logger.debug('initializing repository: %s' % repopath)
 
@@ -48,48 +26,37 @@ class RepoMgmt:
         evt.io = 'input'
         evt.action = 'repo.create'
         evt.args = {
-            # 'username': username,
             'repo_path': repopath
         }
         self.bot.send_event(evt.to_json())
 
     # Helpers
     def _userCheck(self, bot, update):
-        if not self.users.get(update.message.from_user.username):
-            bot.sendMessage(chat_id=chat_id, text='Hello buddy, please use /start at first.')
-            return False
+        chat_id = update.message.chat_id
+        valid = True
+        if self.bot._rediscl.hexists('cockpit.telegram.users', update.message.from_user.username):
+            data = self.bot._rediscl.hget('cockpit.telegram.users', update.message.from_user.username).decode()
+            data = j.data.serializer.json.loads(data)
+            if not data.get('access_token', None):
+                valid = False
+        else:
+            valid = False
 
-        return True
+        if not valid:
+            bot.sendMessage(chat_id=chat_id, text="Hello buddy, I don't know you yet, please use /start so we can meet")
+
+        return valid
 
     def _setCurrentRepo(self, username, name):
-        self.users[username]['current'] = name
+        data = self.bot._rediscl.hget('cockpit.telegram.users', username).decode()
+        data = j.data.serializer.json.loads(data)
+        data['current_repo'] = name
+        self.bot._rediscl.hset('cockpit.telegram.users', username, j.data.serializer.json.dumps(data))
 
     def _currentRepo(self, username):
-        return self.users[username]['current']
-
-    # def _getRepos(self):
-    #     """
-    #     return a list of all repos
-    #     """
-    #     repos = []
-    #     for path in j.atyourservice.findAYSRepos():
-    #         name = j.sal.fs.getBaseName(path)
-    #         repo.append(j.atyourservice.get(name=name, path=path))
-    #     return repos
-
-    # def _getReposNames(self):
-    #     """
-    #     return list of repo names
-    #     """
-    #     return [j.sal.fs.getBaseName(path) for path in self._getRepos]
-
-    # def _addRepo(self, username, repo):
-    #     self.users[username]['repos'].append(repo)
-
-    # def _repoPath(self, username, repo):
-        # return '%s/%s/%s' % (self.rootpath, username, repo)
-    # def _repoPath(self, name):
-    #     return self._getRepos[name].basepath
+        data = self.bot._rediscl.hget('cockpit.telegram.users', username).decode()
+        data = j.data.serializer.json.loads(data)
+        return data['current_repo']
 
     # Management of repos
     def checkout(self, bot, update, repo_name):
@@ -114,7 +81,6 @@ class RepoMgmt:
         # creating new repo
         self.init_repo(update, bot, repo_name)
         self._setCurrentRepo(username, repo_name)
-        # self._addRepo(username, repo)
 
         message = "Repo `%s` created, it's now your current working repo." % repo_name
         bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)

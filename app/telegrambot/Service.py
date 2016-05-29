@@ -39,6 +39,7 @@ class ServiceMgmt(object):
             'instance': instance,
             'action': action,
             'repo': self._currentRepoPath(username),
+            'notify': True
         }
         self.bot.send_event(evt.to_json())
 
@@ -47,11 +48,7 @@ class ServiceMgmt(object):
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
-        # repo_name = self._currentRepo(username)
         repo = j.atyourservice.get(name=repo_name)
-        # repo_path = self._currentRepoPath(username)
-        # j.atyourservice.basepath = repo_path
-        # services = j.atyourservice.findServices()
 
         if len(repo.services) <= 0:
             bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains services for now.")
@@ -64,50 +61,30 @@ class ServiceMgmt(object):
         msg = '\n'.join(services_list)
         bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
+    def inspect(self, bot, update, services):
+        for service in services:
+            msg = """Role: *{role}*
+Instances: *{instance}*
+HRD:
+`{hrd}`
+State:
+```
+ {state}
+```
+""".format(role=service.role, instance=service.instance, hrd=str(service.hrd), state=str(service.state))
+            bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=telegram.ReplyKeyboardHide())
+
     def delete(self, bot, update, repo, names):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
-        # ays uninstall before
-        # self._ays_sync(bot, update, args=['do', 'uninstall'])
-        # j.actions.resetAll()
-
-        for name in names:
-            if name == "*" or name == "all":
-                blueprints = j.sal.fs.listFilesInDir(self._currentBlueprintsPath(username))
-                for blueprint in blueprints:
-                    j.sal.fs.remove(blueprint)
-
-                ln = len(blueprints)
-                message = "%d blueprint%s removed" % (ln, "s" if ln > 1 else "")
-                bot.sendMessage(chat_id=update.message.chat_id, text=message)
-
-            else:
-                blueprint = '%s/%s' % (self._blueprintsPath(repo), name)
-
-                self.bot.logger.debug('deleting: %s' % blueprint)
-
-                if not j.sal.fs.exists(blueprint):
-                    message = "Sorry, I don't find any blueprint named `%s`, you can list them with `/blueprint`" % name
-                    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
-                    continue
-
-                j.sal.fs.remove(blueprint)
-
-                message = "Blueprint `%s` removed from `%s`" % (name, repo)
-                bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
-
-        # cleaning
-        j.sal.fs.removeDirTree('%s/alog' % self._currentRepoPath(username))
-        j.sal.fs.removeDirTree('%s/recipes' % self._currentRepoPath(username))
-        j.sal.fs.removeDirTree('%s/services' % self._currentRepoPath(username))
-        j.sal.fs.createDir('%s/services' % self._currentRepoPath(username))
+        raise NotImplemented("Deleting service is not supported yet")
 
     # UI interaction
     def choose_action(self, bot, update):
         self.callbacks[update.message.from_user.username] = self.dispatch_choice
-        choices = ['list', 'execute']
+        choices = ['list', 'inspect', 'execute']
         reply_markup = telegram.ReplyKeyboardMarkup([choices], resize_keyboard=True, one_time_keyboard=True)
         return bot.sendMessage(chat_id=update.message.chat_id, text="What do you want to do ?", reply_markup=reply_markup)
 
@@ -115,12 +92,12 @@ class ServiceMgmt(object):
         message = update.message
         username = update.message.from_user.username
         repo = self._currentRepo(username)
-        # if message.text == "add":
-            # self.create_prompt(bot, update)
         if message.text == 'list':
             self.list(bot, update, repo)
-        elif message.text == 'execute':
+        elif message.text in ['execute', 'exec']:
             self.execute_prompt(bot, update)
+        elif message.text in ['inspect', 'see']:
+            self.inspect_prompt(bot, update)
 
     def execute_prompt(self, bot, update):
         username = update.message.from_user.username
@@ -156,6 +133,31 @@ class ServiceMgmt(object):
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(services, 4)), resize_keyboard=True, one_time_keyboard=True)
         msg = """
         Choose a service to execution action on or type a key to match multiple service.
+        example :
+        `@node` to match all service with role node
+        `node!bot` to match the service with role node and instance name bot.
+        """
+        return bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
+
+    def inspect_prompt(self, bot, update):
+        username = update.message.from_user.username
+
+        repo = j.atyourservice.get(name=self._currentRepo(username))
+        services = list(repo.services.keys())
+        services.sort()
+        if len(repo.services) <= 0:
+            msg = "There is not service instance in this repo yet. Deploy a blueprint to create service instances"
+            return bot.sendMessage(chat_id=update.message.chat_id, text=msg)
+
+        def select_service(bot, update):
+            domain, name, instance, role = j.atyourservice._parseKey(update.message.text)
+            services = repo.findServices(instance=instance, role=role)
+            self.inspect(bot, update, services)
+
+        self.callbacks[username] = select_service
+        reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(services, 4)), resize_keyboard=True, one_time_keyboard=True)
+        msg = """
+        Choose a service to inspect or type a service key to match multiple service.
         example :
         `@node` to match all service with role node
         `node!bot` to match the service with role node and instance name bot.
@@ -209,6 +211,11 @@ class ServiceMgmt(object):
                 return self.execute_prompt(bot, update)
             elif len(args) >= 3:
                 return self.execute(bot, update, args[1], args[2])
+        if args[0] in ['inspect', 'see']:
+            if len(args) == 1:
+                return self.inspect_prompt(bot, update)
+            elif len(args) >= 2:
+                return self.inspect(bot, update, args[1])
 
     def document(self, bot, update):
         username = update.message.from_user.username

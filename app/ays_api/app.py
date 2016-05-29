@@ -11,12 +11,8 @@ app = Flask(__name__)
 app.config["WTF_CSRF_ENABLED"] = False
 wtforms_json.init()
 
-app.register_blueprint(ays_api)
-app.register_blueprint(oauth_api)
-app.register_blueprint(webhooks_api)
 
-@app.before_request
-def process_token():
+def process_jwt_token():
     authorization = request.cookies.get(
         'jwt',
         request.headers.get(
@@ -57,6 +53,11 @@ def process_token():
     response.status_code = 401
     return response
 
+
+ays_api.before_request(process_jwt_token)
+app.register_blueprint(ays_api)
+app.register_blueprint(oauth_api)
+app.register_blueprint(webhooks_api)
 
 
 @app.route('/apidocs/<path:path>')

@@ -37,7 +37,7 @@ password = "password"
 [oauth]
 host = '0.0.0.0'
 port = 5000
-# adress of you oauth server where itsyouonline should send callback
+# adress of you oauth server where itsyouonline should send callback. Make sure the same URL is used in itsyou.online.
 redirect_uri = "https://deployerbot.com/callback"
 # CLient ID from your app on itsyou.online
 client_id = 'myId'

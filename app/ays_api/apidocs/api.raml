@@ -3,6 +3,22 @@ title: Cockpit API
 baseUri: http://js8:5000
 version: v1
 mediaType:  application/json
+securedBy: [oauth_2_0: { scopes : [ "user:memberOf:globalID"] } ]
+securitySchemes:
+    - oauth_2_0:
+        type: OAuth 2.0
+        description:
+            This API uses JWT to authenticate the requests.
+            All members of an organization on itsyou.online have access to this API.
+        describedBy:
+          headers:
+            Authorization:
+              description: |
+                Used to send a valid OAuth 2 access token.
+          responses:
+            401:
+              description: Unauthorized
+
 
 types:
   Repository:
@@ -35,52 +51,57 @@ types:
     properties:
         name: string
         instance: string
-        actions_py: string
+        role: string
+        actions.py: string
         state: string
-        instance_hrd: string
+        instance.hrd: string
     example:
         name: "github_repo"
         instance: "main"
-        actions_py: |
+        role: "github_repo"
+        actions.py: |
                 class Actions(ActionsBaseMgmt):
                     @action()
                     def foor(self):
                         print('do something')
         state: |
-            events: {}
-            instanceHRDHash: 935b56207178ba811cba2eb11a7bb834
-            parent: ''
-            producers:
-              github_client: [github_client!main]
-            recipe: github_account
-            recurring: {}
-            state:
-              init: [OK, 1462881794]
-              install: [OK, 1462881573]
-            templateHRDHash: ''
-        instance_hrd: |
-              github.client                  =
-              github.url                     = 'https://github.com/zaibon'
+            {
+            "events": {},
+            "instanceHRDHash": "805bc5e03a12dd59b1d181b15a4490b2",
+            "parent": "",
+            "producers": {},
+            "recipe": "sshkey",
+            "recurring": {},
+            "state": {
+              "init": "OK",
+              "install": "OK",
+              "start": "OK"
+            }
+        instance.hrd: |
+            {
+                "github.client": "main"
+                "github.url": "https://github.com/zaibon"
+            }
 
   Template:
     properties:
         name:
             type: string
             required: true
-        actions_py:
+        actions.py:
             type: string
             required: true
-        schema_hrd:
+        schema.hrd:
             type: string
             required: true
     example:
         name: "github_repo"
-        actions_py: |
+        actions.py: |
                 class Actions(ActionsBaseMgmt):
                     @action()
                     def foor(self):
                         print('do something')
-        schema_hrd: |
+        schema.hrd: |
             repo.name = type:'str' descr:'name of repo' @ASK
             repo.url = type:'str' descr:'url of github repo' default:''
             repo.account = parent:'github_account' @ASK
@@ -102,6 +123,7 @@ types:
     /repository:
         description: a repository
         get:
+            displayName: ListRepositories
             description: list all repositorys
             responses:
                 200:
@@ -109,6 +131,7 @@ types:
                         application/json:
                           type: Repository[]
         post:
+            displayName: CreateNewRepository
             description: create a new repository
             body:
                 application/json:
@@ -130,6 +153,7 @@ types:
                 repository:
                   type: string
             get:
+                displayName: GetRepository
                 description: Get information of a repository
                 responses:
                     200:
@@ -143,6 +167,7 @@ types:
                             application/json:
                               type: Error
             delete:
+                displayName: DeleteRepository
                 description: Delete a repository
                 responses:
                     204:
@@ -156,6 +181,7 @@ types:
             /blueprint:
                 description: A blueprint inside a repository
                 get:
+                    displayName: ListBlueprints
                     description: List all blueprint
                     responses:
                         200:
@@ -169,6 +195,7 @@ types:
                                     type: Error
 
                 post:
+                    displayName: CreateNewBlueprint
                     description: Create a new blueprint
                     body:
                         application/json:
@@ -189,6 +216,7 @@ types:
                         blueprint:
                           type: string
                     get:
+                        displayName: GetBlueprint
                         description: Get a blueprint
                         responses:
                             200:
@@ -201,11 +229,34 @@ types:
                                     application/json:
                                       type: Error
                     post:
+                        displayName: ExecuteBlueprint
                         description: Execute the blueprint
                         responses:
                             200:
+                                description: blueprint executed
+                            404:
+                                description: blueprint not found
+                                body:
+                                    application/json:
+                                      type: Error
+                    put:
+                        displayName: UpdateBlueprint
+                        description: Update existing blueprint
+                        body:
+                            application/json:
+                                properties:
+                                    type: Blueprint
+                        responses:
+                            204:
+                                description: blueprint updated
+                            404:
+                                description: blueprint not found
+                                body:
+                                    application/json:
+                                      type: Error
 
                     delete:
+                        displayName: DeleteBlueprint
                         description: delete blueprint
                         responses:
                             204:
@@ -219,6 +270,7 @@ types:
             /service:
                 description: A service
                 get:
+                    displayName: ListServices
                     description: List all services in the repository
                     responses:
                         200:
@@ -230,6 +282,7 @@ types:
                         role:
                           type: string
                     get:
+                        displayName: ListServicesByRole
                         description: List all services of role 'role' in the repository
                         responses:
                             200:
@@ -242,6 +295,7 @@ types:
                                 action:
                                   type: string
                             post:
+                                displayName: ExecuteServiceActionByRole
                                 description: Perform an action on all service with the role 'role'
                                 queryParameters:
                                     args:
@@ -260,6 +314,7 @@ types:
                             instance:
                               type: string
                         get:
+                            displayName: GetServiceByInstance
                             description: Get a service instance
                             responses:
                                 200:
@@ -271,8 +326,26 @@ types:
                                     body:
                                         application/json:
                                           type: Error
+                        delete:
+                            displayName: DeleteServiceByInstance
+                            description: uninstall and delete a service
+                            queryParameters:
+                                scope:
+                                    description: "List of roles on which we allow the execution of the action to propagate to"
+                                    required: false
+                                    type: string
+                                    example: role
+                            responses:
+                                204:
+                                    description: service deleted
+                                404:
+                                    description: Service instance not found
+                                    body:
+                                        application/json:
+                                          type: Error
                         /action:
                             get:
+                                displayName: ListServiceActions
                                 description: Get list of action available on this service
                                 responses:
                                     200:
@@ -289,6 +362,7 @@ types:
                                 action:
                                   type: string
                             post:
+                                displayName: ExecuteServiceActionByInstance
                                 description: Perform an action on a services
                                 queryParameters:
                                     args:
@@ -306,6 +380,7 @@ types:
             /template:
                 description: A template of a service
                 get:
+                    displayName: ListTemplates
                     description: list all templates
                     responses:
                         200:
@@ -313,6 +388,7 @@ types:
                                 application/json:
                                   type: Template[]
                 post:
+                    displayName: CreateNewTemplate
                     description: Create new template
                     body:
                         application/json:
@@ -327,6 +403,7 @@ types:
                         template:
                           type: string
                     get:
+                        displayName: GetTemplate
                         description: Get a template
                         responses:
                             200:
@@ -347,12 +424,10 @@ types:
                     description: event saved
                     body:
                         application/json:
-
 /oauth:
     /callback:
         get:
-            description: Callback endpoint for oauth
+            description: oauth endpoint where oauth provider need to send authorization code
             responses:
                 200:
-                    body:
-                        application/json:
+                    description: code received

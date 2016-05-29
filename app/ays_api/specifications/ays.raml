@@ -329,6 +329,12 @@ types:
                         delete:
                             displayName: DeleteServiceByInstance
                             description: uninstall and delete a service
+                            queryParameters:
+                                scope:
+                                    description: "List of roles on which we allow the execution of the action to propagate to"
+                                    required: false
+                                    type: string
+                                    example: role
                             responses:
                                 204:
                                     description: service deleted
@@ -418,3 +424,10 @@ types:
                     description: event saved
                     body:
                         application/json:
+/oauth:
+    /callback:
+        get:
+            description: oauth endpoint where oauth provider need to send authorization code
+            responses:
+                200:
+                    description: code received

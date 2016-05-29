@@ -1,4 +1,6 @@
-from JumpScale import j
+import gevent
+from gevent import monkey
+monkey.patch_all()
 
 from .Repo import RepoMgmt
 from .Blueprint import BlueprintMgmt
@@ -13,22 +15,20 @@ import time
 import re
 import sys
 import redis
-import gevent
-from gevent import monkey
-monkey.patch_all()
+import urllib
+from JumpScale import j
 
-import logging
-logging.basicConfig(level=logging.DEBUG, format='[+][%(levelname)s] %(name)s: %(message)s')
-
+STATE_KEY = 'cockpit.telegram.state'
 
 class TGBot():
 
     # initializing
-    def __init__(self, token, rootpath='', redis=None):
-        self.token = token
+    def __init__(self, config, rootpath='', redis=None):
+        self.token = config.get('token', '')
+        self.config = config
 
-        if rootpath=="":
-            rootpath=j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit", "project")
+        if rootpath == "":
+            rootpath = j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit", "project")
             j.sal.fs.createDir(rootpath)
 
         self.rootpath = rootpath
@@ -88,7 +88,7 @@ class TGBot():
                 # if we arrive here, something is wrong,
                 # event handlers should have handler the message already
                 self.logger.warning("unhandled message. %s" % msg)
-            gevent.sleep(0.001)
+            gevent.sleep(0.5)
 
     def _event_handler(self, msg):
         channel = msg['channel'].decode()
@@ -103,15 +103,26 @@ class TGBot():
         evt = j.data.models.cockpit_event.Telegram.from_json(msg['data'].decode())
 
         if evt.io != 'output':
-            # we only listen to ouput event
-            # to send message to client
+            # we only listen to ouput event to send message to client
             return
+
         self.logger.debug("event recieve telegram output")
 
-        chat_id = evt.args['chat_id']
-        msg = evt.args['msg']
-        msg = self._sanitize_md(msg)
-        self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+        msg = self._sanitize_md(evt.args['msg'])
+        chat_ids = set()
+        if 'chat_id' in evt.args and evt.args['chat_id'] is not None:
+            chat_ids.add(evt.args['chat_id'])
+        else:
+            users = self._rediscl.hgetall('cockpit.telegram.users')
+            for _, data in users.items():
+                data = j.data.serializer.json.loads(data.decode())
+                chat_ids.add(data['chat_id'])
+
+        for chat_id in chat_ids:
+            try:
+                self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+            except Exception as e:
+                self.logger.error("Error sending message '%s' : %s" %(msg, str(e)))
 
     def send_event(self, payload):
         self._rediscl.publish('telegram', payload)
@@ -175,28 +186,36 @@ class TGBot():
                            update.message.from_user.last_name,
                            update.message.chat_id))
 
-        # creating environment for this user
-        userpath = '%s/%s' % (self.rootpath, username)
-
-        if not j.sal.fs.exists(userpath):
-            j.sal.fs.createDir(userpath)
-
-        if not self.repo_mgmt.users.get(username):
-            hello = "Hello %s !" % update.message.from_user.first_name
-            self.repo_mgmt.users[username] = {'current': None, 'projects': []}
-
+        data = None
+        data = self._rediscl.hget('cockpit.telegram.users', username)
+        if data is not None:
+            data = j.data.serializer.json.loads(data.decode())
+        if data is None or data.get('access_token', None) is None:
+            # user not authenticated
+            data = {
+                'chat_id': update.message.chat_id,
+                'current_repo': None,
+                'access_token': None
+            }
+            resp = self.oauth(bot, update)
+            if 'error' in resp:
+                return bot.sendMessage(chat_id=update.message.chat_id, text=resp['error'], parse_mode=telegram.ParseMode.MARKDOWN)
+            else:
+                hello = "You have been authorized. Welcome !"
+                data['access_token'] = resp['access_token']
         else:
             hello = "Welcome back %s !" % update.message.from_user.first_name
+
+        data['chat_id'] = update.message.chat_id
+        self._rediscl.hset('cockpit.telegram.users', username, j.data.serializer.json.dumps(data))
 
         message = [
             hello,
             "",
             "Let's start:",
-            " - create a project with: `/project [name]`",
-            " - upload some blueprints",
-            " - do a *ays init* with `/ays init`",
-            " - do a *ays [stuff]* with `/ays [stuff]`",
-            "",
+            " - manage your repositories with: `/repo`",
+            " - manage your blueprints with: `/blueprint`",
+            " - manage your services with: `/services`",
             "For more information, just type `/help` :)"
         ]
 
@@ -205,6 +224,40 @@ class TGBot():
     # project manager
     def unknown_cmd(self, bot, update):
         bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, I didn't understand that command.")
+
+    def oauth(self, bot, update):
+        user_id = update.message.from_user.id
+        chat_id = update.message.chat_id
+
+        organization = self.config['oauth']['organization']
+        random = j.data.idgenerator.generateXCharID(20)
+        state = '%s.%s' % (user_id, random)
+        state_dict = {
+            'organization': organization,
+            'random': random
+        }
+        self._rediscl.hset(STATE_KEY, user_id, j.data.serializer.json.dumps(state_dict))
+        params = {
+            'response_type': 'code',
+            'client_id': self.config['oauth']['client_id'],
+            'redirect_uri': self.config['oauth']['redirect_uri'],
+            'state': state,
+            'scope': 'user:memberof:%s' % organization
+        }
+        url = 'https://itsyou.online/v1/oauth/authorize?%s' % urllib.parse.urlencode(params)
+
+        msg = "I don't know you yet, pease click on the following link and authorize us to verify you are part of the organization '%s'\n%s" % (organization, url)
+        self.bot.sendMessage(chat_id=chat_id, text=msg)
+
+        # wait for user to login on itsyou.online
+        data = j.core.db.blpop(state, timeout=120)
+        if data is None:
+            msg = "Timeout reached. you didn't authentify on itsyou.online during the last 120 secondes. please /start again"
+            return {'error': msg}
+
+        _, data = data
+        data = j.data.serializer.json.loads(data)
+        return data
 
     # management
     def start(self):

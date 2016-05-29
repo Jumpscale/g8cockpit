@@ -76,7 +76,9 @@ def get_components(config):
         if 'ays' in config['api'] and config['api'].get('active', True):
             host = config['api']['ays'].get('host', '127.0.0.1')
             port = config['api']['ays'].get('port', 5000)
-            ays_api.app.config.update(config['api']['ays'])
+            api_cfg = config['api']['ays']
+            api_cfg['oauth'] = config['oauth']
+            ays_api.app.config.update(api_cfg)
             sub_servers.append(WSGIServer((host, port), ays_api.app))
 
     if 'bot' in config and config['bot'].get('active', True):
@@ -86,8 +88,9 @@ def get_components(config):
 execute the command /newbot and choose a name and username for your bot
 @botfather should give you a token, paste it here please.""")
             sys.exit(1)
-        token = config['bot']['token']
-        sub_servers.append(telegrambot.TGBot(token))
+        bot_cfg = config['bot']
+        bot_cfg['oauth'] = config['oauth']
+        sub_servers.append(telegrambot.TGBot(bot_cfg))
 
     sub_servers.append(ays_bot.AYSBot())
 
@@ -95,7 +98,10 @@ execute the command /newbot and choose a name and username for your bot
 
 @click.command()
 @click.option('--config', '-c', help="path to configuration file", default='config.toml')
-def main(config):
+def start(config):
+    """
+    Start cockpit server
+    """
     # read config and create sub server
     sub_servers = get_components(load_config(config))
 
@@ -113,5 +119,21 @@ def main(config):
     except KeyboardInterrupt:
         rack.stop()
 
+@click.command()
+def clean_cache():
+    """
+    Empty Oauth cache for telegram bot
+    """
+    j.core.db.delete('cockpit.telegram.users')
+    j.core.db.delete('cockpit.telegram.state')
+
+
+@click.group()
+def cli():
+    pass
+
+cli.add_command(clean_cache)
+cli.add_command(start)
+
 if __name__ == '__main__':
-    main()
+    cli()

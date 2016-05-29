@@ -11,7 +11,7 @@ class BlueprintMgmt(object):
 
     #helpers
     def _blueprintsPath(self, repo_name):
-        repo = j.atyourservice.get(name=repo_name)
+        repo = j.atyourservice.repos.get(repo_name)
         return '%s/blueprints' % (repo.basepath)
 
     def _currentRepo(self, username):
@@ -66,12 +66,14 @@ class BlueprintMgmt(object):
 
             bp.load()
             repo.init()
+            run = repo.getRun(action="install")
+            run.execute()
 
             message = "Blueprint deployed. Check your service with `/service list`"
             bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
         except Exception as e:
             j.sal.fs.remove(bp_path)
-            msg = 'Error during blueprint execution, check validity of your blueprint'
+            msg = 'Error during blueprint execution, check validity of your blueprint.\n Error: %s' % str(e)
             return bot.sendMessage(chat_id=chat_id, text=msg)
 
         evt = j.data.models.cockpit_event.Telegram()
@@ -113,55 +115,60 @@ class BlueprintMgmt(object):
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(bluelist, 4)), resize_keyboard=True, one_time_keyboard=True)
         bot.sendMessage(chat_id=update.message.chat_id, text="Click on the blueprint you want to inspect", reply_markup=reply_markup)
 
-    def delete(self, bot, update, repo, names):
+    def delete(self, bot, update, names):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+        repo = j.atyourservice.repos[self._currentRepo(username)]
 
         # ays uninstall before
-        # self._ays_sync(bot, update, args=['do', 'uninstall'])
-        # j.actions.resetAll()
         def delete_bp(path):
-            j.sal.fs.remove(blueprint)
-            evt = j.data.models.cockpit_event.Telegram()
-            evt.io = 'input'
-            evt.action = 'bp.delete'
-            evt.args = {
-                'username': username,
-                'path': path,
-            }
-            self.bot.send_event(evt.to_json())
+            try:
+                self.bot.logger.debug('deleting: %s' % path)
+                bp = repo.getBlueprint(path)
 
-        for name in names:
-            if name == "*" or name == "all":
-                blueprints = j.sal.fs.listFilesInDir(self._currentBlueprintsPath(username))
-                for blueprint in blueprints:
-                    delete_bp(blueprint)
+                try:
+                    for service in bp.services:
+                        repo.uninstall(role=service.role, instance=service.instance)
+                except j.exceptions.Input as e:
+                    # sevice not properly inited. just remove without unintall
+                    self.bot.logger.warning(str(e))
 
-                ln = len(blueprints)
-                message = "%d blueprint%s removed" % (ln, "s" if ln > 1 else "")
+                for service in bp.services:
+                    j.sal.fs.removeDirTree(service.path)
+
+                j.sal.fs.remove(path)
+                repo.blueprints.remove(bp)
+
+                message = "blueprint %s removed" % (j.sal.fs.getBaseName(path))
                 bot.sendMessage(chat_id=update.message.chat_id, text=message)
+            except Exception as e:
+                msg = "Error during deletion of blueprint %s: %s" % (bp.name, str(e))
+                bot.sendMessage(chat_id=update.message.chat_id, text=message)
+            finally:
+                evt = j.data.models.cockpit_event.Telegram()
+                evt.io = 'input'
+                evt.action = 'bp.delete'
+                evt.args = {
+                    'username': username,
+                    'path': path,
+                }
+                self.bot.send_event(evt.to_json())
 
-            else:
-                blueprint = '%s/%s' % (self._blueprintsPath(repo), name)
-
-                self.bot.logger.debug('deleting: %s' % blueprint)
-
-                if not j.sal.fs.exists(blueprint):
-                    message = "Sorry, I don't find any blueprint named `%s`, you can list them with `/blueprint`" % name
-                    bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+        to_delete = []
+        if len(names) == 1 and names[0] in ['*', 'all']:
+            blueprint_paths = j.sal.fs.listFilesInDir(self._currentBlueprintsPath(username))
+            for path in blueprint_paths:
+                to_delete.append(path)
+        else:
+            for name in names:
+                path = j.sal.fs.joinPaths(self._currentBlueprintsPath(username), name)
+                if not j.sal.fs.exists(path):
                     continue
+                to_delete.append(path)
 
-                delete_bp(blueprint)
-
-                message = "Blueprint `%s` removed from `%s`" % (name, repo)
-                bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
-
-        # cleaning
-        j.sal.fs.removeDirTree('%s/alog' % self._currentRepoPath(username))
-        j.sal.fs.removeDirTree('%s/recipes' % self._currentRepoPath(username))
-        j.sal.fs.removeDirTree('%s/services' % self._currentRepoPath(username))
-        j.sal.fs.createDir('%s/services' % self._currentRepoPath(username))
+        for bp in to_delete:
+            delete_bp(bp)
 
     # UI interaction
     def choose_action(self, bot, update):
@@ -201,7 +208,7 @@ class BlueprintMgmt(object):
             return bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
 
         def cb(bot, update):
-            self.delete(bot, update, self._currentRepo(username), [update.message.text])
+            self.delete(bot, update, [update.message.text])
         self.callbacks[username] = cb
 
         custom_keyboard = [bluelist]
@@ -235,11 +242,11 @@ class BlueprintMgmt(object):
 
             # delete a blueprints
             if (args[0] == "delete" or args[0] == "remove") and len(args) == 1:
-                return self.delete_prompt(bot, update, self._currentRepo(username))
+                return self.delete_prompt(bot, update)
 
             if (args[0] == "delete" or args[0] == "remove") and len(args) > 1:
                 args.pop(0)
-                return self.delete(bot, update, self._currentRepo(username), args)
+                return self.delete(bot, update, args)
 
     def document(self, bot, update):
         username = update.message.from_user.username

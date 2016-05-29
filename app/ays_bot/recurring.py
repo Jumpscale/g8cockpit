@@ -30,9 +30,14 @@ class AysRecurring:
                     last = info['last']
 
                     if last is None or now > (last + sec):
-                        run = service.aysrepo.getRun(role=service.role, instance=service.instance, action=action_name, force=True)
+                        rq = self.bot.schedule_action(
+                            action=action_name,
+                            repo=service.aysrepo.name,
+                            role=service.role,
+                            instance=service.instance,
+                            force=True)
                         self._services_reccurring[service][action_name]['last'] = now
-                        gevent.spawn(run.execute)
+                        gevent.spawn(self.bot.handle_action_result, rq, action_name, service.aysrepo.name, service.role, service.instance)
 
             gevent.sleep(1)
 
@@ -49,3 +54,4 @@ class AysRecurring:
                     if service.key not in self._services_reccurring:
                         self._services_reccurring[service] = {}
                     self._services_reccurring[service][action_name] = {'period': period[0], 'last': None}
+                    self.bot.logger.debug("register service recurring from repo %s, service %s, action %s" % (repo.basepath, service.key, action_name))
