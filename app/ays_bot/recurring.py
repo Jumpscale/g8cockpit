@@ -11,35 +11,44 @@ class AysRecurring:
         self._pubsub = None
         self._services_reccurring = {}
 
-        self._load_aysrepos()
+        self._load_repo_lock = gevent.lock.BoundedSemaphore()
 
     def start(self):
+        self._gls.append(gevent.spawn(self._watch_aysrepos))
         self._gls.append(gevent.spawn(self._recurring_loop))
 
     def stop(self):
+        gevent.killall(self._gls)
         gevent.joinall(self._gls)
 
     def _recurring_loop(self):
         while self.bot.running is True:
 
             now = j.data.time.epoch
-            for service, actions in self._services_reccurring.items():
-                for action_name, info in actions.items():
+            with self._load_repo_lock:
+                for service, actions in self._services_reccurring.items():
+                    for action_name, info in actions.items():
 
-                    sec = j.data.time.getDeltaTime(info['period'])
-                    last = info['last']
+                        sec = j.data.time.getDeltaTime(info['period'])
+                        last = info['last']
 
-                    if last is None or now > (last + sec):
-                        rq = self.bot.schedule_action(
-                            action=action_name,
-                            repo=service.aysrepo.name,
-                            role=service.role,
-                            instance=service.instance,
-                            force=True)
-                        self._services_reccurring[service][action_name]['last'] = now
-                        gevent.spawn(self.bot.handle_action_result, rq, action_name, service.aysrepo.name, service.role, service.instance)
+                        if last is None or now > (last + sec):
+                            rq = self.bot.schedule_action(
+                                action=action_name,
+                                repo=service.aysrepo.name,
+                                role=service.role,
+                                instance=service.instance,
+                                force=True)
+                            self._services_reccurring[service][action_name]['last'] = now
+                            gevent.spawn(self.bot.handle_action_result, rq, action_name, service.aysrepo.name, service.role, service.instance)
 
             gevent.sleep(1)
+
+    def _watch_aysrepos(self):
+        while self.bot.running:
+            self.bot.logger.info("Start looking for services that register recurring actions.")
+            self._load_aysrepos()
+            gevent.sleep(300)
 
     def _load_aysrepos(self, repos=[]):
         """
