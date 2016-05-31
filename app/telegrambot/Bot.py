@@ -111,18 +111,21 @@ class TGBot():
         msg = self._sanitize_md(evt.args['msg'])
         chat_ids = set()
         if 'chat_id' in evt.args and evt.args['chat_id'] is not None:
-            chat_ids.add(evt.args['chat_id'])
+            if evt.args['chat_id']:
+                chat_ids.add(evt.args['chat_id'])
         else:
             users = self._rediscl.hgetall('cockpit.telegram.users')
             for _, data in users.items():
                 data = j.data.serializer.json.loads(data.decode())
-                chat_ids.add(data['chat_id'])
+                chat_id = data['chat_id']
+                if chat_id:
+                    chat_ids.add(chat_id)
 
         for chat_id in chat_ids:
             try:
                 self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
             except Exception as e:
-                self.logger.error("Error sending message '%s' : %s" %(msg, str(e)))
+                self.logger.error("Error sending message (chat id %s)'%s' : %s" % (chat_id, msg, str(e)))
 
     def send_event(self, payload):
         self._rediscl.publish('telegram', payload)
