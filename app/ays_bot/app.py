@@ -9,21 +9,24 @@ from .recurring import AysRecurring
 class AYSBot(object):
     """docstring for bot"""
 
-    def __init__(self, redis=None):
+    def __init__(self, workers_nbr=5, redis=None):
         self.logger = j.logger.get('j.cockpit.bot')
         self.running = False
+        self.workers_nbr = workers_nbr
         self._rediscl = redis if redis else j.core.db
         self.event_dispatcher = EventDispatcher(self)
         self.recurring = AysRecurring(self)
         self.workers = []
         self.tasks_queue = queue.JoinableQueue()
+        self.tasks_queue2 = queue.JoinableQueue()
 
     def start(self):
         self.logger.info("start jscockpit bot")
         self.running = True
 
-        for i in range(10):
+        for i in range(self.workers_nbr):
             self.workers.append(gevent.spawn(self.worker, i))
+            self.workers.append(gevent.spawn(self.worker_single, i))
 
         self.event_dispatcher.start()
         self.recurring.start()
@@ -34,6 +37,7 @@ class AYSBot(object):
         self.event_dispatcher.stop()
         self.recurring.stop()
         self.tasks_queue.join()
+        self.tasks_queue2.join()
         gevent.killall(self.workers)
 
     def worker(self, i):
@@ -60,20 +64,27 @@ class AYSBot(object):
                 resp_q.put(result)
                 self.tasks_queue.task_done()
 
-    def worker_single(self, work):
-        result = {}
-        try:
-            service = work['service']
-            self.logger.debug('worker single execute action %s for %s' % (work['action'], service.key))
-            func = service.getAction(work['action'])
-            func(service=work['service'], event=work['args'])
-        except Exception as e:
-            self.logger.error('worker single error during execution of action %s for %s: %s' %
-                              (work['action'], service.key, str(e)))
-            result['error'] = str(e)
-        finally:
-            resp_q = work['resp_q']
-            resp_q.put(result)
+    def worker_single(self, i):
+        nbr = i
+        self.logger.info('start worker single Nr %d' % i)
+        while self.running:
+
+            work = self.tasks_queue2.get()
+
+            result = {}
+            try:
+                service = work['service']
+                self.logger.debug('worker single %s execute action %s for %s' % (nbr, work['action'], service.key))
+                func = service.getAction(work['action'])
+                func(service=work['service'], event=work['args'])
+            except Exception as e:
+                self.logger.error('worker single %d error during execution of action %s for %s: %s' %
+                                  (nbr, work['action'], service.key, str(e)))
+                result['error'] = str(e)
+            finally:
+                resp_q = work['resp_q']
+                resp_q.put(result)
+                self.tasks_queue2.task_done()
 
     def schedule_action(self, action, repo, role="", instance="", force=False, notify=False, chat_id=None):
         """
@@ -126,7 +137,7 @@ class AYSBot(object):
             msg = "Schedule action *%s* on service `%s` instance `%s` in repo `%s`" % (action, role, instance, repo)
             self.send_tg_msg(msg=msg, chat_id=chat_id)
 
-        gevent.spawn(self.worker_single, work)
+        self.tasks_queue2.put(work)
         return response_queue
 
     def handle_action_result(self, q, action, repo, role, instance, notify=False, chat_id=None):
@@ -140,7 +151,7 @@ class AYSBot(object):
             self.logger.error('Error execution of action %s of service %s!%s from repo `%s`: %s' % (action, role, instance, repo, result['error']))
             msg = "Error happened on action *%s* on service `%s` instance `%s` in repo `%s`: %s" % (action, role, instance, repo, result['error'])
         elif notify:
-            msg = "Action *%s* on service `%s` instance `%s` in repo %s exectued without error" % (action, role, instance, repo)
+            msg = "Action *%s* on service `%s` instance `%s` in repo `%s` exectued without error" % (action, role, instance, repo)
 
         if msg:
             self.send_tg_msg(msg=msg, chat_id=chat_id)

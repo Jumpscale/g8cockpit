@@ -92,7 +92,8 @@ execute the command /newbot and choose a name and username for your bot
         bot_cfg['oauth'] = config['oauth']
         sub_servers.append(telegrambot.TGBot(bot_cfg))
 
-    sub_servers.append(ays_bot.AYSBot())
+    workers_nbr = config.get('process', {}).get('workers_nbr', 5)
+    sub_servers.append(ays_bot.AYSBot(workers_nbr=workers_nbr))
 
     return sub_servers
 
