@@ -60,7 +60,7 @@ class AysRecurring:
         for repo in repos:
             for service in repo.findServices():
                 for action_name, period in service.state.recurring.items():
-                    if service.key not in self._services_reccurring:
+                    if service not in self._services_reccurring:
                         self._services_reccurring[service] = {}
                     self._services_reccurring[service][action_name] = {'period': period[0], 'last': None}
                     self.bot.logger.debug("register service recurring from repo %s, service %s, action %s" % (repo.basepath, service.key, action_name))
