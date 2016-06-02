@@ -45,6 +45,8 @@ def process_jwt_token():
 
         except jwt.DecodeError as e:
             msg = 'Your JWT is invalid'
+        except Exception as e:
+            msg = 'Unexpected error : %s' % str(e)
 
     else:
         msg = 'Your JWT is invalid'
