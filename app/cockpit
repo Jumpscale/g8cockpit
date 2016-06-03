@@ -67,10 +67,17 @@ def get_components(config):
     """
 
     sub_servers = []
+
+    workers_nbr = config.get('process', {}).get('workers_nbr', 5)
+    core = ays_bot.AYSBot(workers_nbr=workers_nbr)
+    sub_servers.append(core)
+
     if 'mail' in config and config['mail'].get('active', True):
         host = config['mail'].get('host', '127.0.0.1')
         port = config['mail'].get('port', 25)
-        sub_servers.append(mail.Server((host, port)))
+        mail_server = mail.Server((host, port))
+        mail_server.ays_bot = core
+        sub_servers.append(mail_server)
 
     if 'api' in config:
         if 'ays' in config['api'] and config['api'].get('active', True):
@@ -79,6 +86,7 @@ def get_components(config):
             api_cfg = config['api']['ays']
             api_cfg['oauth'] = config['oauth']
             ays_api.app.config.update(api_cfg)
+            ays_api.app.ays_bot = core
             sub_servers.append(WSGIServer((host, port), ays_api.app))
 
     if 'bot' in config and config['bot'].get('active', True):
@@ -90,10 +98,9 @@ execute the command /newbot and choose a name and username for your bot
             sys.exit(1)
         bot_cfg = config['bot']
         bot_cfg['oauth'] = config['oauth']
-        sub_servers.append(telegrambot.TGBot(bot_cfg))
-
-    workers_nbr = config.get('process', {}).get('workers_nbr', 5)
-    sub_servers.append(ays_bot.AYSBot(workers_nbr=workers_nbr))
+        telegram_bot = telegrambot.TGBot(bot_cfg)
+        telegram_bot.ays_bot = core
+        sub_servers.append(telegram_bot)
 
     return sub_servers
 

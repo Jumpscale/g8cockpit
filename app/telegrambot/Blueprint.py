@@ -66,15 +66,21 @@ class BlueprintMgmt(object):
 
             bp.load()
             repo.init()
-            run = repo.getRun(action="install")
-            run.execute()
+            rq = self.bot.ays_bot.schedule_action('install', repo.name, force=True, notify=False, chat_id=chat_id)
 
-            message = "Blueprint deployed. Check your service with `/service list`"
-            bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+            result = rq.get()
+            msg = None
+            if 'error' in result:
+                raise Exception(result['error'])
+            else:
+                msg = "Blueprint deployed. Check your service with `/service list`"
+
+            if msg:
+                bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
         except Exception as e:
             j.sal.fs.remove(bp_path)
             msg = 'Error during blueprint execution, check validity of your blueprint.\n Error: %s' % str(e)
-            return bot.sendMessage(chat_id=chat_id, text=msg)
+            return bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
         evt = j.data.models.cockpit_event.Telegram()
         evt.io = 'input'
@@ -124,27 +130,33 @@ class BlueprintMgmt(object):
         # ays uninstall before
         def delete_bp(path):
             try:
-                self.bot.logger.debug('deleting: %s' % path)
                 bp = repo.getBlueprint(path)
 
-                try:
-                    for service in bp.services:
-                        repo.uninstall(role=service.role, instance=service.instance)
-                except j.exceptions.Input as e:
-                    # sevice not properly inited. just remove without unintall
-                    self.bot.logger.warning(str(e))
+                msg = 'Start deletion of blueprint %s' % bp.name
+                self.bot.logger.debug(msg)
+                bot.sendMessage(chat_id=chat_id, text=msg)
 
+                rq = self.bot.ays_bot.schedule_action('uninstall', repo.name, force=True, notify=False, chat_id=chat_id)
+                result = rq.get()
+                msg = None
+                if 'error' in result:
+                    # error is something else then bad inited service
+                    if result['error'].find('service not properly inited') == -1:
+                        raise Exception(result['error'])
+                else:
+                    msg = "Blueprint deployed. Check your service with `/service list`"
+
+                # remove uninstalled services
                 for service in bp.services:
                     j.sal.fs.removeDirTree(service.path)
-
                 j.sal.fs.remove(path)
                 repo.blueprints.remove(bp)
 
-                message = "blueprint %s removed" % (j.sal.fs.getBaseName(path))
-                bot.sendMessage(chat_id=update.message.chat_id, text=message)
+                msg = "blueprint %s removed" % (bp.name)
+                bot.sendMessage(chat_id=update.message.chat_id, text=msg)
             except Exception as e:
                 msg = "Error during deletion of blueprint %s: %s" % (bp.name, str(e))
-                bot.sendMessage(chat_id=update.message.chat_id, text=message)
+                bot.sendMessage(chat_id=update.message.chat_id, text=msg)
             finally:
                 evt = j.data.models.cockpit_event.Telegram()
                 evt.io = 'input'
