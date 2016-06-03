@@ -4,12 +4,15 @@ import wtforms_json
 from .ays import ays_api
 from .oauth import oauth_api
 from .webhooks import webhooks_api
+from JumpScale import j
 
 
 app = Flask(__name__)
 
 app.config["WTF_CSRF_ENABLED"] = False
 wtforms_json.init()
+
+logger = j.logger.get('j.cockpit.api')
 
 
 def process_jwt_token():
@@ -51,6 +54,7 @@ def process_jwt_token():
     else:
         msg = 'Your JWT is invalid'
 
+    logger.error(msg)
     response = make_response(msg)
     response.status_code = 401
     return response
