@@ -17,7 +17,8 @@ def cli(config):
     p = Process(target=app.run, kwargs={
         'host': cfg['oauth'].get('host', '127.0.0.1'),
         'port': cfg['oauth'].get('port', 5000)
-    }).start()
+    })
+    p.start()
 
     # start bot
     bot = CockpitDeployerBot()
