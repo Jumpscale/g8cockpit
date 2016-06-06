@@ -1,6 +1,4 @@
 # g8cockpit
-private neutral management environment for g8 based clouds
+Private neutral management environment for g8 based clouds
 
-# see docs for more info
-
-- [docs/home.md](docs/home.md)
+Documentation is available at : https://gig.gitbooks.io/cockpit/content/

@@ -1,4 +1,4 @@
-# Cockpit deployer bot
+# Installation
 
 This telegram bot is used to allow people to easily deploy a [JSCockpit](https://github.com/Jumpscale/jscockpit/tree/master/app).
 
