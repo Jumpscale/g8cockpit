@@ -49,11 +49,6 @@ cockpit__pilot:
   oauth.client_id: '{oauth_id}'
   oauth.organization: '{oauth_organization}'
   oauth.jwt_key: '{oauth_jwtkey}'
-  smtp.login: '{smtp_login}'
-  smtp.passwd: '{smtp_passwd}'
-  smtp.server: '{smtp_server}'
-  smtp.port: '{smtp_port}'
-  smtp.sender: '{smtp.sender}'
 ```
 - Copy it to the blueprints folder  
 ```bash
