@@ -72,23 +72,3 @@ blueprint - Manage your blueprints project
 service - Perform actions on your service instances
 help - Show you what I can do
 ```
-
-## Start cockpit
-```bash
-jspython cockpit start --config config.toml
-```
-### Cockpit CLI command:
-```
-./cockpit --help
-Usage: cockpit [OPTIONS] COMMAND [ARGS]...
-
-Options:
-  --help  Show this message and exit.
-
-Commands:
-  clean_cache  Empty Oauth cache for telegram bot
-  start        Start cockpit server
-
-```
-- **start** : start cockpit server
-- **clean_cache** : Empty cache that store oauth authentification for telegram bot
