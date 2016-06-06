@@ -123,7 +123,7 @@ types:
     /repository:
         description: a repository
         get:
-            displayName: ListRepositories
+            displayName: listRepositories
             description: list all repositorys
             responses:
                 200:
@@ -131,7 +131,7 @@ types:
                         application/json:
                           type: Repository[]
         post:
-            displayName: CreateNewRepository
+            displayName: createNewRepository
             description: create a new repository
             body:
                 application/json:
@@ -153,7 +153,7 @@ types:
                 repository:
                   type: string
             get:
-                displayName: GetRepository
+                displayName: getRepository
                 description: Get information of a repository
                 responses:
                     200:
@@ -167,7 +167,7 @@ types:
                             application/json:
                               type: Error
             delete:
-                displayName: DeleteRepository
+                displayName: deleteRepository
                 description: Delete a repository
                 responses:
                     204:
@@ -181,7 +181,7 @@ types:
             /blueprint:
                 description: A blueprint inside a repository
                 get:
-                    displayName: ListBlueprints
+                    displayName: listBlueprints
                     description: List all blueprint
                     responses:
                         200:
@@ -195,7 +195,7 @@ types:
                                     type: Error
 
                 post:
-                    displayName: CreateNewBlueprint
+                    displayName: createNewBlueprint
                     description: Create a new blueprint
                     body:
                         application/json:
@@ -216,7 +216,7 @@ types:
                         blueprint:
                           type: string
                     get:
-                        displayName: GetBlueprint
+                        displayName: getBlueprint
                         description: Get a blueprint
                         responses:
                             200:
@@ -229,7 +229,7 @@ types:
                                     application/json:
                                       type: Error
                     post:
-                        displayName: ExecuteBlueprint
+                        displayName: executeBlueprint
                         description: Execute the blueprint
                         responses:
                             200:
@@ -240,7 +240,7 @@ types:
                                     application/json:
                                       type: Error
                     put:
-                        displayName: UpdateBlueprint
+                        displayName: updateBlueprint
                         description: Update existing blueprint
                         body:
                             application/json:
@@ -256,7 +256,7 @@ types:
                                       type: Error
 
                     delete:
-                        displayName: DeleteBlueprint
+                        displayName: deleteBlueprint
                         description: delete blueprint
                         responses:
                             204:
@@ -270,7 +270,7 @@ types:
             /service:
                 description: A service
                 get:
-                    displayName: ListServices
+                    displayName: listServices
                     description: List all services in the repository
                     responses:
                         200:
@@ -282,7 +282,7 @@ types:
                         role:
                           type: string
                     get:
-                        displayName: ListServicesByRole
+                        displayName: listServicesByRole
                         description: List all services of role 'role' in the repository
                         responses:
                             200:
@@ -295,7 +295,7 @@ types:
                                 action:
                                   type: string
                             post:
-                                displayName: ExecuteServiceActionByRole
+                                displayName: executeServiceActionByRole
                                 description: Perform an action on all service with the role 'role'
                                 queryParameters:
                                     args:
@@ -314,7 +314,7 @@ types:
                             instance:
                               type: string
                         get:
-                            displayName: GetServiceByInstance
+                            displayName: getServiceByInstance
                             description: Get a service instance
                             responses:
                                 200:
@@ -327,7 +327,7 @@ types:
                                         application/json:
                                           type: Error
                         delete:
-                            displayName: DeleteServiceByInstance
+                            displayName: deleteServiceByInstance
                             description: uninstall and delete a service
                             queryParameters:
                                 scope:
@@ -345,7 +345,7 @@ types:
                                           type: Error
                         /action:
                             get:
-                                displayName: ListServiceActions
+                                displayName: listServiceActions
                                 description: Get list of action available on this service
                                 responses:
                                     200:
@@ -362,7 +362,7 @@ types:
                                 action:
                                   type: string
                             post:
-                                displayName: ExecuteServiceActionByInstance
+                                displayName: executeServiceActionByInstance
                                 description: Perform an action on a services
                                 queryParameters:
                                     args:
@@ -380,7 +380,7 @@ types:
             /template:
                 description: A template of a service
                 get:
-                    displayName: ListTemplates
+                    displayName: listTemplates
                     description: list all templates
                     responses:
                         200:
@@ -388,7 +388,7 @@ types:
                                 application/json:
                                   type: Template[]
                 post:
-                    displayName: CreateNewTemplate
+                    displayName: createNewTemplate
                     description: Create new template
                     body:
                         application/json:
@@ -403,7 +403,7 @@ types:
                         template:
                           type: string
                     get:
-                        displayName: GetTemplate
+                        displayName: getTemplate
                         description: Get a template
                         responses:
                             200:
