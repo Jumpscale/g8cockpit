@@ -65,7 +65,6 @@ def get_components(config):
     """
     Return a list of configured subserver activated in the config
     """
-
     sub_servers = []
 
     workers_nbr = config.get('process', {}).get('workers_nbr', 5)
