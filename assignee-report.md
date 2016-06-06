@@ -2,7 +2,7 @@
 
 # Issues per assignee
 - [rkhamis](#rkhamis) has 1 assigned
-- [zaibon](#zaibon) has 2 assigned
+- [zaibon](#zaibon) has 1 assigned
 
 
 
@@ -18,5 +18,4 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#14](https://github.com/jumpscale/jscockpit/issues/14)|create python client for it|:red_circle: Open|feature|
-|[#12](https://github.com/jumpscale/jscockpit/issues/12)|Adds mail server config to cockpit blueprint|:large_blue_circle: In Progress||
 
