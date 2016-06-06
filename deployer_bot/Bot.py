@@ -41,6 +41,7 @@ class CockpitArgs:
     """Argument required to deploy a G8Cockpit"""
     def __init__(self, asker):
         super(CockpitArgs, self).__init__()
+        self.logger = j.logger.get("j.client.cockpitbot")
 
         # Asker is the interface used to ask data to user
         self.asker = asker
@@ -58,6 +59,7 @@ class CockpitArgs:
         self._ovc_location = None
         self._dns_login = None
         self._dns_password = None
+        self._dns_sshkey = None
         self._domain = None
         self._sshkey = None
         self._portal_password = None
@@ -73,7 +75,7 @@ class CockpitArgs:
             try:
                 self._ovc_client = j.clients.openvcloud.get(self.ovc_url, self.ovc_login, self.ovc_password)
             except Exception as e:
-                msg = "Error while trying to connect to G8 (%s). Login: %s\n%s" % (self.args.ovc_url, self.args.ovc_login, str(e))
+                msg = "Error while trying to connect to G8 (%s). Login: %s\n%s" % (self.ovc_url, self.ovc_login, str(e))
                 self.logger.error(msg)
                 self.asker.say(msg)
         return self._ovc_client
@@ -159,7 +161,7 @@ class CockpitArgs:
     @property
     def bot_token(self):
         if self._bot_token is None:
-            self._bot_token =self.asker.ask_bot_token()
+            self._bot_token = self.asker.ask_bot_token()
         return self._bot_token
 
     @property
@@ -298,7 +300,7 @@ class CockpitDeployerBot:
 
         if 'dns' in self.config:
             args._dns_login = self.config['dns'].get('login', None)
-            args._dns_password = self.config['dns'].get('password', None)
+            args._dns_password = self.config['dns'].get('password', '')
 
         if 'g8' in self.config:
             choices = [g['address'] for g in self.config['g8'].values()]
@@ -312,7 +314,7 @@ class CockpitDeployerBot:
             self.deploy(username, chat_id, args)
         except Exception as e:
             self.logger.error(e)
-            self.bot.sendMessage(chat_id=chat_id, text="Error during deployement. Please /start again.")
+            self.bot.sendMessage(chat_id=chat_id, text="Error during deployement : %s\n\n Please /start again." % str(e))
 
     def deploy(self, username, chat_id, args):
         oauth_data = self.oauth(chat_id, args)
@@ -325,6 +327,11 @@ class CockpitDeployerBot:
         self.repos[username] = repo
 
         cockpit_blueprint = self.templates['blueprint']
+        jwt_key = self.config['oauth'].get('jwt_key', None)
+        if jwt_key:
+            # needed cause AYS doesn't support loading yaml file with multiline in it.
+            jwt_key = jwt_key.replace('\n', '\\n')
+
         content = cockpit_blueprint.format(g8_url=args.ovc_url,
                                            g8_account=args.ovc_account,
                                            g8_login=args.ovc_login,
@@ -334,9 +341,11 @@ class CockpitDeployerBot:
                                            dns_login=args.dns_login,
                                            dns_password=args.dns_password,
                                            dns_domain=args.domain,
+                                           dns_sshkey=self.config['dns'].get('sshkey', None),
                                            oauth_organization=args.organization,
                                            oauth_secret=oauth_data['client_secret'],
                                            oauth_id=oauth_data['client_id'],
+                                           oauth_jwtkey=jwt_key
                                            )
 
         msg = "Deployement of you cockpit in progress, please be patient.\nYou can follow progress using the /status command"
@@ -354,13 +363,9 @@ class CockpitDeployerBot:
         self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
         sshkey = repo.findServices(role='sshkey')[0]
-        keypath = j.sal.fs.joinPaths(sshkey.path, 'sshkey_%s' % sshkey.instance)
-        document_file = open(keypath, 'rb')
         msg = 'Here is the sshkey you need to use to connect to your cockpit server using SSH.'
         self.bot.sendMessage(chat_id=chat_id, text=msg)
-        message = self.bot.sendDocument(chat_id=chat_id,
-                                        document=document_file,
-                                        filename='cockpit_rsa')
+        self.bot.sendMessage(chat_id=chat_id, text=sshkey.hrd.getStr('key.priv'))
 
         # deplyement done, remove user fromc cahce
         del self.in_progess_args[username]
