@@ -291,18 +291,6 @@ class CockpitDeployerBot:
         repo = j.atyourservice.createAYSRepo(path)
         self.repos[username] = repo
 
-        smtp_login = ''
-        smtp_passwd = ''
-        smtp_server = ''
-        smtp_port = ''
-        smtp_sender = ''
-        if 'mail' in self.config:
-            smtp_login = self.config['mail'].get('login', '')
-            smtp_passwd = self.config['mail'].get('passwd', '')
-            smtp_server = self.config['mail'].get('server', '')
-            smtp_port = self.config['mail'].get('port', '')
-            smtp_sender = self.config['mail'].get('sender', '')
-
         cockpit_blueprint = self.templates['blueprint']
         jwt_key = self.config['oauth'].get('jwt_key', None)
         if jwt_key:
@@ -322,12 +310,7 @@ class CockpitDeployerBot:
                                            oauth_organization=args.organization,
                                            oauth_secret=oauth_data['client_secret'],
                                            oauth_id=oauth_data['client_id'],
-                                           oauth_jwtkey=jwt_key,
-                                           smtp_login=smtp_login,
-                                           smtp_passwd=smtp_passwd,
-                                           smtp_server=smtp_server,
-                                           smtp_port=smtp_port,
-                                           smtp_sender=smtp_sender
+                                           oauth_jwtkey=jwt_key
                                            )
 
         msg = "Deployement of you cockpit in progress, please be patient.\nYou can follow progress using the /status command"
