@@ -9,16 +9,10 @@
 
 
 ## Issues per assignee
-- [zaibon](#zaibon)
 - [abdulrahmantkhalifa](#abdulrahmantkhalifa)
 - [rkhamis](#rkhamis)
+- [zaibon](#zaibon)
 
-
-
-### [zaibon](https://github.com/zaibon)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
 
 
 ### [abdulrahmantkhalifa](https://github.com/abdulrahmantkhalifa)
@@ -28,6 +22,12 @@
 
 
 ### [rkhamis](https://github.com/rkhamis)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [zaibon](https://github.com/zaibon)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
