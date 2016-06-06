@@ -176,27 +176,6 @@ class CockpitArgs:
             self._organization = self.asker.ask_organization()
         return self._organization
 
-# class UserStore:
-#     """Store current users communicating with the bot"""
-#     def __init__(self):
-#         self.users = {}
-#         self.lock = threading.Lock()
-#
-#     def add(self, username, chat_id, args):
-#         self.lock.acquire()
-#
-#         if username not in self.users:
-#             self.users[username] = {
-#                 'chat_id': chat_id,
-#                 'args': args,
-#             }
-#         user = self.users[username]
-#
-#         self.lock.release()
-#
-#     def get(self, username):
-#         self.lock.acquire()
-#         self.lock.release()
 
 class CockpitDeployerBot:
     """docstring for """
@@ -249,20 +228,6 @@ class CockpitDeployerBot:
         unknown_handler = RegexHandler(r'/.*', self.unknown)
         dispatcher.add_handler(unknown_handler)
 
-    def _configure_deployer(self, asker, chat_id, user_obj):
-        """
-        Populate predefine value in the asker to improve user experience
-        """
-        asker.chat_id = chat_id  # TODO better way to set chat it in asker
-        asker.client_user = user_obj  # TODO better way to set client_user
-
-        if 'dns' in self.config:
-            deployer.args._dns_login = self.config['dns'].get('login', None)
-            deployer.args._dns_password = self.config['dns'].get('password', None)
-
-        if 'g8' in self.config:
-            choices = [g['address'] for g in self.config['g8'].values()]
-            deployer.args.asker.g8_choices = choices
 
     def _attache_logger(self, deployer, chat_id):
         """
