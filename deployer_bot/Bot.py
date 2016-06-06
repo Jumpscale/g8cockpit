@@ -290,12 +290,18 @@ class CockpitDeployerBot:
         path = j.sal.fs.getTmpDirPath()
         repo = j.atyourservice.createAYSRepo(path)
         self.repos[username] = repo
+
+        smtp_login = ''
+        smtp_passwd = ''
+        smtp_server = ''
+        smtp_port = ''
+        smtp_sender = ''
         if 'mail' in self.config:
-            smtp_login = self.config['mail'].get('login')
-            smtp_passwd = self.config['mail'].get('passwd')
-            smtp_server = self.config['mail'].get('server')
-            smtp_port = self.config['mail'].get('port')
-            smtp_sender = self.config['mail'].get('sender')
+            smtp_login = self.config['mail'].get('login', '')
+            smtp_passwd = self.config['mail'].get('passwd', '')
+            smtp_server = self.config['mail'].get('server', '')
+            smtp_port = self.config['mail'].get('port', '')
+            smtp_sender = self.config['mail'].get('sender', '')
 
         cockpit_blueprint = self.templates['blueprint']
         jwt_key = self.config['oauth'].get('jwt_key', None)
