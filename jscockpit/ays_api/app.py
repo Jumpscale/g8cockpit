@@ -68,7 +68,7 @@ app.register_blueprint(webhooks_api)
 
 @app.route('/apidocs/<path:path>')
 def send_js(path):
-    root = j.sal.fs.joinPaths(__file__, 'apidocs')
+    root = j.sal.fs.joinPaths(j.sal.fs.getParent(__file__), 'apidocs')
     return send_from_directory(root, path)
 
 
