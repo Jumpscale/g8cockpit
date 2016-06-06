@@ -334,6 +334,9 @@ class CockpitDeployerBot:
         repo.install(force=False)
 
         cockpit = repo.findServices(templatename='os.cockpit')[0]
+        # upload cockpit AYS repo to cockpit
+        cockpit.executor.upload(repo.basepath, '/opt/code/cockpit/project/ays_cockpit')
+
         msg = "Cockpit deployed.\nAddress : https://{url}\nSSH access: `ssh root@{url} -p {port}`".format(
             url=cockpit.hrd.getStr('dns.domain'), port=cockpit.hrd.getInt('ssh.port'))
         self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
