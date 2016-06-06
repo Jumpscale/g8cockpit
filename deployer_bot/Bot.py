@@ -316,7 +316,7 @@ class CockpitDeployerBot:
                                            oauth_organization=args.organization,
                                            oauth_secret=oauth_data['client_secret'],
                                            oauth_id=oauth_data['client_id'],
-                                           oauth_jwtkey=jwt_key
+                                           oauth_jwtkey=jwt_key,
                                            smtp_login=smtp_login,
                                            smtp_passwd=smtp_passwd,
                                            smtp_server=smtp_server,
