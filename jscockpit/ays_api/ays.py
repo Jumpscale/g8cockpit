@@ -1,4 +1,4 @@
-from flask import Blueprint as fBlueprint, jsonify, request, json, Response
+from flask import Blueprint as fBlueprint, jsonify, request, json, Response, current_app
 from JumpScale import j
 
 
@@ -271,24 +271,47 @@ def ListServices(repository):
 
     return json.dumps(services), 200, {'Content-Type': 'application/json'}
 
-# @ays_api.route('/ays/repository/<repository>/service/<role>', methods=['GET'])
-# def ays_repository_byRepository_service_byRole_get(role, repository):
-#     '''
-#     List all services of role 'role' in the repository
-#     It is handler for GET /ays/repository/<repository>/service/<role>
-#     '''
-#
-#     return jsonify()
+@ays_api.route('/ays/repository/<repository>/service/<role>', methods=['GET'])
+def ListServicesByRole(role, repository):
+    '''
+    List all services of role 'role' in the repository
+    It is handler for GET /ays/repository/<repository>/service/<role>
+    '''
+    if repository not in j.atyourservice.repos:
+        return jsonify(error='Repository not found with name %s' % repository), 404
+
+    repo = j.atyourservice.repos[repository]
+    services = []
+    for s in repo.findServices(role=role):
+        service = {
+            'role': s.role,
+            'name': s.recipe.name,
+            'instance': s.instance
+        }
+        services.append(service)
+
+    return json.dumps(services), 200, {'Content-Type': 'application/json'}
 
 
 @ays_api.route('/ays/repository/<repository>/service/<role>/action/<action>', methods=['POST'])
-def ListServicesByRole(action, role, repository):
+def ExecuteServiceActionByRole(action, role, repository):
     '''
     Perform an action on all service with the role 'role'
     It is handler for POST /ays/repository/<repository>/service/<role>/action/<action>
     '''
+    if repository not in j.atyourservice.repos:
+        return jsonify(error='Repository not found with name %s' % repository), 404
+    import ipdb; ipdb.set_trace()
+    rq = current_app.ays_bot.schedule_action(action, repository, role=role, force=True, notify=False, chat_id=None)
 
-    return jsonify()
+    result = rq.get()
+    if 'error' in result:
+        logger.error('Error execution of action %s of services role:%s from repo %s: %s' % (action, role, repository, result['error']))
+        error_msg = "Error happened on action %s on services role :%s in repo %s: %s" % (action, role, repository, result['error'])
+        return jsonify(error=error_msg), 500
+
+    msg = "Action %s on services role:`%s` in repo %s exectued without error" % (action, role, repository)
+    return jsonify(result=msg), 200
 
 
 @ays_api.route('/ays/repository/<repository>/service/<role>/<instance>', methods=['GET'])
@@ -349,8 +372,21 @@ def ExecuteServiceActionByInstance(action, instance, role, repository):
     Perform an action on a services
     It is handler for POST /ays/repository/<repository>/service/<role>/<instance>/<action>
     '''
+    repo = j.atyourservice.repos[repository]
+    s = repo.getService(role=role, instance=instance, die=False)
+    if s is None:
+        return jsonify(error='Service not found'), 404
 
-    return jsonify()
+    rq = current_app.ays_bot.schedule_action(action, repo.name, role=role, instance=instance, force=True, notify=False, chat_id=None)
+
+    result = rq.get()
+    if 'error' in result:
+        error_msg = 'Error execution of action %s of service %s!%s from repo `%s`: %s' % (action, role, instance, repo.name, result['error'])
+        logger.error(error_msg)
+        return jsonify(error=error_msg), 500
+
+    msg = "Action %s on service %s instance %s in repo %s exectued without error" % (action, role, instance, repo)
+    return jsonify(result=msg), 200
 
 
 @ays_api.route('/ays/repository/<repository>/service/<role>/<instance>', methods=['DELETE'])
