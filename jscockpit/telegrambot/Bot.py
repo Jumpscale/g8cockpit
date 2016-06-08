@@ -5,6 +5,7 @@ monkey.patch_all()
 from .Repo import RepoMgmt
 from .Blueprint import BlueprintMgmt
 from .Service import ServiceMgmt
+from .utils import chunks
 
 import telegram
 from telegram.ext import Updater
@@ -17,6 +18,7 @@ import sys
 import redis
 import urllib
 from JumpScale import j
+
 
 STATE_KEY = 'cockpit.telegram.state'
 
@@ -108,6 +110,12 @@ class TGBot():
 
         self.logger.debug("event recieve telegram output")
 
+        if evt.action == 'message':
+            self._handle_event_message(evt)
+        elif evt.action == 'service.communication':
+            gevent.spawn(self._handle_event_service_com, evt)
+
+    def _handle_event_message(evt):
         msg = self._sanitize_md(evt.args['msg'])
         chat_ids = set()
         if 'chat_id' in evt.args and evt.args['chat_id'] is not None:
@@ -126,6 +134,55 @@ class TGBot():
                 self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
             except Exception as e:
                 self.logger.error("Error sending message (chat id %s)'%s' : %s" % (chat_id, msg, str(e)))
+
+    def _handle_event_service_com(self, evt):
+        # If no key, we can't send response. exit here.
+        key = evt.args.get('key', None)
+        if key is None:
+            return
+
+        # if no username or message, we can't continue
+        username = evt.args.get('username', None)
+        msg = evt.args.get('message', None)
+        if not username or not msg:
+            resp = {'error': 'username or message is empty'}
+            self._rediscl.rpush(key, j.data.serializer.json.dumps(resp))
+            return
+
+        # search for the chat_id for the username
+        data = self._rediscl.hget('cockpit.telegram.users', username)
+        if data is None:
+            # mean we don't know the user.
+            resp = {'error': 'user %s not known, the user need to start a chat with the bot first.' % username}
+            self._rediscl.rpush(key, j.data.serializer.json.dumps(resp))
+            return
+
+        data = j.data.serializer.json.loads(data)
+
+        if evt.args.get('expect_response', True):
+            def callback(bot, update):
+                # this method is called when the user response.
+                # it contains the reponse of the user
+                resp = {'response': update.message.text}
+                self._rediscl.rpush(key, j.data.serializer.json.dumps(resp))
+            self.question_callbacks[username] = callback
+
+        # create keyboard is needed
+        keyboard = evt.args.get('keyboard', [])
+        if keyboard:
+            reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(keyboard, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
+        else:
+            reply_markup = None
+
+        # send message
+        try:
+            send_msg = self.bot.sendMessage(chat_id=data['chat_id'], text=msg, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
+        except Exception as e:
+            err_msg = "Error sending message (chat id %s)'%s' : %s" % (data['chat_id'], msg, str(e))
+            self.logger.error(err_msg)
+            resp = {'error': err_msg}
+            self._rediscl.rpush(key, j.data.serializer.json.dumps(resp))
+            return
 
     def send_event(self, payload):
         self._rediscl.publish('telegram', payload)
