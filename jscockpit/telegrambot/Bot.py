@@ -115,7 +115,7 @@ class TGBot():
         elif evt.action == 'service.communication':
             gevent.spawn(self._handle_event_service_com, evt)
 
-    def _handle_event_message(evt):
+    def _handle_event_message(self, evt):
         msg = self._sanitize_md(evt.args['msg'])
         chat_ids = set()
         if 'chat_id' in evt.args and evt.args['chat_id'] is not None:
