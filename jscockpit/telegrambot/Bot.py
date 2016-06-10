@@ -30,7 +30,7 @@ class TGBot():
         self.config = config
 
         if rootpath == "":
-            rootpath = j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit", "project")
+            rootpath = j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit")
             j.sal.fs.createDir(rootpath)
 
         self.rootpath = rootpath

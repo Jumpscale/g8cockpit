@@ -38,7 +38,7 @@ def CreateNewRepository():
     if name in j.atyourservice.repos:
         return jsonify(error='repo with this name already exsits'), 409
 
-    path = j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit", "project", name)
+    path = j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit", name)
     j.atyourservice.createAYSRepo(path)
     return jsonify(name=name, path=path), 201
 
