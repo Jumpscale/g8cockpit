@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, make_response, request
+from flask import Flask, send_from_directory, make_response, request, send_file
 import jwt
 import wtforms_json
 from .ays import ays_api
@@ -71,6 +71,11 @@ def send_js(path):
     root = j.sal.fs.joinPaths(j.sal.fs.getParent(__file__), 'apidocs')
     return send_from_directory(root, path)
 
+@app.route('/', methods=['GET'])
+def home():
+    path = j.sal.fs.joinPaths(j.sal.fs.getParent(__file__), 'index.html')
+    print(path)
+    return send_file(path)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
