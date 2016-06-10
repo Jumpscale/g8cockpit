@@ -3,10 +3,10 @@ title: Cockpit API
 baseUri: http://js8:5000
 version: v1
 mediaType:  application/json
-securedBy: [oauth_2_0: { scopes : [ "user:memberOf:globalID"] } ]
+securedBy: [ JWT ]
 securitySchemes:
-    - oauth_2_0:
-        type: OAuth 2.0
+    JWT:
+        type: Pass Through
         description:
             This API uses JWT to authenticate the requests.
             All members of an organization on itsyou.online have access to this API.
@@ -14,7 +14,8 @@ securitySchemes:
           headers:
             Authorization:
               description: |
-                Used to send a valid OAuth 2 access token.
+                Should contain the JWT token.
+                Format of the value is : bearer $JWT_TOKEN
           responses:
             401:
               description: Unauthorized
@@ -88,20 +89,20 @@ types:
         name:
             type: string
             required: true
-        actions.py:
+        actions_py:
             type: string
             required: true
-        schema.hrd:
+        schema_hrd:
             type: string
             required: true
     example:
         name: "github_repo"
-        actions.py: |
+        actions_py: |
                 class Actions(ActionsBaseMgmt):
                     @action()
                     def foor(self):
                         print('do something')
-        schema.hrd: |
+        schema_hrd: |
             repo.name = type:'str' descr:'name of repo' @ASK
             repo.url = type:'str' descr:'url of github repo' default:''
             repo.account = parent:'github_account' @ASK
@@ -120,10 +121,16 @@ types:
         error: "repository not found"
 
 /ays:
+    /reload:
+        get:
+            displayName: reloadAll
+            description: empty memory and reload all services
+            responses:
+                200:
     /repository:
         description: a repository
         get:
-            displayName: ListRepositories
+            displayName: listRepositories
             description: list all repositorys
             responses:
                 200:
@@ -131,7 +138,7 @@ types:
                         application/json:
                           type: Repository[]
         post:
-            displayName: CreateNewRepository
+            displayName: createNewRepository
             description: create a new repository
             body:
                 application/json:
@@ -153,7 +160,7 @@ types:
                 repository:
                   type: string
             get:
-                displayName: GetRepository
+                displayName: getRepository
                 description: Get information of a repository
                 responses:
                     200:
@@ -167,7 +174,7 @@ types:
                             application/json:
                               type: Error
             delete:
-                displayName: DeleteRepository
+                displayName: deleteRepository
                 description: Delete a repository
                 responses:
                     204:
@@ -181,7 +188,7 @@ types:
             /blueprint:
                 description: A blueprint inside a repository
                 get:
-                    displayName: ListBlueprints
+                    displayName: listBlueprints
                     description: List all blueprint
                     responses:
                         200:
@@ -195,7 +202,7 @@ types:
                                     type: Error
 
                 post:
-                    displayName: CreateNewBlueprint
+                    displayName: createNewBlueprint
                     description: Create a new blueprint
                     body:
                         application/json:
@@ -216,7 +223,7 @@ types:
                         blueprint:
                           type: string
                     get:
-                        displayName: GetBlueprint
+                        displayName: getBlueprint
                         description: Get a blueprint
                         responses:
                             200:
@@ -229,7 +236,7 @@ types:
                                     application/json:
                                       type: Error
                     post:
-                        displayName: ExecuteBlueprint
+                        displayName: executeBlueprint
                         description: Execute the blueprint
                         responses:
                             200:
@@ -240,7 +247,7 @@ types:
                                     application/json:
                                       type: Error
                     put:
-                        displayName: UpdateBlueprint
+                        displayName: updateBlueprint
                         description: Update existing blueprint
                         body:
                             application/json:
@@ -256,7 +263,7 @@ types:
                                       type: Error
 
                     delete:
-                        displayName: DeleteBlueprint
+                        displayName: deleteBlueprint
                         description: delete blueprint
                         responses:
                             204:
@@ -270,7 +277,7 @@ types:
             /service:
                 description: A service
                 get:
-                    displayName: ListServices
+                    displayName: listServices
                     description: List all services in the repository
                     responses:
                         200:
@@ -282,7 +289,7 @@ types:
                         role:
                           type: string
                     get:
-                        displayName: ListServicesByRole
+                        displayName: listServicesByRole
                         description: List all services of role 'role' in the repository
                         responses:
                             200:
@@ -295,7 +302,7 @@ types:
                                 action:
                                   type: string
                             post:
-                                displayName: ExecuteServiceActionByRole
+                                displayName: executeServiceActionByRole
                                 description: Perform an action on all service with the role 'role'
                                 queryParameters:
                                     args:
@@ -314,7 +321,7 @@ types:
                             instance:
                               type: string
                         get:
-                            displayName: GetServiceByInstance
+                            displayName: getServiceByInstance
                             description: Get a service instance
                             responses:
                                 200:
@@ -327,7 +334,7 @@ types:
                                         application/json:
                                           type: Error
                         delete:
-                            displayName: DeleteServiceByInstance
+                            displayName: deleteServiceByInstance
                             description: uninstall and delete a service
                             queryParameters:
                                 scope:
@@ -345,7 +352,7 @@ types:
                                           type: Error
                         /action:
                             get:
-                                displayName: ListServiceActions
+                                displayName: listServiceActions
                                 description: Get list of action available on this service
                                 responses:
                                     200:
@@ -362,7 +369,7 @@ types:
                                 action:
                                   type: string
                             post:
-                                displayName: ExecuteServiceActionByInstance
+                                displayName: executeServiceActionByInstance
                                 description: Perform an action on a services
                                 queryParameters:
                                     args:
@@ -380,7 +387,7 @@ types:
             /template:
                 description: A template of a service
                 get:
-                    displayName: ListTemplates
+                    displayName: listTemplates
                     description: list all templates
                     responses:
                         200:
@@ -388,7 +395,7 @@ types:
                                 application/json:
                                   type: Template[]
                 post:
-                    displayName: CreateNewTemplate
+                    displayName: createNewTemplate
                     description: Create new template
                     body:
                         application/json:
@@ -403,7 +410,7 @@ types:
                         template:
                           type: string
                     get:
-                        displayName: GetTemplate
+                        displayName: getTemplate
                         description: Get a template
                         responses:
                             200:

@@ -3,10 +3,10 @@ title: Cockpit API
 baseUri: http://js8:5000
 version: v1
 mediaType:  application/json
-securedBy: [oauth_2_0: { scopes : [ "user:memberOf:globalID"] } ]
+securedBy: [ JWT ]
 securitySchemes:
-    oauth_2_0:
-        type: OAuth 2.0
+    JWT:
+        type: Pass Through
         description:
             This API uses JWT to authenticate the requests.
             All members of an organization on itsyou.online have access to this API.
@@ -14,7 +14,8 @@ securitySchemes:
           headers:
             Authorization:
               description: |
-                Used to send a valid OAuth 2 access token.
+                Should contain the JWT token.
+                Format of the value is : bearer $JWT_TOKEN
           responses:
             401:
               description: Unauthorized
