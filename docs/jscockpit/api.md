@@ -13,8 +13,13 @@ But to make the usage of this client even more user-friendly, an improved versio
 ### How to use
 The REST API of the cockpit uses [JWT](https://jwt.io/) to authenticate requests. The cockpit portal provide an easy way to generate such a token.
 
-TODO insert screeshot of the JWT page.
+#### Generate a JWT token:
+Go to the `/cockpit/jwt` page on the cockpit portal.
+Use the dropdown button and click on `Generate JWT token`
 
+![generate jwt token](2016-06-10_321x155_scrot.png)
+
+#### Use Jumpscale cockpit client:
 Once you have your JWT token, usage of the client is trivial:
 ```python
 jwt = '...JWT from cockpit portal...'
