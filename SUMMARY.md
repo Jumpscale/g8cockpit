@@ -7,6 +7,7 @@
    * [usage](docs/jscockpit/usage.md)
        * [Telegram bot](docs/jscockpit/telegram_bot.md)
    * [Configuration](docs/jscockpit/configuration.md)
+   * [API](docs/jscockpit/api.md)
 * Deployer bot
    * [Installation](docs/deployer_bot/installation.md)
 
