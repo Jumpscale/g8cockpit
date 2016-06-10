@@ -120,6 +120,12 @@ types:
         error: "repository not found"
 
 /ays:
+    /reload:
+        get:
+            displayName: reloadAll
+            description: empty memory and reload all services
+            responses:
+                200:
     /repository:
         description: a repository
         get:

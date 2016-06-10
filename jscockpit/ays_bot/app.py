@@ -40,6 +40,30 @@ class AYSBot(object):
         self.tasks_queue2.join()
         gevent.killall(self.workers)
 
+    def reload_all(self):
+        """
+        reload_all unload all the services from the memory.
+        This has the effect to reload services from scratch next time they are needed.
+        """
+        self.logger.info("reload_all: empty memory in progress")
+        self.event_dispatcher._load_repo_lock.acquire()
+        self.recurring._load_repo_lock.acquire()
+
+        # empty loaded services
+        self.event_dispatcher._services_events = {}
+        self.recurring._services_reccurring = {}
+        # unload all repos and services from atyourservice module.
+        j.atyourservice.reset()
+
+        self.event_dispatcher._load_repo_lock.release()
+        self.recurring._load_repo_lock.release()
+        self.logger.info("reload_all: empty memory done.")
+
+        self.logger.info("reload_all: reload recurring and event subscriber services")
+        self.event_dispatcher._load_aysrepos()
+        self.recurring._load_aysrepos()
+        self.logger.info("reload_all: reload done")
+
     def worker(self, i):
         nbr = i
         self.logger.info('start worker Nr %d' % i)

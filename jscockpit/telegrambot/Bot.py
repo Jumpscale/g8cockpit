@@ -60,6 +60,7 @@ class TGBot():
 
         # commands
         dispatcher.addHandler(CommandHandler('start', self.start_cmd))
+        dispatcher.addHandler(CommandHandler('reload', self.reload_cmd))
         dispatcher.addHandler(CommandHandler('repo', self.repo_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('blueprint', self.blueprint_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('service', self.service_mgmt.handler, pass_args=True))
@@ -187,6 +188,15 @@ class TGBot():
     def send_event(self, payload):
         self._rediscl.publish('telegram', payload)
 
+    def reload_cmd(self, bot, update):
+        if not self.repo_mgmt._userCheck(bot, update):
+            return
+
+        chat_id = update.message.chat_id
+        self.bot.sendMessage(chat_id=chat_id, text="Start reloading of services")
+        self.ays_bot.reload_all()
+        self.bot.sendMessage(chat_id=chat_id, text="Reloading of services done")
+
     @run_async
     def message_cmd(self, bot, update, **kwargs):
         username = update.message.from_user.username
@@ -209,27 +219,19 @@ class TGBot():
             "At first, you need to run `/start` to let me know you.",
             "",
             "After that, you will be able to run some commands:",
-            "`/project` - `/blueprint` - `/ays`",
+            "`/reload` - `/repo` - `/blueprint` - `/service`",
             "",
-            "*/project*: let you manage your differents projects (or repository)",
-            " - `/project [name]`: will move your current project to `[name]`, if it doesn't exists it will be created",
-            " - `/project delete [name]`: will delete the project `[name]`",
-            " - `/project list`: will show you your projects list",
+            "*/repo*: let you manage your differents AYS repository",
             "",
             "When you are ready with your project, simply upload me some blueprint, they will be put on your services repository",
             "",
             "*/blueprint*: will manage the project's blueprints",
-            " - `/blueprint list`: will show you your project's blueprint saved",
-            " - `/blueprint delete [name]`: will delete the blueprint `[name]`",
-            " - `/blueprint delete all`: will delete all the blueprints in your project",
-            " - `/blueprint [name]`: will show you the content of the blueprint `[name]`",
             "",
             "When your blueprints are ready, you can go further:",
             "",
-            "*/ays*: will control atyourservice",
-            " - `/ays init`: will run 'ays init' in your repository",
-            " - `/ays do install`: will run 'ays do install' in your repository",
-            " - ...",
+            "*/service*: will control your services instances",
+            "",
+            "*/reload*: will force the reloading of all the service in memory",
             "",
             "This message was given by `/help`, have fun with me !",
         ]
@@ -276,6 +278,7 @@ class TGBot():
             " - manage your repositories with: `/repo`",
             " - manage your blueprints with: `/blueprint`",
             " - manage your services with: `/services`",
+            " - reload your services with: `/reload`",
             "For more information, just type `/help` :)"
         ]
 

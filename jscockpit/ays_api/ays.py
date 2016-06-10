@@ -10,6 +10,10 @@ from .Template import Template
 ays_api = fBlueprint('ays_api', __name__)
 logger = j.logger.get('j.app.cockpit.api')
 
+@ays_api.route('/ays/reload', methods=['GET'])
+def Reload():
+    current_app.ays_bot.reload_all()
+    return jsonify(msg='reload done'), 200
 
 @ays_api.route('/ays/repository', methods=['GET'])
 def ListRepositories():
