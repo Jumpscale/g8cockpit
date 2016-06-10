@@ -3,7 +3,6 @@
 # Issues per assignee
 - [abdulrahmantkhalifa](#abdulrahmantkhalifa) has 1 assigned
 - [rkhamis](#rkhamis) has 2 assigned
-- [zaibon](#zaibon) has 1 assigned
 
 
 
@@ -20,11 +19,4 @@
 |-----|-----|-----|----|
 |[#1](https://github.com/jumpscale/jscockpit/issues/1)|Example Blueprint|:red_circle: Open||
 |[#8](https://github.com/jumpscale/jscockpit/issues/8)|Create dashboard templates for different types of statistics|:red_circle: Open||
-
-
-## [zaibon](https://github.com/zaibon)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#14](https://github.com/jumpscale/jscockpit/issues/14)|create python client for it|:red_circle: Open|feature|
 
