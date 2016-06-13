@@ -57,9 +57,7 @@ class CockpitArgs:
         self._ovc_account = None
         self._ovc_vdc = None
         self._ovc_location = None
-        self._dns_login = None
-        self._dns_password = None
-        self._dns_sshkey = None
+        self._dns_sshkey_path = None
         self._domain = None
         self._sshkey = None
         self._portal_password = None
@@ -121,18 +119,6 @@ class CockpitArgs:
         if self._ovc_location is None:
             self._ovc_location = self.asker.ask_ovc_location(ovc_client=self.ovc_client, account_name=self.ovc_account, vdc_name=self.ovc_vdc)
         return self._ovc_location
-
-    @property
-    def dns_login(self):
-        if self._dns_login is None:
-            self._dns_login = self.asker.ask_dns_login()
-        return self._dns_login
-
-    @property
-    def dns_password(self):
-        if self._dns_password is None:
-            self._dns_password = self.asker.ask_dns_password()
-        return self._dns_password
 
     @property
     def domain(self):
@@ -212,7 +198,7 @@ class CockpitDeployerBot:
         """
         cfg = {
             'bot': {'token': 'CHANGEME'},
-            'dns': {'login': 'admin', 'password': 'CHANGEME'},
+            'dns': {'sshkey_path': 'CHANGEME'},
             'g8': {
                 'be-conv-2': {'address': 'be-conv-2.demo.greenitglobe.com'},
                 'be-conv-3': {'address': 'be-conv-3.demo.greenitglobe.com'}
@@ -263,10 +249,6 @@ class CockpitDeployerBot:
         args = CockpitArgs(TelegramAsker(self.updater, chat_id, username))
         self.in_progess_args[username] = args
 
-        if 'dns' in self.config:
-            args._dns_login = self.config['dns'].get('login', None)
-            args._dns_password = self.config['dns'].get('password', '')
-
         if 'g8' in self.config:
             choices = [g['address'] for g in self.config['g8'].values()]
             args.asker.g8_choices = choices
@@ -303,10 +285,8 @@ class CockpitDeployerBot:
                                            g8_password=args.ovc_password,
                                            telegram_token=args.bot_token,
                                            cockpit_name=args.ovc_vdc,
-                                           dns_login=args.dns_login,
-                                           dns_password=args.dns_password,
                                            dns_domain=args.domain,
-                                           dns_sshkey=self.config['dns'].get('sshkey', None),
+                                           dns_sshkey_path=self.config['dns'].get('sshkey', None),
                                            oauth_organization=args.organization,
                                            oauth_secret=oauth_data['client_secret'],
                                            oauth_id=oauth_data['client_id'],

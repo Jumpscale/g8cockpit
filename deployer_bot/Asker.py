@@ -129,29 +129,17 @@ class TelegramAsker(object):
         location = self.askString("Location of the vdc choosen")
         return location
 
-    def ask_dns_login(self):
-        def validate(input):
-            return True
-        login = self.askString("Login of your account on the DNS cluster")
-        return login
-
-    def ask_dns_password(self):
-        def validate(input):
-            return True
-        passwd = self.askString("Password of your account on the DNS cluster")
-        return passwd
-
     def ask_domain(self):
         def validate(input):
             return True
-        domain = self.askChoice("Please choose the domaine you want to use for your cockpit", choices=[self.username])
+        domain = self.askChoice("Please choose the domain you want to use for your cockpit", choices=[self.username])
         return domain
 
     def ask_ssh_key(self):
         def validate(input):
             key = j.do.getSSHKeyFromAgentPub(input, die=False)
             return (key is not None)
-        key = self.askString("Please past the ssh public key you want to authorize in your cockpit")
+        key = self.askString("Please paste the ssh public key you want to authorize in your cockpit")
         return key
 
     def ask_portal_password(self):
