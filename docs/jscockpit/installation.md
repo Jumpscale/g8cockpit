@@ -1,32 +1,42 @@
-# installation
-There is two way of deploying a new cockpit.
-- Using our cockpit deployer bot on Telegram
+# Installation
+
+There are two ways of deploying a new Cockpit:
+
+- Using our Cockpit Deployer Chatbot on Telegram
 - Using AtYourService
 
-## Using Cockpit deployer bot:
-Talk to `@g8cockpitbot` on telegram.  
-The bot will ask you some questions about the cockpit you want to deploy. After answering the questions, the bot will take care of deploying a new cockpit on one G8.  
-At the end of the deployement the bot will send you the information to access your newly created cockpit.
+
+## Using Cockpit Deployer Chatbot
+
+Talk to `@g8cockpitbot` on Telegram.  
+
+The chatbot will ask you some questions about the Cockpit you want to deploy. After answering the questions, the chatbot will take care of deploying a new Cockpit on a G8.  
+At the end of the deployement the chatbot will send you the information to access/use your newly created Cockpit.
 
 Detail about the questions:
-- **Organization**: A cockpit is always deployed for an Organization. The Organization need to exists on https://itsyou.online/.
-- **Url of the G8**: The bot will propose you multiple G8 where to deploy your cockpit. choose one of the G8. Notice you need to have an account on the choosen G8.
-- **Login**: Your account on the selected G8
-- **Password**: the password of your account on the selected G8
-- **Telegram token**: The cockpit runs a telegram bot thus you need to create a bot on telegram and past the token of the bot.
-- **VDC Name**: The name of the vdc on the selected G8 where you want to deploy your cockpit. If the VDC doesn't exists, it will be created
-- **Domain**: Choose the domain name you want for your cockpit. This can be anything as long as it's a valid domain name.
 
-## Using AtYourService:
-If you have a system with JumpScale installed, you can use AtYourService to create a new cockpit.
+- **Organization**: a cockpit is always deployed for an organization, which needs to exists on https://itsyou.online/
+- **URL of the G8**: the chatbot will propose you multiple G8s where you can deploy your Cockpit, make sure to choose one where you have a username with access to a (cloud) account
+- **Login**: Your username on the selected G8
+- **Password**: the password of your username on the selected G8
+- **Telegram token**: next to a web portal the Cockpit also comes a Telegram chatbot interface, that you will need the create by talking to @botfather, another chatbot, from which you will receive an API token to paste into the conversation with @g8cockpitbot
+- **VDC Name**: the name of the VDC on the selected G8 where you want to deploy your Cockpit, if the VDC doesn't exist yes, it will be created
+- **Domain**: the domain name you want for your Cockpit, this can be anything as long as it's a valid/unique domain name
 
-- create a AYS repository:
+
+## Using AtYourService
+
+If you have a system with JumpScale installed, you can also use AtYourService to create a new Cockpit.
+
+- Create a AYS service repository:
+
 ```bash
 mkdir /opt/code/ays_cockpit
 mkdir /opt/code/ays_cockpit/blueprints
 touch /opt/code/ays_cockpit/.ays
 ```
-- Replace the value in this blueprint:
+
+- Replace the values in this blueprint:
 
 ```yaml
 g8client__main:
@@ -45,11 +55,15 @@ cockpit__pilot:
   oauth.organization: '{oauth_organization}'
   oauth.jwt_key: '{oauth_jwtkey}'
 ```
-- Copy it to the blueprints folder  
+
+- Copy the blueprint into the blueprints subdirectory:  
+
 ```bash
 cp bp.yml /opt/code/ays_cockpit/blueprints
 ```
+
 - Init and install the blueprint:
+
 ```bash
 cd /opt/code/ays_cockpit
 ays init

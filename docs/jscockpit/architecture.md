@@ -1,6 +1,8 @@
 # Architecture
-The cockpit is composed of multiple servers.  
-The components communicate using publish/subscribe mechanism.  
+
+The cockpit is composed of multiple components/servers, which are implemented in Python modules.
+
+These servers communicate using publish/subscribe mechanism via Redis.
 
 {% plantuml %}
 @startuml
@@ -8,19 +10,18 @@ title Cockpit
 [REST Server] as rest
 [Mail Server] as mail
 [Core] as core
-[Telegram bot] as telegram
+[Telegram Chatbot] as telegram
 database "Redis" {
   node Topics{
   }
 }
 
-
 rest .up. HTTP : use
 mail .down. SMTP : use
-telegram .down. TelegramBotAPI : use
+telegram .down. TelegramChatbotAPI : use
 
 rest -down-> Topics : publish
-mail .left.> Topics : publish
+mail -left-> Topics : publish
 core <-right-> Topics : pub/sub
 telegram <-up-> Topics: pub/sub
 
@@ -28,26 +29,47 @@ telegram <-up-> Topics: pub/sub
 @enduml
 {% endplantuml %}
 
-## Components :
-### Main module
-The main module has the only role of loading configuration and starting all the component.
-Any class with a start and stop method can be added as a server. The start method should not be blocking
+## Components
+
+### Main module (not shown in the above picure)
+
+The main module is the Python module that starts the Cockpit.
+
+The only role of the main module is loading configuration and starting all the other components.
+
+Any class with a start and stop method can be started from there as a server. The start method should not be blocking.
+
 
 ### Core
-This module holds the logic of the AYS bot.  
-It subscribe to all events and implement some handler base on the type of event received.  
-Responsible to execute the actions of services when execute event is receive.
+
+This Core module holds the logic of the AYS chatbot.
+  
+It subscribes to all events and implements some handlers based on the type of event it receives.
+  
+The core module is responsible for executing the actions of services when an execute event is received.
+
 
 ### Mail
-Simple SMTP server.  
-Save the attachments of mail locally and generate an event for every mail. received, save
 
-### Telegram bot
-Logic for communication over Telegram.  
-Commands that generate generate events.
+The Mail module implements a Simple SMTP server.
+
+It saves the attachments of mails locally and generates an event for every mail it received.
+
+
+### Telegram Chatbot
+
+Holds the logic for all communication over Telegram.  
+
+Some of the chatbot commands generate:
+
 - project create/delete
 - action execute
 
-### APIs
-Any number of WSGI server can be added. Most of the time it's REST server that generates event based on the request they receive.
 
+### REST Server
+
+Any Web Server Gateway Interface (WSGI) compliant server can be added. 
+
+In the initial implementation we only have one REST Server, exposing the AYS REST APIs. 
+
+Most of the time it's the REST Server that generates events based on the requests it receives.

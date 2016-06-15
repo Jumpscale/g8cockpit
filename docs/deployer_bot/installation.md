@@ -1,11 +1,18 @@
 # Installation
 
-This telegram bot is used to allow people to easily deploy a [JSCockpit](https://github.com/Jumpscale/jscockpit/tree/master/app).
+This Telegram chatbot is used to allow people to easily deploy a [Cockpit](https://github.com/Jumpscale/jscockpit/tree/master/app).
 
-This bot is composed of two components, the bot itself and a small flask app that is used to receive callback from itsyou.online for oauth workflow. Both need to be started for the bot to properly work.  
+This chatbot is composed of two components:
 
-## How to start the bot
-To start the bot you can use the little CLI provided, [telegram-bot](telegram-bot).
+- the chatbot itself
+- a small [Flask](https://en.wikipedia.org/wiki/Flask_(web_framework)) app that is used to receive callback from ItsYou.online for oauth workflow
+
+Both need to be started for the chatbot to properly work.  
+
+
+## How to start the chatbot
+
+To start the chatbot you can use the little CLI provided, [telegram-bot](telegram-bot).
 
 ```bash
 Usage: telegram-bot [OPTIONS]

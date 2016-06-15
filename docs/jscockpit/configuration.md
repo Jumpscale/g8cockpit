@@ -1,13 +1,29 @@
 # Configuration
 
+The Cockpit uses [ItsYou.online](https://itsyou.online/) to authenticate users.
 
-The cockpit use [itsyou.online](https://itsyou.online/) to authenticate the users. A cockpit is always deployed for a specific organization on [itsyou.online](https://itsyou.online/). In order to make sure only member of this organization can interact with the cockpit we use oauth2.  
-- For the REST API we use [JWT](https://jwt.io/) tokens to authenticate the requests
-- For the telegram bot we ask the user to authenticate on [itsyou.online](https://itsyou.online/) direclty the first time he interact with the bot.
+A Cockpit is always deployed for a specific organization that needs to be registered on [ItsYou.online](https://itsyou.online/).
 
-## Configuration file for JSCockpit
-This configuration file is generated automaticly during the deployment of the cockpit. But for development if you need to just star the jscockpit server, create a config file manually.
-Here is an example:
+In order to make sure only members of this organization can interact with the Cockpit we use OAuth 2.0:
+
+- For the REST API we use [JWT](https://jwt.io/) tokens to authenticate all requests
+- For the Telegram chatbot we request the user to authenticate on [ItsYou.online](https://itsyou.online/) and authorize the chatbot to check that the user is member/owner of the organization for which the Cockpit is setup
+
+
+## Cockpit configuration file & manually starting your chatbot
+
+This configuration file is generated automatically during the deployment of the Cockpit.
+
+For development purposes, you can also create the configuration file manually, and start a new jscockpit server manually.
+
+Here is an example in 3 steps:
+- Step 1: Create the configuration file
+- Step 2: Generate a Telegram chatbot token
+- Step 3: Start your Cockpit
+
+
+### Step 1: Create the configuration file
+
 ```toml
 [oauth]
 client_secret = 'okla3Z2PLNmxu9sdfgrtFaOyBlCmOz4OeNW-V1lJh66OBtuqkk7_5H'
@@ -30,28 +46,35 @@ host = "0.0.0.0"
 port = 25
 ```
 
-**Generate telegram bot token.**
-- connect to telegram and talk to @botfather.
-- execute the command `/newbot` and choose a name and username for your bot
-- @botfather should give you a token, add it to the main.py file
+### Step 2: Generate a Telegram chatbot token
+
+- Connect to Telegram and talk to @botfather
+- Execute the command `/newbot` and choose a name and username for your chatbot
+- @botfather should give you a token, add it to the `main.py` file
 
 
-**Add command description to your bot.**
-- type `/setcommands` in @botfather, choose your bot and past these lines :
+Add a commands description to your chatbot:
 
-```
-start - Start discussion with the bot
-repo - Manage your AYS repositories
-blueprint - Manage your blueprints project
-service - Perform actions on your service instances
-help - Show you what I can do
-```
+- Type `/setcommands` in @botfather, choose your chatbot and paste following lines:
 
-## Start cockpit
+  ```
+  start - Start discussion with the bot
+  repo - Manage your AYS repositories
+  blueprint - Manage your blueprints project
+  service - Perform actions on your service instances
+  help - Show you what I can do
+  ```
+
+
+### Step 3: Start your Cockpit
+
 ```bash
 jspython cockpit start --config config.toml
 ```
-### Cockpit CLI command:
+
+
+## Cockpit CLI commands
+
 ```
 ./cockpit --help
 Usage: cockpit [OPTIONS] COMMAND [ARGS]...
@@ -64,5 +87,6 @@ Commands:
   start        Start cockpit server
 
 ```
-- **start** : start cockpit server
-- **clean_cache** : Empty cache that store oauth authentification for telegram bot
+
+- **start** starts the Cockpit server
+- **clean_cache**: empties the cache that stores oauth authentification for Telegram chatbot
