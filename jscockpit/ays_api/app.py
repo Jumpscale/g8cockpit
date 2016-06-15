@@ -45,7 +45,10 @@ def process_jwt_token():
             msg = 'Unauthorized'
         except jwt.ExpiredSignatureError as e:
             msg = 'Your JWT has expired'
-
+        except jwt.ExpiredSignatureError:
+            msg = 'Signature has expired'
+        except jwt.InvalidAudienceError:
+            msg = 'Invalid audience'
         except jwt.DecodeError as e:
             msg = 'Your JWT is invalid'
         except Exception as e:
