@@ -2,7 +2,7 @@
 
 # Issues per assignee
 - [abdulrahmantkhalifa](#abdulrahmantkhalifa) has 1 assigned
-- [rkhamis](#rkhamis) has 2 assigned
+- [rkhamis](#rkhamis) has 1 assigned
 - [zaibon](#zaibon) has 2 assigned
 
 
@@ -18,7 +18,6 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#1](https://github.com/jumpscale/jscockpit/issues/1)|Example Blueprint|:red_circle: Open||
 |[#8](https://github.com/jumpscale/jscockpit/issues/8)|Create dashboard templates for different types of statistics|:red_circle: Open||
 
 
