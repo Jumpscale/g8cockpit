@@ -1,18 +1,18 @@
-# Installation
+# Installation of the Cockpit Deployer Chatbot
 
-This Telegram chatbot is used to allow people to easily deploy a [Cockpit](https://github.com/Jumpscale/jscockpit/tree/master/app).
+This Telegram chatbot is used to allow people to easily deploy a Cockpit.
 
 This chatbot is composed of two components:
 
 - the chatbot itself
-- a small [Flask](https://en.wikipedia.org/wiki/Flask_(web_framework)) app that is used to receive callback from ItsYou.online for oauth workflow
+- a small [Flask](https://en.wikipedia.org/wiki/Flask_(web_framework)) app that is used to receive callback from ItsYou.online for OAuth 2.0 workflow
 
-Both need to be started for the chatbot to properly work.  
+Both need to be started for the chatbot to properly work.
 
 
 ## How to start the chatbot
 
-To start the chatbot you can use the little CLI provided, [telegram-bot](telegram-bot).
+To start the chatbot you can use the little **telegram-bot** CLI command:
 
 ```bash
 Usage: telegram-bot [OPTIONS]
@@ -23,7 +23,9 @@ Options:
 
 ```  
 
-You need create a configuration file. By default the bot look for a `config.toml` file in the current directory, but you can specify a path using the `--config` argument. Here a example of the required configuration
+By default the chatbot looks for a `config.toml` file in the current directory, but you can specify a path using the `--config` argument.
+
+Here a example of the required configuration:
 
 ```toml
 [bot]
@@ -57,7 +59,8 @@ itsyou.online public key for jwt signing : see https://github.com/itsyouonline/i
 '''
 ```
 
-Make sure the `May be used in client credentials gran type` is enable when creating the client secret for this bot
+Make sure the `May be used in client credentials gran type` is enable when creating the client secret for this chatbot.
 
-### DNS config:
-To have detail about how to configure the DNS part, check https://gig.gitbooks.io/ovcdoc_internal/content/InternalIT/internal_it.html
+### DNS config
+
+To have more details about how to configure the DNS part, check https://gig.gitbooks.io/ovcdoc_internal/content/InternalIT/internal_it.html.

@@ -2,7 +2,7 @@
 
 The Cockpit uses [ItsYou.online](https://itsyou.online/) to authenticate users.
 
-A Cockpit is always deployed for a specific organization that needs to be registered on [ItsYou.online](https://itsyou.online/).
+A Cockpit is always deployed for a specific organization that needs to be registered at [ItsYou.online](https://itsyou.online/).
 
 In order to make sure only members of this organization can interact with the Cockpit we use OAuth 2.0:
 
@@ -14,12 +14,12 @@ In order to make sure only members of this organization can interact with the Co
 
 This configuration file is generated automatically during the deployment of the Cockpit.
 
-For development purposes, you can also create the configuration file manually, and start a new jscockpit server manually.
+For development purposes, you can also create the configuration file manually, and start a new Cockpit server manually.
 
 Here is an example in 3 steps:
 - Step 1: Create the configuration file
-- Step 2: Generate a Telegram chatbot token
-- Step 3: Start your Cockpit
+- Step 2: Create a new Telegram chatbot and get an API token for it
+- Step 3: Start your Cockpit server
 
 
 ### Step 1: Create the configuration file
@@ -46,7 +46,8 @@ host = "0.0.0.0"
 port = 25
 ```
 
-### Step 2: Generate a Telegram chatbot token
+
+### Step 2: Create a new Telegram chatbot and get an API token
 
 - Connect to Telegram and talk to @botfather
 - Execute the command `/newbot` and choose a name and username for your chatbot
