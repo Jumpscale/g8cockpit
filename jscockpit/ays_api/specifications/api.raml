@@ -3,7 +3,6 @@ title: Cockpit API
 baseUri: http://js8:5000
 version: v1
 mediaType:  application/json
-securedBy: [ JWT ]
 securitySchemes:
     JWT:
         type: Pass Through
@@ -42,21 +41,48 @@ types:
       content:
           type: string
           required: true
+      path:
+        type: string
+        required: false
     example:
         name: "cockpit.yaml"
         content: |
             service__main:
                 description: "a service"
+        path: "/opt/code/cockpit/repo/blueprints/my_blueprints.ayml"
 
   Service:
     properties:
-        name: string
-        instance: string
-        role: string
-        actions.py: string
-        state: string
-        instance.hrd: string
+        key:
+           type: string
+           required: true
+        name:
+           type: string
+           required: true
+        instance:
+           type: string
+           required: true
+        role:
+           type: string
+           required: true
+        actions.py:
+           type: string
+           required: false
+        state:
+           type: object
+           required: true
+        instance.hrd:
+           type: object
+           required: false
+        parent:
+           type: Service
+           required: false
+        producers:
+           type: Service[]
+           required: false
+
     example:
+        key: "github_repo!main"
         name: "github_repo"
         instance: "main"
         role: "github_repo"
@@ -65,44 +91,44 @@ types:
                     @action()
                     def foor(self):
                         print('do something')
-        state: |
-            {
-            "events": {},
-            "instanceHRDHash": "805bc5e03a12dd59b1d181b15a4490b2",
-            "parent": "",
-            "producers": {},
-            "recipe": "sshkey",
-            "recurring": {},
-            "state": {
-              "init": "OK",
-              "install": "OK",
-              "start": "OK"
-            }
-        instance.hrd: |
-            {
-                "github.client": "main"
-                "github.url": "https://github.com/zaibon"
-            }
+        state:
+            events: {}
+            instanceHRDHash: "805bc5e03a12dd59b1d181b15a4490b2"
+            parent: ""
+            producers: {}
+            recipe: "sshkey"
+            recurring: {}
+            state:
+              init: "OK"
+              install: "OK"
+              start: "OK"
+
+        instance.hrd:
+            github.client: "main"
+            github.url: "https://github.com/zaibon"
 
   Template:
     properties:
         name:
             type: string
             required: true
-        actions_py:
+        actions.py:
+            type: string
+            required: false
+        schema.hrd:
             type: string
             required: true
-        schema_hrd:
-            type: string
-            required: true
+        service.hrd:
+            type: object
+            required: false
     example:
         name: "github_repo"
-        actions_py: |
+        actions.py: |
                 class Actions(ActionsBaseMgmt):
                     @action()
                     def foor(self):
                         print('do something')
-        schema_hrd: |
+        schema.hrd: |
             repo.name = type:'str' descr:'name of repo' @ASK
             repo.url = type:'str' descr:'url of github repo' default:''
             repo.account = parent:'github_account' @ASK
@@ -112,6 +138,28 @@ types:
             github.config= type:'str' consume:'github_config:1' auto
             milestone.category = type:'str' list
             milestones = type:'str' list consume:'github_milestone'
+        service.hrd:
+            recurring.monitor: "1h"
+  AYSStep:
+     properties:
+        number:
+           type: integer
+           required: true
+        services_keys:
+           type: string[]
+           required: true
+        action:
+            type: string
+            required: true
+  AYSRun:
+     properties:
+        steps:
+           type: AYSStep[]
+           required: true
+        repository:
+           type: string
+           required: true
+
   Error:
     properties:
         code: integer
@@ -121,6 +169,7 @@ types:
         error: "repository not found"
 
 /ays:
+    securedBy: [ JWT ]
     /reload:
         get:
             displayName: reloadAll
@@ -184,7 +233,54 @@ types:
                         body:
                             application/json:
                               type: Error
-
+            /simulate:
+                post:
+                    displayName: simulateAction
+                    description: simulate the execution of an action
+                    queryParameters:
+                        action:
+                            description: action name
+                            type: string
+                    responses:
+                        200:
+                            description: result of simulation
+                            body:
+                                application/json:
+                                    type: AYSRun
+            /execute:
+                post:
+                    displayName: executeAction
+                    description: Perform an action on the services matches by the query arguments
+                    queryParameters:
+                        action:
+                            description: action name
+                            type: string
+                        role:
+                            type: string
+                            default: ''
+                        instance:
+                            type: string
+                            default: ''
+                        force:
+                            type: boolean
+                            default: false
+                        producer_roles:
+                            type: string
+                            default: '*'
+                        async:
+                            type: boolean
+                            default: false
+                        args:
+                            description: argument to pass to the action
+                            type: string[]
+                    responses:
+                        200:
+                            description: action started
+                        404:
+                            description: not action with this name found for this service
+                            body:
+                                application/json:
+                                  type: Error
             /blueprint:
                 description: A blueprint inside a repository
                 get:
@@ -296,26 +392,6 @@ types:
                                 body:
                                     application/json:
                                       type: Service[]
-                    /action:
-                        /{action}:
-                            uriParameters:
-                                action:
-                                  type: string
-                            post:
-                                displayName: executeServiceActionByRole
-                                description: Perform an action on all service with the role 'role'
-                                queryParameters:
-                                    args:
-                                        description: argument to pass to the action
-                                        type: string[]
-                                responses:
-                                    200:
-                                        description: action started
-                                    404:
-                                        description: not action with this name found for this service
-                                        body:
-                                            application/json:
-                                              type: Error
                     /{instance}:
                         uriParameters:
                             instance:
@@ -364,26 +440,6 @@ types:
                                         body:
                                             application/json:
                                               type: Error
-                        /{action}:
-                            uriParameters:
-                                action:
-                                  type: string
-                            post:
-                                displayName: executeServiceActionByInstance
-                                description: Perform an action on a services
-                                queryParameters:
-                                    args:
-                                        description: argument to pass to the action
-                                        type: string[]
-                                responses:
-                                    200:
-                                        description: action started
-                                    404:
-                                        description: Service instance not found
-                                        body:
-                                            application/json:
-                                              type: Error
-
             /template:
                 description: A template of a service
                 get:

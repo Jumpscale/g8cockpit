@@ -28,34 +28,35 @@ def process_jwt_token():
         response.status_code = 401
         return response
 
-    type, token = authorization.split(' ', 1)
     msg = ""
-    if type.lower() == 'bearer':
-        try:
-            headers = jwt.get_unverified_header(token)
-            payload = jwt.decode(token, app.config['oauth'].get('jwt_key'), algorithm=headers['alg'], audience=app.config['oauth']['organization'], issuer='itsyouonline')
-            # case JWT is for an organization
-            if 'globalid' in payload and payload['globalid'] == app.config['oauth'].get('organization'):
-                return
-
-            # case JWT is for a user
-            if 'scope' in payload and 'user:memberof:%s' % app.config['oauth'].get('organization') in payload['scope'].split(','):
-                return
-
-            msg = 'Unauthorized'
-        except jwt.ExpiredSignatureError as e:
-            msg = 'Your JWT has expired'
-        except jwt.ExpiredSignatureError:
-            msg = 'Signature has expired'
-        except jwt.InvalidAudienceError:
-            msg = 'Invalid audience'
-        except jwt.DecodeError as e:
-            msg = 'Your JWT is invalid'
-        except Exception as e:
-            msg = 'Unexpected error : %s' % str(e)
-
+    ss = authorization.split(' ', 1)
+    if len(ss) != 2:
+        msg = "Unauthorized"
     else:
-        msg = 'Your JWT is invalid'
+        type, token = ss[0], ss[1]
+        if type.lower() == 'bearer':
+            try:
+                headers = jwt.get_unverified_header(token)
+                payload = jwt.decode(token, app.config['oauth'].get('jwt_key'), algorithm=headers['alg'], audience=app.config['oauth']['organization'], issuer='itsyouonline')
+                # case JWT is for an organization
+                if 'globalid' in payload and payload['globalid'] == app.config['oauth'].get('organization'):
+                    return
+
+                # case JWT is for a user
+                if 'scope' in payload and 'user:memberof:%s' % app.config['oauth'].get('organization') in payload['scope'].split(','):
+                    return
+
+                msg = 'Unauthorized'
+            except jwt.ExpiredSignatureError as e:
+                msg = 'Your JWT has expired'
+
+            except jwt.DecodeError as e:
+                msg = 'Your JWT is invalid'
+            except Exception as e:
+                msg = 'Unexpected error : %s' % str(e)
+
+        else:
+            msg = 'Your JWT is invalid'
 
     logger.error(msg)
     response = make_response(msg)

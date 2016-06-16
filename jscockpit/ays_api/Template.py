@@ -10,3 +10,4 @@ class Template(Form):
     actions_py = TextField(validators=[DataRequired(message="")])
     name = TextField(validators=[DataRequired(message="")])
     schema_hrd = TextField(validators=[DataRequired(message="")])
+    service_hrd = FormField(object)

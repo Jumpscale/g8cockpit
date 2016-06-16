@@ -8,6 +8,24 @@ class Client:
     def __init__(self):
         self.url = BASE_URI
 
+    def oauth_callback_get(self, headers=None, query_params=None):
+        """
+        oauth endpoint where oauth provider need to send authorization code
+        It is method for GET /oauth/callback
+        """
+        uri = self.url + "/oauth/callback"
+        uri = uri + build_query_string(query_params)
+        return requests.get(uri, headers=headers)
+
+    def reloadAll(self, headers=None, query_params=None):
+        """
+        empty memory and reload all services
+        It is method for GET /ays/reload
+        """
+        uri = self.url + "/ays/reload"
+        uri = uri + build_query_string(query_params)
+        return requests.get(uri, headers=headers)
+
     def listRepositories(self, headers=None, query_params=None):
         """
         list all repositorys
@@ -43,6 +61,60 @@ class Client:
         uri = self.url + "/ays/repository/"+repository
         uri = uri + build_query_string(query_params)
         return requests.delete(uri, headers=headers)
+
+    def listTemplates(self, repository, headers=None, query_params=None):
+        """
+        list all templates
+        It is method for GET /ays/repository/{repository}/template
+        """
+        uri = self.url + "/ays/repository/"+repository+"/template"
+        uri = uri + build_query_string(query_params)
+        return requests.get(uri, headers=headers)
+
+    def createNewTemplate(self, data, repository, headers=None, query_params=None):
+        """
+        Create new template
+        It is method for POST /ays/repository/{repository}/template
+        """
+        uri = self.url + "/ays/repository/"+repository+"/template"
+        uri = uri + build_query_string(query_params)
+        return requests.post(uri, data, headers=headers)
+
+    def getTemplate(self, template, repository, headers=None, query_params=None):
+        """
+        Get a template
+        It is method for GET /ays/repository/{repository}/template/{template}
+        """
+        uri = self.url + "/ays/repository/"+repository+"/template/"+template
+        uri = uri + build_query_string(query_params)
+        return requests.get(uri, headers=headers)
+
+    def initRepository(self, data, repository, headers=None, query_params=None):
+        """
+        Run init action on full repository
+        It is method for POST /ays/repository/{repository}/init
+        """
+        uri = self.url + "/ays/repository/"+repository+"/init"
+        uri = uri + build_query_string(query_params)
+        return requests.post(uri, data, headers=headers)
+
+    def simulateAction(self, data, repository, headers=None, query_params=None):
+        """
+        simulate the execution of an action
+        It is method for POST /ays/repository/{repository}/simulate
+        """
+        uri = self.url + "/ays/repository/"+repository+"/simulate"
+        uri = uri + build_query_string(query_params)
+        return requests.post(uri, data, headers=headers)
+
+    def executeAcion(self, data, repository, headers=None, query_params=None):
+        """
+        Perform an action on the services matches by the query arguments
+        It is method for POST /ays/repository/{repository}/execute
+        """
+        uri = self.url + "/ays/repository/"+repository+"/execute"
+        uri = uri + build_query_string(query_params)
+        return requests.post(uri, data, headers=headers)
 
     def listBlueprints(self, repository, headers=None, query_params=None):
         """
@@ -116,15 +188,6 @@ class Client:
         uri = uri + build_query_string(query_params)
         return requests.get(uri, headers=headers)
 
-    def executeServiceActionByRole(self, data, action, role, repository, headers=None, query_params=None):
-        """
-        Perform an action on all service with the role 'role'
-        It is method for POST /ays/repository/{repository}/service/{role}/action/{action}
-        """
-        uri = self.url + "/ays/repository/"+repository+"/service/"+role+"/action/"+action
-        uri = uri + build_query_string(query_params)
-        return requests.post(uri, data, headers=headers)
-
     def getServiceByInstance(self, instance, role, repository, headers=None, query_params=None):
         """
         Get a service instance
@@ -152,42 +215,6 @@ class Client:
         uri = uri + build_query_string(query_params)
         return requests.get(uri, headers=headers)
 
-    def executeServiceActionByInstance(self, data, action, instance, role, repository, headers=None, query_params=None):
-        """
-        Perform an action on a services
-        It is method for POST /ays/repository/{repository}/service/{role}/{instance}/{action}
-        """
-        uri = self.url + "/ays/repository/"+repository+"/service/"+role+"/"+instance+"/"+action
-        uri = uri + build_query_string(query_params)
-        return requests.post(uri, data, headers=headers)
-
-    def listTemplates(self, repository, headers=None, query_params=None):
-        """
-        list all templates
-        It is method for GET /ays/repository/{repository}/template
-        """
-        uri = self.url + "/ays/repository/"+repository+"/template"
-        uri = uri + build_query_string(query_params)
-        return requests.get(uri, headers=headers)
-
-    def createNewTemplate(self, data, repository, headers=None, query_params=None):
-        """
-        Create new template
-        It is method for POST /ays/repository/{repository}/template
-        """
-        uri = self.url + "/ays/repository/"+repository+"/template"
-        uri = uri + build_query_string(query_params)
-        return requests.post(uri, data, headers=headers)
-
-    def getTemplate(self, template, repository, headers=None, query_params=None):
-        """
-        Get a template
-        It is method for GET /ays/repository/{repository}/template/{template}
-        """
-        uri = self.url + "/ays/repository/"+repository+"/template/"+template
-        uri = uri + build_query_string(query_params)
-        return requests.get(uri, headers=headers)
-
     def webhooks_github_post(self, data, headers=None, query_params=None):
         """
         Endpoint that receives the events from github
@@ -196,12 +223,3 @@ class Client:
         uri = self.url + "/webhooks/github"
         uri = uri + build_query_string(query_params)
         return requests.post(uri, data, headers=headers)
-
-    def oauth_callback_get(self, headers=None, query_params=None):
-        """
-        oauth endpoint where oauth provider need to send authorization code
-        It is method for GET /oauth/callback
-        """
-        uri = self.url + "/oauth/callback"
-        uri = uri + build_query_string(query_params)
-        return requests.get(uri, headers=headers)
