@@ -14,6 +14,7 @@ def service_view(s):
         'producers': [],
         'parent': None,
         'path': s.path,
+        'repository': s.aysrepo.name
     }
 
     state_path = j.sal.fs.joinPaths(s.path, 'state.yaml')

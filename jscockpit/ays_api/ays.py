@@ -76,6 +76,27 @@ def deleteRepository(repository):
     j.sal.fs.removeDirTree(repo.basepath)
     return '', 204
 
+@ays_api.route('/ays/repository/<repository>/init', methods=['POST'])
+def initRepository(repository):
+    '''
+    Init a repository
+    It is handler for POST /ays/repository/<repository>/init
+    '''
+    if repository not in j.atyourservice.repos:
+        return jsonify(error='Repository not found with name %s' % repository), 404
+
+    repo = j.atyourservice.repos[repository]
+    role = request.args.get('role', '')
+    instance = request.args.get('instance', '')
+
+    try:
+        repo.init(role=role, instance=instance)
+    except Exception as e:
+        error_msg = "Error during execution of init on repository %s:\n %s" % (repo.name, str(e))
+        logger.error(error_msg)
+        return jsonify(error=error_msg), 500
+
+    return jsonify(msg="blueprint %s initialized" % repo.name)
 
 @ays_api.route('/ays/repository/<repository>/simulate', methods=['POST'])
 def simulateAction(repository):
@@ -95,7 +116,6 @@ def simulateAction(repository):
     instance = request.args.get('instance', '')
     force = j.data.types.bool.fromString(request.args.get('force', False))
     producer_roles = request.args.get('producerroles', '*')
-
     try:
         run = repo.getRun(role=role, instance=instance, action=action, force=force, producerRoles=producer_roles)
         out = {
@@ -111,9 +131,10 @@ def simulateAction(repository):
             out['steps'].append(step)
         return json.dumps(out), 200, {'Content-Type': 'application/json'}
 
+    except j.exceptions.Input as e:
+        return jsonify(error=e.msgpub), 500
     except Exception as e:
-        return jsonify(error="Error during simulation of action on %s in repository %s: %s" % (repository, action, str(e))), 500
-
+        return jsonify(error="Unexpected error: %s" % str(e)), 500
 
 @ays_api.route('/ays/repository/<repository>/execute', methods=['POST'])
 def executeAction(repository):
@@ -139,7 +160,7 @@ def executeAction(repository):
 
     if async:
         msg = "Action %s scheduled" % (action)
-        return jsonify(result=msg), 200
+        return jsonify(msg=msg), 200
 
     result = rq.get()
     if 'error' in result:
@@ -148,7 +169,7 @@ def executeAction(repository):
         return jsonify(error=error_msg), 500
 
     msg = "Action %s on service %s instance %s in repo %s exectued without error" % (action, role, instance, repo.name)
-    return jsonify(result=msg), 200
+    return jsonify(msg=msg), 200
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint', methods=['GET'])

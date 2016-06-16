@@ -233,6 +233,25 @@ types:
                         body:
                             application/json:
                               type: Error
+            /init:
+                  post:
+                      displayName: simulateAction
+                      description: init repository
+                      queryParameters:
+                          role:
+                              type: string
+                              default: ''
+                          instance:
+                              type: string
+                              default: ''
+                      responses:
+                          200:
+                              description: repository inited
+                          404:
+                              description: not action with this name found for this service
+                              body:
+                                  application/json:
+                                    type: Error
             /simulate:
                 post:
                     displayName: simulateAction
@@ -247,6 +266,11 @@ types:
                             body:
                                 application/json:
                                     type: AYSRun
+                        404:
+                            description: not action with this name found for this service
+                            body:
+                                application/json:
+                                  type: Error
             /execute:
                 post:
                     displayName: executeAction
@@ -270,9 +294,6 @@ types:
                         async:
                             type: boolean
                             default: false
-                        args:
-                            description: argument to pass to the action
-                            type: string[]
                     responses:
                         200:
                             description: action started
