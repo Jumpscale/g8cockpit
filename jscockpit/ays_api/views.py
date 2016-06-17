@@ -47,3 +47,20 @@ def template_view(t):
         'actions.py': j.sal.fs.fileGetContents(t.path_actions) if j.sal.fs.exists(t.path_actions) else None,
     }
     return template
+
+
+def blueprint_view(bp):
+    return {
+        'path': bp.path,
+        'name': bp.name,
+        'content': bp.content,
+        'hash': bp.hash,
+        'archived': bp.archived,
+    }
+
+
+def repository_view(repo):
+    return {
+        'name': repo.name,
+        'path': repo.basepath,
+    }

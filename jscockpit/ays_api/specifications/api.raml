@@ -41,6 +41,12 @@ types:
       content:
           type: string
           required: true
+      archived:
+        type: boolean
+        required: false
+      hash:
+        type: string
+        required: false
       path:
         type: string
         required: false
@@ -50,6 +56,8 @@ types:
             service__main:
                 description: "a service"
         path: "/opt/code/cockpit/repo/blueprints/my_blueprints.ayml"
+        hash: '45d4dbd44a0a3c3c8cf62acdab8e0850'
+        archived: true
 
   Service:
     properties:
@@ -307,6 +315,11 @@ types:
                 get:
                     displayName: listBlueprints
                     description: List all blueprint
+                    queryParameters:
+                        archived:
+                            type: boolean
+                            default: true
+                            description: include archive blueprint or not
                     responses:
                         200:
                             body:
@@ -355,6 +368,13 @@ types:
                     post:
                         displayName: executeBlueprint
                         description: Execute the blueprint
+                        queryParameters:
+                            role:
+                                type: string
+                                default: ''
+                            instance:
+                                type: string
+                                default: ''
                         responses:
                             200:
                                 description: blueprint executed
@@ -390,7 +410,30 @@ types:
                                 body:
                                     application/json:
                                       type: Error
-
+                    /archive:
+                        put:
+                            displayName: archiveBlueprint
+                            description: archive the blueprint
+                            responses:
+                                200:
+                                    description: blueprint archived
+                                404:
+                                    description: blueprint not found
+                                    body:
+                                        application/json:
+                                          type: Error
+                    /restore:
+                        put:
+                            displayName: restoreBlueprint
+                            description: restore the blueprint
+                            responses:
+                                200:
+                                    description: blueprint restored
+                                404:
+                                    description: blueprint not found
+                                    body:
+                                      application/json:
+                                        type: Error
             /service:
                 description: A service
                 get:
