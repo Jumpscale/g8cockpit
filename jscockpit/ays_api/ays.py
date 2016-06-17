@@ -148,9 +148,9 @@ def executeAction(repository):
     action = request.args['action']
     role = request.args.get('role', '')
     instance = request.args.get('instance', '')
-    force = j.data.types.bool.fromString(request.args.get('force', False))
+    force = j.data.types.bool.fromString(request.args.get('force', 'False'))
     producer_roles = request.args.get('producerroles', '*')
-    async = j.data.types.bool.fromString(request.args.get('async', False))
+    async = j.data.types.bool.fromString(request.args.get('async', 'False'))
 
     rq = current_app.ays_bot.schedule_action(action, repo.name, role=role, instance=instance, force=force, notify=False, chat_id=None)
 
