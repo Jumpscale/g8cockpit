@@ -105,7 +105,7 @@ def simulateAction(repository):
     if 'action' not in request.args:
         return jsonify(error='No action specified'), 400
 
-        repo = j.atyourservice.repos.get(repository, None)
+    repo = j.atyourservice.repos.get(repository, None)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     action = request.args['action']
@@ -142,7 +142,7 @@ def executeAction(repository):
     if 'action' not in request.args:
         return jsonify(error='No action specified'), 400
 
-        repo = j.atyourservice.repos.get(repository, None)
+    repo = j.atyourservice.repos.get(repository, None)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     action = request.args['action']
@@ -259,7 +259,7 @@ def archiveBlueprint(blueprint, repository):
             break
 
     if bp is None:
-        return jsonify(error="blueprint with the name %s' not found" % name), 404
+        return jsonify(error="blueprint with the name %s' not found" % blueprint), 404
 
     repo.archive_blueprint(bp)
 
@@ -276,13 +276,13 @@ def restoreBlueprint(blueprint, repository):
         return jsonify(error='Repository not found with name %s' % repository), 404
 
     bp = None
-    for item in repo.blueprints:
+    for item in repo.blueprints_archive:
         if item.name == blueprint:
             bp = item
             break
 
     if bp is None:
-        return jsonify(error="blueprint with the name %s' not found" % name), 404
+        return jsonify(error="blueprint with the name %s' not found" % blueprint), 404
 
     repo.restore_blueprint(bp)
 
@@ -452,7 +452,6 @@ def listServiceActions(instance, role, repository):
     actions = list(s.action_methods.keys())
     actions.sort()
     return json.dumps(actions), 200, {'Content-Type': 'application/json'}
-
 
 @ays_api.route('/ays/repository/<repository>/service/<role>/<instance>', methods=['DELETE'])
 def deleteServiceByInstance(instance, role, repository):
