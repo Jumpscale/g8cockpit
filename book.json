@@ -2,5 +2,6 @@
     "plugins": [
         "puml"
     ],
-    "pluginsConfig": {}
+    "pluginsConfig": {},
+    "root": "./docs"
 }
