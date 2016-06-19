@@ -8,7 +8,7 @@ There are two ways of install a new Cockpit:
 
 ## Using Cockpit Deployer Chatbot
 
-An instance of the **Cockpit Deployer Chatbot** is active as `@g8cockpitbot` on Telegram.
+An instance of the **Cockpit Deployer Chatbot** is active as `@g8cockpitbot` on Telegram.  
 
 You can also install your own instance by following the [Cockpit Deployer Chartbot installation instructions](../deployer_bot/installation.md).
 
@@ -36,7 +36,7 @@ g8client__main:
   g8.password: '{g8_password}'
   g8.account: '{g8_account}'
 
-cockpit.g8__pilot:
+cockpit__pilot:
   telegram.token: '{telegram_token}'
   cockpit.name: '{cockpit_name}'
   dns.sshkey: '{dns_sshkey}'
@@ -61,7 +61,7 @@ Description of the values:
 - **oauth.organization**: Name of the organization of your Cockpit
 - **oauth.jwt_key**: ItsYou.online public key for JWT signing; see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md for more details
 
-- Copy the blueprint into the blueprints subdirectory:
+- Copy the blueprint into the blueprints subdirectory:  
 
 ```bash
 cp bp.yml /opt/code/ays_cockpit/blueprints
