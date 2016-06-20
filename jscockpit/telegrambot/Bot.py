@@ -145,20 +145,24 @@ class TGBot():
         # if no username or message, we can't continue
         username = evt.args.get('username', None)
         msg = evt.args.get('message', None)
-        if not username or not msg:
-            resp = {'error': 'username or message is empty'}
+        channel = evt.args.get('channel', None)
+        if not (username or channel) or not msg:
+            resp = {'error': 'username/channel or message is empty'}
             self._rediscl.rpush(key, j.data.serializer.json.dumps(resp))
             return
 
         # search for the chat_id for the username
-        data = self._rediscl.hget('cockpit.telegram.users', username)
-        if data is None:
-            # mean we don't know the user.
-            resp = {'error': 'user %s not known, the user need to start a chat with the bot first.' % username}
-            self._rediscl.rpush(key, j.data.serializer.json.dumps(resp))
-            return
+        if username:
+            data = self._rediscl.hget('cockpit.telegram.users', username)
+            if data is None:
+                # mean we don't know the user.
+                resp = {'error': 'user %s not known, the user need to start a chat with the bot first.' % username}
+                self._rediscl.rpush(key, j.data.serializer.json.dumps(resp))
+                return
 
-        data = j.data.serializer.json.loads(data)
+            data = j.data.serializer.json.loads(data)
+        elif channel:
+            data = {'chat_id': '@%s' % channel}
 
         if evt.args.get('expect_response', True):
             def callback(bot, update):
