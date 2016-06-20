@@ -50,17 +50,17 @@ def build(host, sshkey):
     container.apps.mongodb.build(start=False)
     container.apps.influxdb.build(start=False)
     container.apps.grafana.build(start=False)
-    container.run("js 'j.actions.resetAll()'")  # FIXME find why if we don't reset action before installing controller, everything explode
-    container.controller.build(start=False)
-    container.caddy.build(start=False)
+    container.core.run("js 'j.actions.resetAll()'")  # FIXME find why if we don't reset action before installing controller, everything explode
+    container.apps.controller.build(start=False)
+    container.apps.caddy.build(start=False)
     container.package.install('shellinabox')
     bin_path = container.bash.cmdGetPath('shellinaboxd')
     container.core.file_copy(bin_path, "$binDir")
 
     printInfo('clean before creating image')
-    container.dir_remove("$goDir/src/*")
-    container.dir_remove("$tmpDir/*")
-    container.dir_remove("$varDir/data/*")
+    container.core.dir_remove("$goDir/src/*")
+    container.core.dir_remove("$tmpDir/*")
+    container.core.dir_remove("$varDir/data/*")
 
     cuisine.core.run('jsdocker commit -n %s -t %s' % (container_name, image_name))
     cuisine.core.run('jsdocker push -i %s' % image_name)
