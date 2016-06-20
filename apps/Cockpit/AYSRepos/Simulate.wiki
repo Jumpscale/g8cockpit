@@ -1,0 +1,146 @@
+@usedefaults
+{{timestamp}}
+
+@block
+
+@row
+@col 4
+{{actions:
+- display: go to shell
+  action: /restmachine/system/atyourservice/shell
+
+- display: Reload all Services
+  action: /restmachine/system/atyourservice/reload
+  showresponse: True
+
+- display: Execute blueprint
+  action: /restmachine/system/atyourservice/executeBlueprint
+  showresponse: True
+  input:
+  - name: repository
+    type: hidden
+    value: $$repo
+  - name: role
+    label: Role
+    type: text
+  - name: instance
+    label: Instance
+    type: text
+
+- display: init
+  action: /restmachine/system/atyourservice/init
+  showresponse: True
+  input:
+  - name: repository
+    type: hidden
+    value: $$repo
+  - name: force
+    label: Force init
+    type: dropdown
+    values:
+    - label: False
+      value: False
+    - label: True
+      value: True
+  - name: role
+    label: Role
+    type: text
+  - name: instance
+    label: Instance
+    type: text
+
+- display: install
+  action: /restmachine/system/atyourservice/install
+  showresponse: True
+  input:
+  - name: repository
+    type: hidden
+    value: $$repo
+  - name: force
+    label: Force install
+    type: dropdown
+    values:
+    - label: False
+      value: False
+    - label: True
+      value: True
+  - name: async
+    label: Async
+    type: dropdown
+    values:
+    - label: True
+      value: True
+    - label: False
+      value: False
+  - name: role
+    label: Role
+    type: text
+  - name: instance
+    label: Instance
+    type: text
+
+- display: Execute Action
+  action: /restmachine/system/atyourservice/executeAction
+  input:
+  - name: repository
+    type: hidden
+    value: $$repo
+  - name: action
+    type: text
+    label: action name
+    placeholder: 'install'
+    required: True
+  - name: force
+    label: Force install
+    type: dropdown
+    values:
+    - label: False
+      value: False
+    - label: True
+      value: True
+  - name: role
+    label: Role
+    type: text
+  - name: instance
+    label: Instance
+    type: text
+
+- display: Delete service
+  action: /restmachine/system/atyourservice/deleteService
+  showresponse: True
+  input:
+    - name: repository
+      type: hidden
+      value: $$repo
+    - name: role
+      type: text
+      label: Role
+      value: ''
+      required: True
+    - name: instance
+      type: text
+      label: Instance
+      value: ''
+      required: True
+
+- display: commit
+  action: /restmachine/system/atyourservice/commit
+
+}}
+
+h3. Repository: [$$repo|/cockpit/aysrepo?repo=$$repo]
+* [Templates|cockpit/AYSTemplates?ayspath=$$repo]
+* [Instances|cockpit/AYSInstances?ayspath=$$repo]
+* [Blueprints|cockpit/AYSBlueprints?ayspath=$$repo]
+* [Explorer|cockpit/AYSRepo/Explorer?repo=$$repo]
+* [Simulator|cockpit/AYSRepo/simulate?repo=$$repo]
+@colend
+
+@col 8
+{{ayssimulatorform repo:$$repo}}
+@colend
+
+
+@row
+@col 10
+{{ayssimulatorresult}}

@@ -3,19 +3,19 @@
 {{aystemplate ayspath:$$ayspath aysname:$$aysname}}
 
 h3. Service Template Info:
-h5. Name: $$aysname
+h4. Name: $$aysname
 {% for key, value in data.items() -%}
     |${key}|${value}|
 {% endfor %}
 
 {% for key, value in code_bloks.items() -%}
-h6. ${key} : 
+h5. ${key} :
 {{code:
 ${value}
 }}
 {% endfor %}
 
-H5. Instances of this service:
+h3. Instances of this template:
 {% for value in instances -%}
     |${value}|
 {% endfor %}

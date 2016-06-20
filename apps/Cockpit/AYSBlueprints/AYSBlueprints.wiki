@@ -3,5 +3,4 @@
 {{timestamp}}
 
 {{AYSBlueprints ayspath:$$ayspath}}
-
-
+@colend

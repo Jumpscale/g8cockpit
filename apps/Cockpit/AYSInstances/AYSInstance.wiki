@@ -5,15 +5,38 @@
 {{aysinstance: shortkey:$$shortkey ayspath:$$ayspath}}
 
 h3. Service Info:
-h5. Role: ${role} - Instance: ${instance}
+h4. Role: ${role} - Instance: ${instance}
+Repository: [$$ayspath|/cockpit/AysRepo?repo=$$ayspath]
+
+h5. Instance values
 || Parameter || Value||
 |Service Template| ${type}|
-{% for key, value in data.items() -%}
-   |${key}|${value}|
+{% for key, value in hrd.items() -%}
+    |${key}|${value}|
 {% endfor %}
 
+{% if parent['link'] is defined %}
+h5. Parent:
+|| Role || Instance ||
+||${parent['role']}|${parent['link']}|
+{% endif %}
+
+{% if producers|length > 0 %}
+h5. Producers:
+|| Role || instance ||
+{% for role, prods in producers.items() -%}
+{% for prod in prods -%}
+    |${role}|${prod['link']}|
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+
 h5. Service State:
-${state}
+|| Action || State || Period || Last ||
+{% for action, value in state['state'].items() -%}
+   |${action}|${value}| ${state['recurring'][action]['period']} | {{ts:${state['recurring'][action]['last']}}} |
+{% endfor %}
 
 h5. Edit files:
 {{explorer: ppath:${path}}}

@@ -5,39 +5,60 @@ def main(j, args, params, tags, tasklet):
     shortkey = args.getTag('shortkey')
     ayspath = args.getTag('ayspath')
 
-    service = j.apps.system.atyourservice.listServices(repo_path=ayspath)[ayspath][shortkey]
-    obj = service.hrd.getHRDAsDict()
-    obj.pop('service.name', None)
+    # from IPython import embed;embed()
+    actor = j.apps.actorsloader.getActor("system", "atyourservice")
+    domain, name, instance, role = j.atyourservice._parseKey(shortkey)
+    service = actor.getService(repository=ayspath, role=role, instance=instance, ctx=args.requestContext)
+    state = service.pop('state')
+    hrd = service.pop('instance.hrd')
 
-    hidden = ['key.priv', 'password', 'passwd', 'pwd']
-    for key in list(set(obj.keys()) & set(hidden)):
-        obj[key] = '**VALUE HIDDEN**'
+    hidden = ['key.priv', 'password', 'passwd', 'pwd', 'oauth.jwt_key']
+    for key in list(set(hrd.keys()) & set(hidden)):
+        hrd[key] = "*VALUE HIDDEN*"
 
-    for key, value in service.producers.items():
-        producer = 'producer.%s' % key
-        producer_name = value[0]
-        obj[producer] = ('[%s|cockpit/AYSInstance?shortkey=%s&ayspath=%s]' % (producer_name.instance, producer_name, ayspath))
+    producers = {}
+    for producer in service.pop('producers'):
+        role = producer['role']
+        if role not in producers:
+            producers[role] = []
+        producer['link'] = '[{instance}|/cockpit/AYSInstance?shortkey={key}&ayspath={path}]'.format(
+            instance=producer['instance'], key=producer['key'], path=ayspath)
+        producers[role].append(producer)
 
-    if service.parent:
-        parent = service.parent
-        service.parents.remove(parent)
-        obj['parent'] = ('[%s|cockpit/AYSInstance?shortkey=%s&ayspath=%s]' % (parent.instance, parent, ayspath))
+    parent = {}
+    if service['parent'] is not None:
+        parent = service.pop('parent')
+        parent['link'] = '[{instance}|/cockpit/AYSInstance?shortkey={key}&ayspath={path}]'.format(
+            instance=parent['instance'], key=parent['key'], path=ayspath)
 
-    parents = service.parents
-    if parents:
-        obj['parents'] = list()
-        for parent in parents:
-            obj['parents'].append(('[%s|cockpit/AYSInstance?shortkey=%s&ayspath=%s]' % (parent.instance, parent, ayspath)))
-
-        obj['parents'] = ', '.join(obj['parents'])
-
-    link_to_template = ('[%s|cockpit/AYSTemplate?ayspath=%s&aysname=%s]' % (service.role,
-                                                                              service.aysrepo.name, service.role))
-    obj = OrderedDict(sorted(obj.items()))
+    link_to_template = ('[%s|cockpit/AYSTemplate?ayspath=%s&aysname=%s]' % (service['name'],
+                                                                            ayspath, service['role']))
 
     # we prepend service path with '$codedir' to make it work in the explorer.
     # because of this line : https://github.com/Jumpscale/jumpscale_portal8/blob/master/apps/portalbase/macros/page/explorer/1_main.py#L25
-    path = service.path.replace(j.dirs.codeDir, '$codedir')
-    args.doc.applyTemplate({'data': obj, 'type': link_to_template, 'instance': service.instance, 'role': service.role, 'state': service.state, 'path': path})
+    for action in state['state'].keys():
+        if action in state['recurring']:
+            obj = state['recurring'][action]
+            state['recurring'][action] = {
+                'period': obj[0],
+                'last': obj[1],
+            }
+        else:
+            state['recurring'][action] = {
+                'period': "not recurrent",
+                'last': "never",
+            }
+    path = service['path'].replace(j.dirs.codeDir, '$codedir')
+    args.doc.applyTemplate({
+        'service': service,
+        'type': link_to_template,
+        'instance': service['instance'],
+        'role': service['role'],
+        'state': state,
+        'producers': OrderedDict(sorted(producers.items())),
+        'path': path,
+        'hrd': OrderedDict(sorted(hrd.items())),
+        'parent': parent,
+    })
     params.result = (args.doc, args.doc)
     return params

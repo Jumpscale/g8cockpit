@@ -2,5 +2,31 @@
 
 {{timestamp}}
 
-{{aysrepos}}
+@block
+@row
 
+@col 6
+h2. AtYourService Repositories:
+{{aysrepos}}
+{% for repo in repos -%}
+h3. [${repo}|/cockpit/aysrepo?repo=${repo}]:
+    * [Templates|cockpit/AYSTemplates?ayspath=${repo}]
+    * [Instances|cockpit/AYSInstances?ayspath=${repo}]
+    * [Blueprints|cockpit/AYSBlueprints?ayspath=${repo}]
+    * [Explorer|cockpit/AYSRepo/Explorer?repo=${repo}]
+    * [Simulator|cockpit/AYSRepo/simulate?repo=${repo}]
+{% endfor %}
+@colend
+
+@col 6
+h3. Create New repository
+{{actions:
+- display: Create AYS repository
+  action: /restmachine/system/atyourservice/createRepo
+  input:
+    - name: name
+      label: Name
+      type: text
+      default: ''
+}}
+@colend
