@@ -13,7 +13,10 @@ An instance of the **Cockpit Deployer Chatbot** is active as `@g8cockpitbot` on 
 You can also install your own instance by following the [Cockpit Deployer Chartbot installation instructions](../deployer_bot/installation.md).
 
 Follow the [Cockpit Deployer Chartbot usage instructions](../deployer_bot/usage.md) in order to install your Cockpit.
-
+After you chat with the bot. He will send you the information of your cockpit:
+- the URL to reach the portal
+- IP address and ssh command to connect to the VM running the cockpit
+- sshkey you need to use to have access to the vm.
 
 ## Using AtYourService
 
@@ -74,3 +77,12 @@ cd /opt/code/ays_cockpit
 ays init
 ays install
 ```
+
+## Allow the cockpit to push to your Github repository
+
+The last think you need to do is to do to fulling configure your cockpit is to create a deploy key on your github repository where the AYS services will be saved.
+To do that:
+- go on the setting page of the github repository you specify during installation.
+- click on `deploy keys` tab
+- Add a deploy key.
+- copy the content of the public key that you can find in the portal information page.
