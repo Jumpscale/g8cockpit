@@ -20,7 +20,7 @@ def update():
     repos = [
         'https://github.com/Jumpscale/ays_jumpscale8.git',
         'https://github.com/Jumpscale/jumpscale_core8.git',
-        'https://github.com/0-complexity/g8cockpit.git'
+        'https://github.com/JumpScale/jscockpit.git'
     ]
     cuisine = j.tools.cuisine.local
     for url in repos:
@@ -87,6 +87,7 @@ def upgrade(host, sshkey):
         'https://github.com/Jumpscale/ays_jumpscale8.git',
         'https://github.com/Jumpscale/jumpscale_core8.git',
         'https://github.com/Jumpscale/jumpscale_portal8.git',
+        'https://github.com/JumpScale/jscockpit.git'
     ]
     for url in repos:
         j.do.pullGitRepo(url=url, executor=container.executor)
