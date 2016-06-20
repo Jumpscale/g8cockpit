@@ -15,6 +15,13 @@ Use the following ssh key to access the cockpit VM:
 ${private_key}
 }}
 
+The following public key is the key used to push your AYS repository on github.
+You need to make this key a deploy key on your repository : ${ays_repo_url}
+{{code:
+${public_key}
+}}
+
+
 h3. Over http
 Address :
 [https://${domain}/${shellinbox_url}|https://${domain}/${shellinbox_url}]

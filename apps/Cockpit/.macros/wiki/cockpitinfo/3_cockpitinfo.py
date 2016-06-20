@@ -15,18 +15,16 @@ def main(j, args, params, tags, tasklet):
         domain = service['instance.hrd']['dns.domain']
         ssh_port = service['instance.hrd']['ssh.port']
         organization = service['instance.hrd']['oauth.organization']
-        private_key = ''
-
         service_sshkey = j.apps.system.atyourservice.getService(repository=repo_name, role='sshkey', instance='main', ctx=args.requestContext)
-        private_key = service_sshkey['instance.hrd']['key.priv']
-        shellinbox_url = service['instance.hrd']['shellinabox.url']
 
         data = {
             'organization': organization,
             'domain': domain,
             'ssh_port': ssh_port,
-            'private_key': private_key,
-            'shellinbox_url': shellinbox_url
+            'private_key': service_sshkey['instance.hrd']['key.priv'],
+            'public_key': service_sshkey['instance.hrd']['key.pub'],
+            'ays_repo_url': service['instance.hrd']['ays.repo.url'],
+            'shellinbox_url': service['instance.hrd']['shellinabox.url']
         }
         args.doc.applyTemplate(data)
         params.result = (args.doc, doc)

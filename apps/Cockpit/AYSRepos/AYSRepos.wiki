@@ -19,7 +19,7 @@ h3. [${repo}|/cockpit/aysrepo?repo=${repo}]:
 @colend
 
 @col 6
-h3. Create New repository
+h3. Actions on repositories
 {{actions:
 - display: Create AYS repository
   action: /restmachine/system/atyourservice/createRepo
@@ -28,5 +28,24 @@ h3. Create New repository
       label: Name
       type: text
       default: ''
+- display: Commit repositories
+  action: /restmachine/system/atyourservice/commit
+  showresponse: True
+  input:
+    - name: branch
+      label: Branch
+      type: text
+      default: 'master'
+    - name: push
+      label: push
+      type: dropdown
+      values:
+         - label: True
+           value: True
+         - label: False
+           value: False
+    - name: message
+      label: Commit message
+      type: text
 }}
 @colend
