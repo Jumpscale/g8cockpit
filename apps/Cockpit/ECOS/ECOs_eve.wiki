@@ -1,0 +1,54 @@
+@usedefaults
+{{html:
+    <div ng-app="eveTestApp">
+}}
+
+
+{{evegrid
+    schema.url='/eve'
+    spec.json.path=/docs/spec.json
+    entity.name=errorcondition
+    datetime.fields=epoch
+    sortBy =
+        epoch: -1,
+        pid:1,
+
+    column.1 = 
+        data:epoch,
+        header:Time Stamp,
+        format:<a href="/grid/ECO?id={id}">{epoch}</a>,
+
+    column.2 = 
+        data:errormessage,
+        header:Error Message,
+
+    column.3 =
+        data:level,
+        header:Level,
+
+    column.4 =
+        data:appname,
+        header:App name,
+
+    column.5 =
+        data:nid,
+        header:Node ID,
+
+    column.6 = 
+        data:gid,
+        header:GID,
+
+    column.7 =
+        data:masterjid,
+        header:Master JID,
+}}
+
+{{html:
+    </div>
+    <script>
+    var eveTestApp = angular.module('eveTestApp', ['eveModule']);
+    eveTestApp.config(['$interpolateProvider', function($interpolateProvider) {
+        $interpolateProvider.startSymbol('{[').endSymbol(']}');
+    }]);
+    </script>
+}}

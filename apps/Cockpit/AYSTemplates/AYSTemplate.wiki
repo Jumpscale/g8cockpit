@@ -1,0 +1,21 @@
+@usedefaults
+
+{{aystemplate ayspath:$$ayspath aysname:$$aysname}}
+
+h3. Service Template Info:
+h5. Name: $$aysname
+{% for key, value in data.items() -%}
+    |${key}|${value}|
+{% endfor %}
+
+{% for key, value in code_bloks.items() -%}
+h6. ${key} : 
+{{code:
+${value}
+}}
+{% endfor %}
+
+H5. Instances of this service:
+{% for value in instances -%}
+    |${value}|
+{% endfor %}

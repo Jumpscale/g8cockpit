@@ -1,0 +1,21 @@
+@usedefaults
+
+{{timestamp}}
+
+{{aysinstance: shortkey:$$shortkey ayspath:$$ayspath}}
+
+h3. Service Info:
+h5. Role: ${role} - Instance: ${instance}
+|| Parameter || Value||
+|Service Template| ${type}|
+{% for key, value in data.items() -%}
+   |${key}|${value}|
+{% endfor %}
+
+h5. Service State:
+${state}
+
+h5. Edit files:
+{{explorer: ppath:${path}}}
+
+# TODO j.actions here

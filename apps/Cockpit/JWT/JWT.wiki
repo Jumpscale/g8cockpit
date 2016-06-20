@@ -1,0 +1,23 @@
+{{timestamp}}
+
+@usedefaults
+
+{{actions:
+- display: Generate JWT token
+  action: /restmachine/system/oauthtoken/generateJwtToken
+  input:
+  - name: scope
+    label: Scope
+    placeholder: "user:memberOf:GlobalID"
+    type: text
+    default: ''
+  - name: audience
+    label: Audience
+    placeholder:
+    type: text
+    default: ''
+}}
+
+
+h2. JWT Tokens:
+{{jwttokens}}

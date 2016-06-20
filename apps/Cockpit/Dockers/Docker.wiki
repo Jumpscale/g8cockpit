@@ -1,0 +1,18 @@
+@usedefaults
+
+{{docker docker:$$docker ayspath:$$ayspath}}
+
+h3. Docker Info:
+h5. Name: $$docker
+
+|| Parameter || Value ||
+|Instance|${link}|
+|State| ${state}|
+|Executor| ${executor}|
+|Parent Docker Host| ${parent}|
+
+h5. Open TCP ports
+|| Port Number ||
+{% for value in ports -%}
+    ${value}
+{% endfor %}

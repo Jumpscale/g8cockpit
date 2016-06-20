@@ -1,0 +1,7 @@
+@usedefaults
+
+{{timestamp}}
+
+{{AYSBlueprints ayspath:$$ayspath}}
+
+

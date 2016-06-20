@@ -1,0 +1,63 @@
+{{timestamp}}
+
+@usedefaults
+@block
+@row
+
+h6. AtYourService commands:
+{{actions:
+- display: Reload all Services
+  action: /restmachine/system/atyourservice/reload
+}}
+
+@col 5
+# {{html:<center>}}
+h6. No. of Failed Actions
+{{actiongauge: id:4 width:200 height:114}}
+# {{html:</center>}}
+@divend
+@divend
+
+@col 5
+h6. Number of Dockers
+#*From Total Deployed:45*
+{{vmgauge: id:5 width:200 height:114}}
+@divend
+@divend
+
+{{html: <hr />}}
+
+@row gray-background clearfix
+@col 6
+h5. Performance Dashboard
+
+{{html: <p><a href="/cockpit/AYSRepos"><i class="glyphicon glyphicon-tasks margin-right-small"></i>AYS Repos</a></p> }}
+
+@colend
+@col 6
+h5. Events Dashboard
+{{html: <p><a href="/cockpit/Actions?state=ERROR"><i class="glyphicon glyphicon-remove margin-right-small"></i>Failed Actions</a></p> }}
+@colend
+@rowend
+
+{{html: <hr />}}
+
+#block
+@divend
+
+
+
+{{cssstyle
+td{
+    max-width:500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+p{
+	margin-left: 5px;
+}
+.gray-background{
+	background-color: #F9F9F9;
+}
+}}
