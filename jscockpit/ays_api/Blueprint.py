@@ -9,6 +9,9 @@ class Blueprint(Form):
 
     content = TextField(validators=[DataRequired(message="Content can not be empty")])
     name = TextField(validators=[DataRequired(message="Name need to be specified")])
+    hash = TextField(validators=[])
+    archived = BooleanField(validators=[])
+    path = TextField(validators=[])
 
     def validate_content(form, field):
         try:

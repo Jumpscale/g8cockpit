@@ -111,7 +111,9 @@ class EventDispatcher:
             elif evt.action == 'bp.create':
                 # new blueprint, search for new service that subscribe to event or recurring
                 name = j.sal.fs.getBaseName(evt.args['path'])
-                repo = j.atyourservice.get(name, evt.args['path'])
+                repo = j.atyourservice.repos.get(name, None)
+                if repo is None:
+                    return
                 self._load_aysrepos([repo])
                 self.bot.recurring._load_aysrepos([repo])
 

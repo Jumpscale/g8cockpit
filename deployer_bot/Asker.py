@@ -52,7 +52,7 @@ class TelegramAsker(object):
         return value
 
     def ask_repo_url(self):
-        repo_url = self.askString("Please enter the url of the git repository where to store the ays repo of your cockpit. The repo need to exists")
+        repo_url = self.askString("Please enter the url of the github repository where to store the ays repo of your cockpit. Please use the git version. The repo need to exists.")
         return repo_url
 
     def ask_ovc_url(self):

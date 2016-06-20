@@ -12,7 +12,7 @@ def build_query_string(query_params=None):
         return ""
 
     qs = "?"
-    for key, elem in query_params:
+    for key, elem in query_params.items():
         qs += key + "=" + str(elem) + "&"
 
     return qs[:-1]

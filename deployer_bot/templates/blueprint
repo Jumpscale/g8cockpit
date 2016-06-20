@@ -14,3 +14,4 @@ cockpit.g8__pilot:
   oauth.client_id: '{oauth_id}'
   oauth.organization: '{oauth_organization}'
   oauth.jwt_key: '{oauth_jwtkey}'
+  ays.repo.url: '{repo_url}'

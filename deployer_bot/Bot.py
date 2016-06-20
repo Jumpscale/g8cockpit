@@ -290,7 +290,8 @@ class CockpitDeployerBot:
                                            oauth_organization=args.organization,
                                            oauth_secret=oauth_data['client_secret'],
                                            oauth_id=oauth_data['client_id'],
-                                           oauth_jwtkey=jwt_key
+                                           oauth_jwtkey=jwt_key,
+                                           repo_url=args.repo_url,
                                            )
 
         msg = "Deployement of you cockpit in progress, please be patient.\nYou can follow progress using the /status command"
