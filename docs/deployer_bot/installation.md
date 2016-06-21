@@ -5,9 +5,9 @@ This Telegram chatbot is used to allow people to easily deploy a Cockpit.
 This chatbot is composed of two components:
 
 - the chatbot itself
-- a small [Flask](https://en.wikipedia.org/wiki/Flask_(web_framework)) app that is used to receive callback from ItsYou.online for OAuth 2.0 workflow
+- a small [Flask](https://en.wikipedia.org/wiki/Flask_(web_framework) app that is used to receive callbacks from ItsYou.online for OAuth 2.0 workflow
 
-Both need to be started for the chatbot to properly work.
+Both need to be started for the chatbot to work properly.
 
 
 ## How to start the chatbot
