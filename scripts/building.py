@@ -53,6 +53,7 @@ def build(host, sshkey):
     container.core.run("js 'j.actions.resetAll()'")  # FIXME find why if we don't reset action before installing controller, everything explode
     container.apps.controller.build(start=False)
     container.apps.caddy.build(start=False)
+    container.apps.cockpit.build(start=False)
     container.package.install('shellinabox')
     bin_path = container.bash.cmdGetPath('shellinaboxd')
     container.core.file_copy(bin_path, "$binDir")
