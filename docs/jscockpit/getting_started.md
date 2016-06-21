@@ -4,10 +4,10 @@ This example will guide you through all the steps required to deploy a blueprint
 
 This will happen in 6 steps:
 - Step 1: Create a new AYS repository
-- Step 2: Create a blueprint
+- Step 2: Create a blueprint for deploying a virtual datacenter
 - Step 3: Execute the blueprint, which will create the required service instances
-- Step 4: Make sure the service instance are created
-- Step 5: Simulate installation of the created services instances
+- Step 4: Make sure the service instances are created, and ready to install (step 6)
+- Step 5: Simulate the installation of the service instances as created from the blueprint
 - Step 6: Install the service instances as created by executing the blueprint (step 3)
 
 
