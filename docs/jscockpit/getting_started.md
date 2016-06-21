@@ -5,10 +5,10 @@ This example will guide you through all the steps required to deploy a blueprint
 This will happen in 6 steps:
 - Step 1: Create a new AYS repository
 - Step 2: Create a blueprint
-- Step 3: Execute the blueprint
+- Step 3: Execute the blueprint, which will create the required service instances
 - Step 4: Make sure the service instance are created
-- Step 5: Simulate installation
-- Step 6: Installing the services
+- Step 5: Simulate installation of the created services instances
+- Step 6: Install the service instances as created by executing the blueprint (step 3)
 
 
 ### Step 1: Creation of the AYS repository
@@ -61,7 +61,7 @@ To create this new blueprint click on the **explorer** link on the repository pa
 
 ### Step 3: Execute the blueprint
  
-Now that the blueprint is ready we need to execute it. This step will translate the blueprint in actual service instance. 
+Now that the blueprint is ready we need to execute it. This step will create (not install) all the necessary service instances required by the blueprint. The actual installation of these service instances happen in step 5.
 
 To do that:
 
@@ -72,12 +72,15 @@ To do that:
 
 ![](2016-06-17_421x104_scrot.png)
 
-
 ### Step 4: Make sure the service instance are created
 
 To be sure that the blueprint executed properly you can go back to **AYS Repos** and click the `instances` link under your new repository.
   
 The instances page shows you all the service instances in your newly created repository. Clicking an instance will bring you to the **Instance Details** page of that service instance.
+
+From here you can either
+- First simulate the installation of the services instances, see step 5
+- Or immediately actually install the service instances, seet step 6
 
 
 ### Step 5: Simulate installation
