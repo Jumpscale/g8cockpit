@@ -1,9 +1,17 @@
 ## Getting Started
 
-This example will guide you through all the steps required to deploy a blueprint using the **Cockpit Portal**. The goal of this exercise will be to create a new VDC on a G8 node.
+This example will guide you through all the steps required to deploy a blueprint using the **Cockpit Portal**. The goal of this exercise will be to create a new virtual datacenter (VDC) on a G8 node.
+
+This will happen in 6 steps:
+- Step 1: Create a new AYS repository
+- Step 2: Create a blueprint
+- Step 3: Execute the blueprint
+- Step 4: Make sure the service instance are created
+- Step 5: Simulate installation
+- Step 6: Installing the services
 
 
-### Creation of the AYS Repository
+### Step 1: Creation of the AYS repository
   
 Before you can execute a blueprint you need to create an AYS repository. This repository will contain your blueprints and the service instances once the blueprint got executed.
   
@@ -18,7 +26,7 @@ This page displays all your repositories. On the right side of the page there is
 You can now see your new repository in the list of repos. Click your newly created repository.
 
 
-### Create the blueprint
+### Step 2: Create the blueprint
  
 Now that you have your repository ready, the next step is to create the blueprint for creating your virtual datacenter (VDC). Here is the blueprint we are going to use:  
 
@@ -51,7 +59,7 @@ To create this new blueprint click on the **explorer** link on the repository pa
 ![](2016-06-17_409x93_scrot.png)
 
 
-### Execute the blueprint
+### Step 3: Execute the blueprint
  
 Now that the blueprint is ready we need to execute it. This step will translate the blueprint in actual service instance. 
 
@@ -65,14 +73,14 @@ To do that:
 ![](2016-06-17_421x104_scrot.png)
 
 
-### Make sure the service instance are created
+### Step 4: Make sure the service instance are created
 
 To be sure that the blueprint executed properly you can go back to **AYS Repos** and click the `instances` link under your new repository.
   
 The instances page shows you all the service instances in your newly created repository. Clicking an instance will bring you to the **Instance Details** page of that service instance.
 
 
-### Simulate installation
+### Step 5: Simulate installation
 
 Before installing the service, we want to simulate the installation in order to make sure the service will behave as we want without having to actually install the service.
 
@@ -87,7 +95,7 @@ Here we want to simulate the `install` action and we don't want to filer on serv
 We see that the installation will be executed in two steps. First the `g8client` and `vdcfarm` service will be installed. then the `vdc`. These two steps are due to the fact that the `vdc` depends on the `g8client` and `vdcfarm`.
 
 
-### Installing the services
+### Step 6: Installing the services
 
 Now that we are confident with the installation steps, we can actually do the installation.
 To do that select the **Install** from the action drop-down list.
@@ -105,4 +113,4 @@ A message will tell you that the installation succeeded.
 
 You have just deployed a new VDC from your **Cockpit Portal** using AtYourService.
 
-You can go have a look in the instance page to check the state of your services and see that the `install` method has now a state `OK`
+You can go have a look in the instance page to check the state of your services and see that the `install` method has now a state `OK`.
