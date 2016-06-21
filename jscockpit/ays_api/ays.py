@@ -1,5 +1,6 @@
 from flask import Blueprint as fBlueprint, jsonify, request, json, Response, current_app
 from JumpScale import j
+from JumpScale.baselib.atyourservice.Blueprint import Blueprint as JSBlueprint
 from .views import service_view, template_view, blueprint_view, repository_view
 
 from .Repository import Repository
@@ -212,7 +213,14 @@ def createNewBlueprint(repository):
         return jsonify(error="blueprint with the name %s' already exsits" % new_name), 409
 
     bp_path = j.sal.fs.joinPaths(repo.basepath, 'blueprints', new_name)
-    j.sal.fs.writeFile(bp_path, content)
+    try:
+        j.sal.fs.writeFile(bp_path, content)
+        bp = JSBlueprint(repo, path=bp_path)
+        if bp.hash not in repo._blueprints:
+            repo._blueprints[bp.hash] = bp
+    except:
+        if j.sal.fs.exists(bp_path):
+            j.sal.fs.remove(bp_path)
 
     return jsonify(name=new_name, content=content), 201
 
@@ -234,13 +242,16 @@ def updateBlueprint(blueprint, repository):
     name = inputs.name.data
     content = inputs.content.data
     names = [bp.name for bp in repo.blueprints]
+    names.extend([bp.name for bp in repo.blueprints_archive])
     if name not in names:
         return jsonify(error="blueprint with the name %s' not found" % name), 404
 
     bp_path = j.sal.fs.joinPaths(repo.basepath, 'blueprints', name)
+    bp = repo.getBlueprint(bp_path)
+    bp.content = content
     j.sal.fs.writeFile(bp_path, content)
 
-    return jsonify(), 204
+    return json.dumps(blueprint_view(bp)), 200, {'Content-Type': 'application/json'}
 
 @ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>/archive', methods=['PUT'])
 def archiveBlueprint(blueprint, repository):
