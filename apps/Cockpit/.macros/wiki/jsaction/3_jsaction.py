@@ -1,38 +1,45 @@
 
 def main(j, args, params, tags, tasklet):
     import urllib
-    tags = j.data.tags.getObject(tagstring=args.cmdstr)
-    tags = tags.getDict()
-    runid = tags.get('runid')
-    actionkey = tags.get('actionkey')
+    doc = args.doc
+    out = list()
+    state = args.getTag('state')
+    state = state.upper() if state else None
 
-    runid = 'actions.%s' % runid
-    actionkey = actionkey.replace("__SINGLEQUOTE__", "'")
-    actionkey = actionkey.replace('___', ' ')
-    action = j.core.db.hget(runid, actionkey)
+    actionrunids = [runid.decode() for runid in j.core.db.keys('actions.*') if runid != b'actions.runid']
 
-    if not action:
-        params.result = ('Could not find action with runid: "%s" and actionkey: "%s"' % (runid, actionkey), args.doc)
-        return params
+    # this makes sure bootstrap datatables functionality is used
+    out.append("{{datatables_use}}\n")
 
-    action = j.data.serializer.json.loads(action.decode())
-    actionadd = dict()
-    for key, value in action.items():
-        if key == '_parent':
-            actionadd['_parentshow'] = value
-            value = value.replace(' ', '___') if value else None
-        if isinstance(value, str):
-            value = value.replace('|', '\|')
-            value = value.replace('[', '\[')
-            value = value.replace(']', '\]')
-            if key in ['_result']:
-                value = value.replace('\\n', '\n')
-            if key not in ['_source', 'traceback', 'error', '_result']:
-                value = value.replace('\n', ' ')
-        if key in '_depkeys':
-            value = [{dep: dep.replace(' ', '___')} for dep in action[key]]
-        action[key] = value
-    action.update(actionadd)
-    args.doc.applyTemplate(action)
-    params.result = (args.doc, args.doc)
+    fields = ['Action RunID', 'Action Key', 'State']
+    out.append('||Action RunID||Action Key||State||')
+
+    for actionrunid in actionrunids:
+        runid = actionrunid.split('actions.')[1]
+        for actionkey, actiondetails in j.core.db.hgetall(actionrunid).items():
+            actionkey = actionkey.decode()
+            actionkeyescaped = actionkey.replace(' ', '___')
+            actionkeyescaped = actionkeyescaped.replace("'", "__SINGLEQUOTE__")
+            actionkeyescaped = urllib.parse.quote(actionkeyescaped)
+            actionstate = j.data.serializer.json.loads(actiondetails)['_state']
+            if state:
+                if actionstate != state:
+                    continue
+            line = ['']
+            for field in fields:
+                if field == 'Action Key':
+                    line.append('[%(actionkey)s | /cockpit/action?runid=%(runid)s&actionkey=%(actionkeyescaped)s]'
+                                % ({'runid': runid, 'actionkey': actionkey, 'actionkeyescaped': actionkeyescaped}))
+
+                elif field == 'Action RunID':
+                    line.append(runid)
+                elif field == 'State':
+                    line.append(actionstate)
+
+            line.append('')
+            out.append("|".join(line))
+
+    out = '\n'.join(out)
+    params.result = (out, doc)
+
     return params
