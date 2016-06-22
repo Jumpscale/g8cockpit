@@ -301,11 +301,8 @@ class CockpitDeployerBot:
         self.logger.info('Deployement of cockpit for user %s in progress' % username)
         j.sal.fs.writeFile("%s/blueprints/cockpit" % path, content)
         repo.init()
+        repo.execute_blueprint(path="%s/blueprints/cockpit" % path)
         repo.install(force=False)
-
-        cockpit = repo.findServices(templatename='os.cockpit')[0]
-        # upload cockpit AYS repo to cockpit
-        cockpit.executor.upload(repo.basepath, '/opt/code/cockpit/ays_cockpit')
 
         msg = "Cockpit deployed.\nAddress : https://{url}\nSSH access: `ssh root@{url} -p {port}`".format(
             url=cockpit.hrd.getStr('dns.domain'), port=cockpit.hrd.getInt('ssh.port'))

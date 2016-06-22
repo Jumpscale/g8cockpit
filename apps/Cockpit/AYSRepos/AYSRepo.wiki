@@ -150,8 +150,5 @@ h3. Actions:
       label: Instance
       required: True
 
-- display: Commit
-  action: /restmachine/system/atyourservice/commit
-
 }}
 @colend
