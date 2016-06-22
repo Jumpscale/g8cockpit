@@ -10,7 +10,7 @@ def service_view(s):
         'role': s.role,
         'name': s.recipe.name,
         'instance': s.instance,
-        'instance.hrd': s.hrd.getHRDAsDict(),
+        'instance.hrd': s.hrd.getHRDAsDict()if s.hrd is not None else None,
         'producers': [],
         'parent': None,
         'path': s.path,
