@@ -3,13 +3,13 @@
 # Summary
 |Milestone|ETA|
 |---------|---|
-|[0.9 alpha](#milestone-09-alpha)|2016/06/22|
+|[0.9 alfa](#milestone-09-alfa)|2016/06/22|
 |[0.9 beta](#milestone-09-beta)|N/A|
 |[1.0](#milestone-10)|N/A|
 |[roadmap](#milestone-roadmap)|N/A|
 |[No milestone](#no-milestone)|N/A|
 
-## [Milestone 0.9 alpha](milestones/1:0.9 alpha.md)
+## [Milestone 0.9 alfa](milestones/1:0.9 alfa.md)
 
 
 |Issue|Title|State|Owner|ETA|
