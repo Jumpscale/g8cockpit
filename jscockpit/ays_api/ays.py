@@ -215,12 +215,12 @@ def createNewBlueprint(repository):
     bp_path = j.sal.fs.joinPaths(repo.basepath, 'blueprints', new_name)
     try:
         j.sal.fs.writeFile(bp_path, content)
-        bp = JSBlueprint(repo, path=bp_path)
-        if bp.hash not in repo._blueprints:
-            repo._blueprints[bp.hash] = bp
+        if bp_path not in repo._blueprints:
+            repo._blueprints[bp_path] = JSBlueprint(repo, path=bp_path)
     except:
         if j.sal.fs.exists(bp_path):
             j.sal.fs.remove(bp_path)
+        return jsonify(error="Can't save new blueprint"), 500
 
     return jsonify(name=new_name, content=content), 201
 
@@ -388,7 +388,7 @@ def deleteBlueprint(blueprint, repository):
         j.sal.fs.removeDirTree(service.path)
 
     j.sal.fs.remove(bp.path)
-    del repo._blueprints[bp.hash]
+    del repo._blueprints[bp.path]
 
     return jsonify(), 204
 
