@@ -11,7 +11,6 @@
 ## Issues per assignee
 - [abdulrahmantkhalifa](#abdulrahmantkhalifa)
 - [rkhamis](#rkhamis)
-- [yveskerwyn](#yveskerwyn)
 - [zaibon](#zaibon)
 
 
@@ -23,12 +22,6 @@
 
 
 ### [rkhamis](https://github.com/rkhamis)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
-### [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
