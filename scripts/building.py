@@ -30,7 +30,8 @@ def update():
 @click.command()
 @click.option('--host', help='connection string to the host where to build the docker image', default='localhost')
 @click.option('--sshkey', help='Name of the ssh key to authorize on the G8Cockpit. key are fetch from ssh-agent.',  default='id_rsa')
-def build(host, sshkey):
+@click.option('--nopush', default=False, help='Do not push the image', is_flag=True)
+def build(host, sshkey, nopush):
     """
     Build g8cockpit docker image
     """
@@ -64,13 +65,15 @@ def build(host, sshkey):
     container.core.dir_remove("$varDir/data/*")
 
     cuisine.core.run('jsdocker commit -n %s -t %s' % (container_name, image_name))
-    cuisine.core.run('jsdocker push -i %s' % image_name)
+    if not nopush:
+        cuisine.core.run('jsdocker push -i %s' % image_name)
 
 
 @click.command()
 @click.option('--host', help='connection string to the host where to build the docker image', default='localhost')
 @click.option('--sshkey', help='Name of the ssh key to authorize on the G8Cockpit. key are fetch from ssh-agent.', default='id_rsa')
-def upgrade(host, sshkey):
+@click.option('--nopush', default=False, help='Do not push the image', is_flag=True)
+def upgrade(host, sshkey, nopush):
     """
     upgrade the jumpscale/g8cockpit docker image.
     Use this when you just want to update last code of jumpscale and not rebuild evrything from scratch
@@ -93,7 +96,8 @@ def upgrade(host, sshkey):
     for url in repos:
         j.do.pullGitRepo(url=url, executor=container.executor)
     cuisine.core.run('jsdocker commit -n %s -t %s --force' % (container_name, image_name))
-    cuisine.core.run('jsdocker push -i %s' % image_name)
+    if not nopush:
+        cuisine.core.run('jsdocker push -i %s' % image_name)
 
 def printErr(msg):
     msg = '[-]: %s' % msg
