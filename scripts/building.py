@@ -41,7 +41,7 @@ def build(host, sshkey):
 
     printInfo("create builder container")
     key_pub = j.do.getSSHKeyFromAgentPub(sshkey)
-    container_conn_str = cuisine.docker.ubuntu(name=container_name, image='jumpscale/ubuntu1510', ports="18384:18384", volumes=None, pubkey=key_pub, aydofs=False)
+    container_conn_str = cuisine.docker.ubuntu(name=container_name, image='jumpscale/ubuntu1604', ports="18384:18384", volumes=None, pubkey=key_pub, aydofs=False)
 
     container = j.tools.cuisine.get(container_conn_str)
     container.package.mdupdate()
