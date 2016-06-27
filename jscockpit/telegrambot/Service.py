@@ -194,7 +194,7 @@ State:
             return
 
         if not self._currentRepo(username):
-            message = "Sorry, you are not working on a repo currently, use `/repo [name]` to create or select one"
+            message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
             return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
 
         # no arguments
@@ -224,7 +224,7 @@ State:
         local = '%s/%s' % (self._currentBlueprintsPath(username), doc.file_name)
 
         if not self._currentRepo(username):
-            message = "Sorry, you are not working on a repo currently, use `/repo [name]` to create a new one"
+            message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
             return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
 
         if j.sal.fs.exists(local):

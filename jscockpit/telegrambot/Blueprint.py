@@ -236,7 +236,7 @@ class BlueprintMgmt(object):
             return
 
         if not self._currentRepo(username):
-            message = "Sorry, you are not working on a repo currently, use `/repo [name]` to create a new one"
+            message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
             return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         # no arguments
@@ -267,7 +267,7 @@ class BlueprintMgmt(object):
         local = '%s/%s' % (self._currentBlueprintsPath(username), doc.file_name)
 
         if not self._currentRepo(username):
-            message = "Sorry, you are not working on a repo currently, use `/repo [name]` to create a new one"
+            message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
             return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         if j.sal.fs.exists(local):
