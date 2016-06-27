@@ -124,7 +124,7 @@ def simulateAction(repository):
             step = {
                 'action': s.action,
                 'number': s.nr,
-                'services_keys': list(s.serviceKeys.keys())
+                'services_keys': list(s.actions.keys())
             }
             out['steps'].append(step)
         return json.dumps(out), 200, {'Content-Type': 'application/json'}
