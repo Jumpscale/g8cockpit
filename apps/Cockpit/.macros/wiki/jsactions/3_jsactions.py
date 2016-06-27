@@ -1,4 +1,3 @@
-
 def main(j, args, params, tags, tasklet):
     import urllib
     doc = args.doc
@@ -7,7 +6,13 @@ def main(j, args, params, tags, tasklet):
     state = state.upper() if state else None
 
     actionrunids = [runid.decode() for runid in j.core.db.keys('actions.*') if runid != b'actions.runid']
-    out.append('{{html:\n <table class="table table-striped table-bordered"><tr> <th>Action RunID</th><th>Action Key</th><th>State</th></tr>')
+
+    # this makes sure bootstrap datatables functionality is used
+    out.append("{{datatables_use}}\n")
+
+    fields = ['Action RunID', 'Action Key', 'State']
+    out.append('||Action RunID||Action Key||State||')
+
     for actionrunid in actionrunids:
         runid = actionrunid.split('actions.')[1]
         for actionkey, actiondetails in j.core.db.hgetall(actionrunid).items():
@@ -19,12 +24,20 @@ def main(j, args, params, tags, tasklet):
             if state:
                 if actionstate != state:
                     continue
+            line = ['']
+            for field in fields:
+                if field == 'Action Key':
+                    line.append('[%(actionkey)s | /cockpit/action?runid=%(runid)s&actionkey=%(actionkeyescaped)s]'
+                                % ({'runid': runid, 'actionkey': actionkey, 'actionkeyescaped': actionkeyescaped}))
 
-            out.append('''<tr><td>%(runid)s</td>
-                        <td><a href=/cockpit/action?runid=%(runid)s&actionkey=%(actionkeyescaped)s>%(actionkey)s</a></td>
-                        <td>%(state)s</td></tr>'''
-                       % ({'runid': runid, 'actionkey': actionkey, 'actionkeyescaped': actionkeyescaped, 'state': actionstate}))
-    out.append('</table>\n}}')
+                elif field == 'Action RunID':
+                    line.append(runid)
+                elif field == 'State':
+                    line.append(actionstate)
+
+            line.append('')
+            out.append("|".join(line))
+
     out = '\n'.join(out)
     params.result = (out, doc)
 
