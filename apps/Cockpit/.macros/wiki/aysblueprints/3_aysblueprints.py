@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
         result.append('{{html: <h4> %s </h4>}}' % ayspath)
         for blueprint in blueprints:
             bpid = blueprint['path'].replace('/', '')
-            bpid = bpid.rsplit('.yaml')[0]
+            bpid = bpid.rsplit('.' + j.sal.fs.getFileExtension(bpid))[0]
             sectionid = 'collapse_%s' % bpid
             headingid = 'heading_%s' % bpid
             archived = 'archived' if blueprint['archived'] else 'enable'
