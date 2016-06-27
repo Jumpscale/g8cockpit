@@ -10,13 +10,14 @@ There are two ways of install a new Cockpit:
 
 An instance of the **Cockpit Deployer Chatbot** is active as `@g8cockpitbot` on Telegram.
 
-You can also install your own instance by following the [Cockpit Deployer Chartbot installation instructions](../deployer_bot/installation.md).
+You can also install your own instance by following the [Cockpit Deployer Charbot installation instructions](../deployer_bot/installation.md).
 
 Follow the [Cockpit Deployer Chartbot usage instructions](../deployer_bot/usage.md) in order to install your Cockpit.
 After you chat with the bot. He will send you the information of your cockpit:
 - the URL to reach the portal
 - IP address and ssh command to connect to the VM running the cockpit
 - sshkey you need to use to have access to the vm.
+
 
 ## Using AtYourService
 
