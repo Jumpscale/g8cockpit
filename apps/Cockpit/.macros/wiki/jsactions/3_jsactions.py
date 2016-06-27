@@ -17,8 +17,9 @@ def main(j, args, params, tags, tasklet):
         runid = actionrunid.split('actions.')[1]
         for actionkey, actiondetails in j.core.db.hgetall(actionrunid).items():
             actionkey = actionkey.decode()
-            actionkeyescaped = actionkey.replace(' ', '___')
+            actionkeyescaped = actionkey.replace(' ', '__SPACE__')
             actionkeyescaped = actionkeyescaped.replace("'", "__SINGLEQUOTE__")
+            actionkeyescaped = actionkeyescaped.replace("|", "__GUARD__")
             actionkeyescaped = urllib.parse.quote(actionkeyescaped)
             actionstate = j.data.serializer.json.loads(actiondetails)['_state']
             if state:
@@ -28,7 +29,7 @@ def main(j, args, params, tags, tasklet):
             for field in fields:
                 if field == 'Action Key':
                     line.append('[%(actionkey)s | /cockpit/action?runid=%(runid)s&actionkey=%(actionkeyescaped)s]'
-                                % ({'runid': runid, 'actionkey': actionkey, 'actionkeyescaped': actionkeyescaped}))
+                                % ({'runid': runid, 'actionkey': urllib.parse.quote(actionkey), 'actionkeyescaped': actionkeyescaped}))
 
                 elif field == 'Action RunID':
                     line.append(runid)

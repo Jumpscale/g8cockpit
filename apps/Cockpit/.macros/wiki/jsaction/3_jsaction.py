@@ -7,8 +7,9 @@ def main(j, args, params, tags, tasklet):
     actionkey = tags.get('actionkey')
 
     runid = 'actions.%s' % runid
+    actionkey = actionkey.replace('__SPACE__', ' ')
     actionkey = actionkey.replace("__SINGLEQUOTE__", "'")
-    actionkey = actionkey.replace('___', ' ')
+    actionkey = actionkey.replace("__GUARD__", "|")
     action = j.core.db.hget(runid, actionkey)
 
     if not action:
