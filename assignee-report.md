@@ -3,8 +3,7 @@
 # Issues per assignee
 - [abdulrahmantkhalifa](#abdulrahmantkhalifa) has 1 assigned
 - [rkhamis](#rkhamis) has 1 assigned
-- [yveskerwyn](#yveskerwyn) has 1 assigned
-- [zaibon](#zaibon) has 1 assigned
+- [zaibon](#zaibon) has 2 assigned
 
 
 
@@ -22,16 +21,10 @@
 |[#8](https://github.com/jumpscale/jscockpit/issues/8)|Create dashboard templates for different types of statistics|:red_circle: Open||
 
 
-## [yveskerwyn](https://github.com/yveskerwyn)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#51](https://github.com/jumpscale/jscockpit/issues/51)|doc on cockpit out of date for bot deployment|:red_circle: Open||
-
-
 ## [zaibon](https://github.com/zaibon)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#34](https://github.com/jumpscale/jscockpit/issues/34)|502 Bad Gateway when deploying the Cockpit using the Telegrambot|:red_circle: Open|bug|
+|[#51](https://github.com/jumpscale/jscockpit/issues/51)|doc on cockpit out of date for bot deployment|:red_circle: Open||
 
