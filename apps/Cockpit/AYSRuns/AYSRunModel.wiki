@@ -8,7 +8,14 @@
 h2. Run $$runid Details:
 
 *Repo*: [${model.reponame}|/cockpit/aysrepo?repo=${model.reponame}]
-*State*: ${model.state}
+{% if model.state in ['ERROR'] %}
+    *State*: {{html: <red style='color:red'>ERROR</red> }} [ (Details)|/cockpit/action?runid=ays_${model.reponame}&actionkey=${model.actionkey}]
+{% elif model.state in 'OK' %}
+    *State*: {{html: <green style='color:green'>OK</green> }}
+{% else %}
+    *State*:${mode.state}
+{% endif -%}
+
 *Time*: ${model.time}
 
 *Steps*:
@@ -21,11 +28,20 @@ h2. Run $$runid Details:
             ** actions:
            {% for actiondetail in value -%}
                 *** ${actiondetail.key}
-                {% for k, v in actiondetail.items() -%}
-                    {% if k in ['result', 'state'] -%}
-                        **** ${k}: ${v}
+                    {% if actiondetail.state in ['ERROR'] %}
+                        **** actiondetail.state: {{html: <red style='color:red'>ERROR</red> }}
+                        **** error details: [(Details)|/cockpit/action?runid=ays_${model.reponame}&actionkey=${model.actionkey}]
+                        **** result:
+                        {{code:
+                            ${actiondetail.result}
+                        }}
+                    {% elif actiondetail.state in 'OK' %}
+                        **** actiondetail.state: {{html: <green style='color:green'>OK</green> }}
+                        **** result: ${actiondetail.result}
+                    {% else %}
+                        **** state: ${actiondetail.state}
+                        **** result: ${actiondetail.result}
                     {% endif -%}
-                {% endfor -%}
                 **** [HRD and Source |/cockpit/aysstepinfo?repo=${model.reponame}&hrd=${actiondetail.hrd}&source=${actiondetail.source}]
             {% endfor -%}
         {% endif -%}
