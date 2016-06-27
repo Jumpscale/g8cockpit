@@ -1,0 +1,33 @@
+@usedefaults
+
+{{timestamp}}
+
+{{AYSRun: repo:$$repo runid:$$runid}}
+
+
+h2. Run $$runid Details:
+
+*Repo*: [${model.reponame}|/cockpit/aysrepo?repo=${model.reponame}]
+*State*: ${model.state}
+*Time*: ${model.time}
+
+*Steps*:
+{% for step in model.steps -%}
+    * ${step.action}:
+    {% for key, value in step.items() -%}
+        {% if not key in ['action', 'actions'] -%}
+            ** ${key}: ${value}
+        {% elif key == 'actions' -%}
+            ** actions:
+           {% for actiondetail in value -%}
+                *** ${actiondetail.key}
+                {% for k, v in actiondetail.items() -%}
+                    {% if k in ['result', 'state'] -%}
+                        **** ${k}: ${v}
+                    {% endif -%}
+                {% endfor -%}
+                **** [HRD and Source |/cockpit/aysstepinfo?repo=${model.reponame}&hrd=${actiondetail.hrd}&source=${actiondetail.source}]
+            {% endfor -%}
+        {% endif -%}
+    {% endfor -%}
+{% endfor -%}

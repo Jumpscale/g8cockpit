@@ -185,7 +185,7 @@ def listBlueprints(repository):
     for bp in repo.blueprints:
         bps.append(blueprint_view(bp))
     if include_archived:
-        for bp in repo.blueprints_archive:
+        for bp in repo.blueprints_disabled:
             bps.append(blueprint_view(bp))
 
     return json.dumps(bps), 200, {'Content-Type': 'application/json'}
@@ -561,3 +561,65 @@ def getTemplate(template, repository):
     template = template_view(tmpl)
 
     return json.dumps(template), 200, {'Content-Type': 'application/json'}
+
+
+@ays_api.route('/ays/repository/<repository>/aysrun', methods=['GET'])
+def listRuns(repository):
+    '''
+    list all runs of the repository
+    It is handler for GET /ays/repository/<repository>/aysrun
+    '''
+    repo = j.atyourservice.repos.get(repository, None)
+    if repo is None:
+        return jsonify(error='Repository not found with name %s' % repository), 404
+    try:
+        runs = repo.listRuns()
+        out = {
+            'repository': repository,
+            'aysruns': runs,
+        }
+        return json.dumps(out), 200, {'Content-Type': 'application/json'}
+
+    except j.exceptions.Input as e:
+        return jsonify(error=e.msgpub), 500
+    except Exception as e:
+        return jsonify(error="Unexpected error: %s" % str(e)), 500
+
+
+@ays_api.route('/ays/repository/<repository>/aysrun/<aysrun>', methods=['GET'])
+def getRun(aysrun, repository):
+    '''
+    Get an aysrun
+    It is handler for GET /ays/repository/<repository>/aysrun/<aysrun>
+    '''
+    repo = j.atyourservice.repos.get(repository, None)
+    if repo is None:
+        return jsonify(error='Repository not found with name %s' % repository), 404
+
+    aysrun = repo.getRun(id=aysrun)
+    data = {'model': aysrun.model, 'repr': aysrun.__repr__()}
+    return json.dumps(data), 200, {'Content-Type': 'application/json'}
+
+
+@ays_api.route('/ays/repository/<repository>/source/<source>', methods=['GET'])
+def getSource(source, repository):
+    """
+    Get source
+    It is method for GET /ays/repository/{repository}/source/{source}
+    """
+    repo = j.atyourservice.repos.get(repository, None)
+    if repo is None:
+        return jsonify(error='Repository not found with name %s' % repository), 404
+    return json.dumps(repo.getSource(source)), 200, {'Content-Type': 'application/json'}
+
+
+@ays_api.route('/ays/repository/<repository>/hrd/<hrd>', methods=['GET'])
+def getHRD(hrd, repository):
+    """
+    Get HRD
+    It is method for GET /ays/repository/{repository}/hrd/{hrd}
+    """
+    repo = j.atyourservice.repos.get(repository, None)
+    if repo is None:
+        return jsonify(error='Repository not found with name %s' % repository), 404
+    return json.dumps(repo.getHRD(hrd)), 200, {'Content-Type': 'application/json'}

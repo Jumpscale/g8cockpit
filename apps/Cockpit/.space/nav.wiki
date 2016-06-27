@@ -2,6 +2,7 @@ Actions:/cockpit/Actions
 AYS Repos:/cockpit/AYSRepos
 AYS Instances:/cockpit/AYSInstances
 AYS Templates:/cockpit/AYSTemplates
+AYS Runs:/cockpit/AYSRuns
 Blueprints:/cockpit/AYSBlueprints
 Information:/cockpit/Information
 JWT:/cockpit/JWT

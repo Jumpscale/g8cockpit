@@ -55,7 +55,7 @@ def blueprint_view(bp):
         'name': bp.name,
         'content': bp.content,
         'hash': bp.hash,
-        'archived': bp.archived,
+        'archived': not bp.active,
     }
 
 

@@ -1,0 +1,21 @@
+@usedefaults
+
+{{timestamp}}
+
+{{AYSRun: repo:$$repo runid:$$runid}}
+
+
+h2. Run $$runid Details:
+
+*Repo*: [${model.reponame}|/cockpit/aysrepo?repo=${model.reponame}]
+*Time*: ${model.time}
+*Model*: [Model Details|/cockpit/aysrunmodel?repo=${model.reponame}&runid=$$runid]
+*State*: ${model.state}
+{%- if model.state in ['ERROR'] -%}
+    [ (Details)|/cockpit/action?runid=${model.reponame}]
+{% endif -%}
+
+
+{{code:
+    ${repr}
+}}

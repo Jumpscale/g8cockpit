@@ -1,0 +1,16 @@
+@usedefaults
+
+{{aysstepinfo: repo:$$repo hrd:$$hrd source:$$source}}
+
+
+h2. Step Details:
+
+h3. HRD:
+{{code:
+    ${hrd}
+}}
+
+h3. Source:
+{{code:
+    ${source}
+}}

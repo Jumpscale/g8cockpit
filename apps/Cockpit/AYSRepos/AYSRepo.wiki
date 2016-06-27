@@ -12,6 +12,7 @@ h2. Links:
 * [Blueprints|cockpit/AYSBlueprints?ayspath=$$repo]
 * [Explorer|cockpit/AYSRepo/Explorer?repo=$$repo]
 * [Simulator|cockpit/AYSRepo/simulate?repo=$$repo]
+* [Runs|cockpit/AYSRuns?repo=$$repo]
 @colend
 
 

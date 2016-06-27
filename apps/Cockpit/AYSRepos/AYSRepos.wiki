@@ -15,6 +15,7 @@ h3. [${repo}|/cockpit/aysrepo?repo=${repo}]:
     * [Blueprints|cockpit/AYSBlueprints?ayspath=${repo}]
     * [Explorer|cockpit/AYSRepo/Explorer?repo=${repo}]
     * [Simulator|cockpit/AYSRepo/simulate?repo=${repo}]
+    * [Runs|cockpit/AYSRuns?repo=$$repo]
 {% endfor %}
 @colend
 
