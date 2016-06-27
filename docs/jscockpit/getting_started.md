@@ -17,7 +17,7 @@ Before you can execute a blueprint you need to create an AYS repository. This re
   
 To create a new repository click **AYS Repos** in the left navigation menu:
 
-![](2016-06-17_204x56_scrot.png)
+![](create-new-AYS-repo.png)
 
 This page displays all your repositories. On the right side of the page there is an drop-down menu. Choose **Create AYS repository**. A popup form will appear. Provide a name for your new repository and click **Confirm**:
 
@@ -51,12 +51,22 @@ vdc__demo1:
 
 To create this new blueprint click on the **explorer** link on the repository page. This will open the explorer page where you then navigate to the directory of your new repository.
 
+![](explorer.png)
+
 - Double click the blueprint folder
-- Right click and select **new text file**
+- Right click and select **New text file**
 - Right click on the newly created file, select **edit file**
+
+![](edit-file.png)
+
 - An editor opens, paste the content of the blueprint, then **save**
 
-![](2016-06-17_409x93_scrot.png)
+![edit-blueprint.png]
+
+- Rename the new bliueprint to anything you choose, no speficic extension is required:
+
+![rename-blueprint.png]
+![renamed-blueprint.png]
 
 
 ### Step 3: Execute the blueprint
@@ -65,17 +75,26 @@ Now that the blueprint is ready we need to execute it. This step will create (no
 
 To do that:
 
-- Go back to **AYS Repos**
+- Double-click you newly created AYS repo on the **AYS Repos** page
 - Select **Execute Blueprint** from the drop-down list
+
+![](execute-blueprint.png)
+
 - In the popup that appears, leave the form empty and click confirm
+
+![](confirm-execute.png)
+
 - A message will tell you that your blueprint is executed
 
 ![](2016-06-17_421x104_scrot.png)
 
-### Step 4: Make sure the service instance are created
 
-To be sure that the blueprint executed properly you can go back to **AYS Repos** and click the `instances` link under your new repository.
-  
+### Step 4: Make sure the service instances are created
+
+To be sure that the blueprint executed properly you can go back to **AYS Repos** and click the **Instances** link under your new repository.
+
+![](instances.png)
+
 The instances page shows you all the service instances in your newly created repository. Clicking an instance will bring you to the **Instance Details** page of that service instance.
 
 From here you can either
@@ -87,13 +106,13 @@ From here you can either
 
 Before installing the service, we want to simulate the installation in order to make sure the service will behave as we want without having to actually install the service.
 
-From **AYS Repos**  click the simulator link. The simulator lets you preview what action will happen without actually executing them. Fill the form like shown in the next picture.
+From **AYS Repos** click the **Simulator** link. The simulator lets you preview what action will happen without actually executing them. Fill the form like shown in the next picture.
 
-![simulator form](2016-06-17_846x396_scrot.png)
+![](simulator-page.png)
 
-Here we want to simulate the `install` action and we don't want to filer on service role or instance. This means all services in the repository will be installed. Click the simulate button to have show the result of the simulation.
+Here we want to simulate the `install` action and we don't want to specify a specific service role or instance. This means all services in the repository will be installed. Click the simulate button to have show the result of the simulation.
 
-![simulation result](2016-06-17_566x259_scrot.png)
+![](simulation-restult.png)
 
 We see that the installation will be executed in two steps. First the `g8client` and `vdcfarm` service will be installed. then the `vdc`. These two steps are due to the fact that the `vdc` depends on the `g8client` and `vdcfarm`.
 
