@@ -42,7 +42,7 @@ def createNewRepository():
         return jsonify(errors=inputs.errors), 400
 
     name = inputs.name.data
-    if name in j.atyourservice.repos:
+    if j.atyourservice.exist(name):
         return jsonify(error='repo with this name already exsits'), 409
 
     path = j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit", name)
@@ -56,7 +56,9 @@ def getRepository(repository):
     Get information of a repository
     It is handler for GET /ays/repository/<repository>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     return jsonify(name=repo.name, path=repo.basepath)
@@ -68,11 +70,13 @@ def deleteRepository(repository):
     Delete a repository
     It is handler for DELETE /ays/repository/<repository>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     repo.uninstall()
-    del j.atyourservice.repos[repository]
+    del j.atyourservice.repos[repo.basepath]
     j.sal.fs.removeDirTree(repo.basepath)
     return '', 204
 
@@ -82,7 +86,9 @@ def initRepository(repository):
     Init a repository
     It is handler for POST /ays/repository/<repository>/init
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     role = request.args.get('role', '')
@@ -106,7 +112,9 @@ def simulateAction(repository):
     if 'action' not in request.args:
         return jsonify(error='No action specified'), 400
 
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     action = request.args['action']
@@ -143,7 +151,9 @@ def executeAction(repository):
     if 'action' not in request.args:
         return jsonify(error='No action specified'), 400
 
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     action = request.args['action']
@@ -175,7 +185,9 @@ def listBlueprints(repository):
     List all blueprint
     It is handler for GET /ays/repository/<repository>/blueprint
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -197,7 +209,9 @@ def createNewBlueprint(repository):
     Create a new blueprint
     It is handler for POST /ays/repository/<repository>/blueprint
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -231,7 +245,9 @@ def updateBlueprint(blueprint, repository):
     Update existing blueprint
     It is handler for PUT /ays/repository/<repository>/blueprint/<blueprint>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -259,7 +275,9 @@ def archiveBlueprint(blueprint, repository):
     Archive existing blueprint
     It is handler for PUT /ays/repository/<repository>/blueprint/<blueprint>/archive
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -282,7 +300,9 @@ def restoreBlueprint(blueprint, repository):
     Restore archived blueprint
     It is handler for PUT /ays/repository/<repository>/blueprint/<blueprint>/restore
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -306,7 +326,9 @@ def getBlueprint(blueprint, repository):
     Get a blueprint
     It is handler for GET /ays/repository/<repository>/blueprint/<blueprint>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -328,7 +350,9 @@ def executeBlueprint(blueprint, repository):
     Execute the blueprint
     It is handler for POST /ays/repository/<repository>/blueprint/<blueprint>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     bp = None
@@ -371,7 +395,9 @@ def deleteBlueprint(blueprint, repository):
     delete blueprint
     It is handler for DELETE /ays/repository/<repository>/blueprint/<blueprint>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -399,7 +425,9 @@ def listServices(repository):
     List all services in the repository
     It is handler for GET /ays/repository/<repository>/service
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     services = []
@@ -417,7 +445,9 @@ def listServicesByRole(role, repository):
     List all services of role 'role' in the repository
     It is handler for GET /ays/repository/<repository>/service/<role>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     services = []
@@ -435,7 +465,9 @@ def getServiceByInstance(instance, role, repository):
     Get a service instance
     It is handler for GET /ays/repository/<repository>/service/<role>/<instance>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     s = repo.getService(role=role, instance=instance, die=False)
@@ -453,7 +485,9 @@ def listServiceActions(instance, role, repository):
     Get list of action available on this service
     It is handler for GET /ays/repository/<repository>/service/<role>/<instance>/action
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     s = repo.getService(role=role, instance=instance, die=False)
@@ -470,7 +504,9 @@ def deleteServiceByInstance(instance, role, repository):
     uninstall and delete service
     It is handler for DELETE /ays/repository/<repository>/service/<role>/<instance>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     service = repo.getService(role=role, instance=instance, die=False)
@@ -495,7 +531,9 @@ def listTemplates(repository):
     list all templates
     It is handler for GET /ays/repository/<repository>/template
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     templates = []
@@ -513,7 +551,9 @@ def createNewTemplate(repository):
     Create new template
     It is handler for POST /ays/repository/<repository>/template
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -549,7 +589,9 @@ def getTemplate(template, repository):
     Get a template
     It is handler for GET /ays/repository/<repository>/template/<template>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -569,7 +611,9 @@ def listRuns(repository):
     list all runs of the repository
     It is handler for GET /ays/repository/<repository>/aysrun
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     try:
@@ -592,7 +636,9 @@ def getRun(aysrun, repository):
     Get an aysrun
     It is handler for GET /ays/repository/<repository>/aysrun/<aysrun>
     '''
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
@@ -607,7 +653,9 @@ def getSource(source, repository):
     Get source
     It is method for GET /ays/repository/{repository}/source/{source}
     """
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     return json.dumps(repo.getSource(source)), 200, {'Content-Type': 'application/json'}
@@ -619,7 +667,9 @@ def getHRD(hrd, repository):
     Get HRD
     It is method for GET /ays/repository/{repository}/hrd/{hrd}
     """
-    repo = j.atyourservice.repos.get(repository, None)
+    repo = None
+    if j.atyourservice.exist(repository):
+        repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
     return json.dumps(repo.getHRD(hrd)), 200, {'Content-Type': 'application/json'}
