@@ -72,7 +72,7 @@ class RepoMgmt:
             return bot.sendMessage(chat_id=chat_id, text=message)
 
         # repo already exists
-        if repo_name in j.atyourservice.repos.keys():
+        if j.atyourservice.exist(repo_name):
             self._setCurrentRepo(username, repo_name)
 
             message = "This repo already exists, `%s` is now your current working repo." % repo_name
@@ -122,7 +122,7 @@ class RepoMgmt:
 
         for name in repo_names:
             try:
-                repo = j.atyourservice.repos[name]
+                repo = j.atyourservice.get(name)
             except KeyError:
                 message = "Sorry, I can't find any repo named `%s` :/" % name
                 reply_markup = telegram.ReplyKeyboardHide()
@@ -134,7 +134,8 @@ class RepoMgmt:
 
             self.bot.logger.debug('removing repository: %s' % repo.basepath)
             j.sal.fs.removeDirTree(repo.basepath)
-            del j.atyourservice._repos[repo.name]
+            # this is wrong, external modules should not use private properties
+            del j.atyourservice._repos[repo.basepath]
 
             evt = j.data.models.cockpit_event.Telegram()
             evt.io = 'input'

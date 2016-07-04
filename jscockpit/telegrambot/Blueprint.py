@@ -11,7 +11,7 @@ class BlueprintMgmt(object):
 
     #helpers
     def _blueprintsPath(self, repo_name):
-        repo = j.atyourservice.repos.get(repo_name)
+        repo = j.atyourservice.get(repo_name)
         return '%s/blueprints' % (repo.basepath)
 
     def _currentRepo(self, username):
@@ -125,7 +125,7 @@ class BlueprintMgmt(object):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-        repo = j.atyourservice.repos[self._currentRepo(username)]
+        repo = j.atyourservice.get(name=self._currentRepo(username))
 
         # ays uninstall before
         def delete_bp(path):
