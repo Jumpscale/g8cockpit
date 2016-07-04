@@ -8,15 +8,17 @@ There are two ways of install a new Cockpit:
 
 ## Using Cockpit Deployer Chatbot
 
-An instance of the **Cockpit Deployer Chatbot** is active as `@g8cockpitbot` on Telegram.
+An instance of the **Cockpit Deployer Chatbot** is active as `Cockput` on Telegram.
 
-You can also install your own instance by following the [Cockpit Deployer Charbot installation instructions](../deployer_bot/installation.md).
+You can also install your own instance by following the [Cockpit Deployer Chatbot installation instructions](../deployer_bot/installation.md).
 
-Follow the [Cockpit Deployer Chartbot usage instructions](../deployer_bot/usage.md) in order to install your Cockpit.
-After you chat with the bot. He will send you the information of your cockpit:
-- the URL to reach the portal
-- IP address and ssh command to connect to the VM running the cockpit
-- sshkey you need to use to have access to the vm.
+Follow the [Cockpit Deployer Chatbot usage instructions](../deployer_bot/usage.md) in order to install your Cockpit.
+
+Once your Cockpit is installed, you will get following information about your Cockpit:
+
+- URL to reach the portal
+- IP address and SSH command to connect to the virtual machine running your Cockpit
+- SSH key to access the virtual machine
 
 
 ## Using AtYourService
@@ -28,7 +30,7 @@ If you have a system with JumpScale installed, you can also use AtYourService to
 ```bash
 mkdir -p /opt/code/ays_cockpit
 mkdir -p /opt/code/ays_cockpit/blueprints
-touch -p /opt/code/ays_cockpit/.ays
+touch /opt/code/ays_cockpit/.ays
 ```
 
 - Replace the values in this blueprint:
@@ -83,9 +85,9 @@ ays init
 ays install
 ```
 
-## Allow the cockpit to push to your Github repository
+## Allow the Cockpit to push to your Github repository
 
-The last think you need to do is to do to fulling configure your cockpit is to create a deploy key on your github repository where the AYS services will be saved.
+The last thing you need to do is to do to fulling configure your Cockpit is to create a deploy key on your GitHub repository where the AYS services will be saved.
 To do that:
 - go on the setting page of the github repository you specify during installation.
 - click on `deploy keys` tab
