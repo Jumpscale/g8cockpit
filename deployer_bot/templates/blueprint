@@ -15,3 +15,4 @@ cockpit.g8__pilot:
   oauth.organization: '{oauth_organization}'
   oauth.jwt_key: '{oauth_jwtkey}'
   ays.repo.url: '{repo_url}'
+  staging: true # put to false or remove when in production
