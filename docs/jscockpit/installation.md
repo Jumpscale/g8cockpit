@@ -94,11 +94,11 @@ ays install
 
 ## Allow the Cockpit to push to your Github repository
 
-The last thing you need to do is configure your Cockpit to create a deploy key on your GitHub repository where the AYS services will be saved.
+The last thing you need to do is configure your Cockpit to create a deploy key on your GitHub repository where all AYS service instances information will be saved.
 
 To do that:
-- Go on the **Settings** page of the GitHub repository specified during installation
-- Click **Add deploy key** in **Deploy keys** tab
+- Go to the **Settings** page of the GitHub repository specified during installation
+- Click **Add deploy key** in the **Deploy keys** tab
 - Copy the content of the public key that you can find in the portal information page
 
 ![](Add-a-deply-key.png)
