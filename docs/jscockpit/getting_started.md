@@ -17,13 +17,21 @@ Before you can execute a blueprint you need to create an AYS repository. This re
   
 To create a new repository click **AYS Repos** in the left navigation menu:
 
+![](AYS-Repos.png)
+
+This page displays all your repositories.
+
+On the right side of the page there is an drop-down menu. Choose **Create AYS repository**:
+
 ![](create-new-AYS-repo.png)
 
-This page displays all your repositories. On the right side of the page there is an drop-down menu. Choose **Create AYS repository**. A popup form will appear. Provide a name for your new repository and click **Confirm**:
+A popup form will appear. Provide a name for your new repository and click **Confirm**:
 
 ![](2016-06-17_595x233_scrot.png)
 
 You can now see your new repository in the list of repos. Click your newly created repository.
+
+![](AYS-repos-demo1.png)
 
 
 ### Step 2: Create the blueprint
@@ -49,44 +57,44 @@ vdc__demo1:
   maxNumPublicIP: 1
 ```
 
-To create this new blueprint click on the **explorer** link on the repository page. This will open the explorer page where you then navigate to the directory of your new repository.
+To create this new blueprint click on the **Explorer** link on the repository page. This will open the explorer page where you then navigate to the directory of your new repository.
 
 ![](explorer.png)
 
 - Double click the blueprint folder
 - Right click and select **New text file**
+
+![](new-text-file.png)
+
 - Right click on the newly created file, select **edit file**
 
 ![](edit-file.png)
 
 - An editor opens, paste the content of the blueprint, then **save**
 
-![edit-blueprint.png]
+![](edit-blueprint.png)
 
 - Rename the new bliueprint to anything you choose, no speficic extension is required:
 
-![rename-blueprint.png]
-![renamed-blueprint.png]
+![](rename-blueprint.png)
+![](renamed-blueprint.png)
 
 
 ### Step 3: Execute the blueprint
  
-Now that the blueprint is ready we need to execute it. This step will create (not install) all the necessary service instances required by the blueprint. The actual installation of these service instances happen in step 5.
+Now that the blueprint is ready we need to execute it. This step will create (not install) all the necessary service instances required by the blueprint. The actual installation of these service instances happens in step 5.
 
-To do that:
-
-- Double-click you newly created AYS repo on the **AYS Repos** page
-- Select **Execute Blueprint** from the drop-down list
+On the **AYS Repo Details** page of your newly created repository select **Execute Blueprint** from the drop-down list
 
 ![](execute-blueprint.png)
 
-- In the popup that appears, leave the form empty and click confirm
+In the popup that appears, leave the form empty and click **Confirm**
 
 ![](confirm-execute.png)
 
-- A message will tell you that your blueprint is executed
+A message will tell you that your blueprint is executed
 
-![](2016-06-17_421x104_scrot.png)
+![](blueprint-executed.png)
 
 
 ### Step 4: Make sure the service instances are created
