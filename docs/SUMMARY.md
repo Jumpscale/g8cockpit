@@ -7,7 +7,7 @@
     * [Configure Itsyou.online](installation/prep/Itsyou.online/Itsyou-online.md)
     * [Create a Telegram Chatbot](installation/prep/Telegram/Telegram.md)
     * [Create a GitHub Repository](installation/prep/GitHub/GitHub.md)
-  * [Installing using Telegram](installation/Using-Telegran/using-Telegram.md)
+  * [Installing using Telegram](installation/Using-Telegram/using-Telegram.md)
   * [Installing using an AYS Blueprint](installation/Using-Blueprint/using-blueprint.md)
 * [Usage](usage/usage.md)
   * [Telegram Chatbot](usage/telegram_bot.md)
