@@ -1,10 +1,15 @@
-## Using an AYS blueprint
+## Installation using an AYS Blueprint
 
-> Using the **Cockpit Deployer Chatbot** is the recommanded way to install a Cockpit. The option to use an AYS blueprint is ment to only be used by Green IT Globe employees.
+> Using the **Cockpit Deployer Chatbot** is the recommanded way to install a Cockpit. The option documented here is meant to be used only by Green IT Globe employees.
 
-If you have a system with JumpScale installed, you can also use AtYourService to create a new Cockpit.
+Below we discuss 4 steps:
+- **Step 1**: Create an AYS service repository
+- **Step 2**: Create the AYS blueprint
+- **Step 3**: Execute the blueprint
+- **Step 4**: Init and install the AYS service instances
 
-- Create a AYS service repository:
+
+### Step 1: Create an AYS service repository:
 
 ```bash
 mkdir -p /opt/code/ays_cockpit
@@ -12,27 +17,34 @@ mkdir -p /opt/code/ays_cockpit/blueprints
 touch /opt/code/ays_cockpit/.ays
 ```
 
-- Replace the values in this blueprint:
+### Step 2: Create the AYS blueprint
+
+Replace the values in this blueprint:
 
 ```yaml
 g8client__main:
-  g8.url: '{g8_url}'
-  g8.login: '{g8_login}'
-  g8.password: '{g8_password}'
-  g8.account: '{g8_account}'
+  g8.url: '{g8-url}'
+  g8.login: '{g8-login}'
+  g8.password: '{g8-password}'
+  g8.account: '{g8-account}'
 
 cockpit.g8__pilot:
-  telegram.token: '{telegram_token}'
-  cockpit.name: '{cockpit_name}'
-  dns.sshkey: '{dns_sshkey}'
-  dns.domain: '{dns_domain}'
-  oauth.client_secret: '{oauth_secret}'
-  oauth.client_id: '{oauth_id}'
-  oauth.organization: '{oauth_organization}'
-  oauth.jwt_key: '{oauth_jwtkey}'
+  g8.client: 'main'
+  telegram.token: '{telegram-token}'
+  cockpit.name: '{cockpit-name}'
+  dns.sshkey: '{dns-sshkey-path}'
+  dns.domain: '{dns-domain}'
+  oauth.client_secret: '{oauth-client-secret}'
+  oauth.client_id: '{oauth-client-id}'
+  oauth.organization: 'itsyouonline'
+  oauth.jwt_key: '{oauth-jwtkey}'
+  dind: true
+  staging: true
 ```
 
+
 Description of the values:
+
 - **g8.url**: URL of the G8 where you want to deploy the cockpit, e.g. `be-scale-1.demo.greenitglobe.com`
 - **g8.login**: Username of your user account on the G8
 - **g8.password**: Password of your user account on the G8
@@ -52,18 +64,21 @@ Description of the values:
 - **dind**: (true/false) Abreviation for "Docker in Docker"
 - **staging**: (true/false) When set to true, no SSL certificates are required
 
-- Copy the blueprint into the blueprints subdirectory:
+
+Copy the blueprint into the blueprints subdirectory:
 
 ```bash
 cp bp.yml /opt/code/ays_cockpit/blueprints
 ```
 
 
+### Step 3: Execute the blueprint
+
 ```bash
 ays blueprint
 ```
 
-- Init and install the blueprint:
+### Step 4: Init and install the AYS service instances
 
 ```bash
 cd /opt/code/ays_cockpit

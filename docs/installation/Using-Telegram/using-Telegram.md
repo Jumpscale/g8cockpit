@@ -1,4 +1,4 @@
-## Using the Cockpit Deployer Chatbot
+## Installation using the Cockpit Deployer Chatbot
 
 The recommended way to deploy a Cockpit is using the **Cockpit Deployer Chatbot**, as an alternative to installing using an AYS blueprint. 
 

@@ -2,9 +2,8 @@
 
 There are two ways to install a new **Cockpit**:
 
-- [Installing using Telegram](using-Telegram.md) (recommended)
-- [Installing using an AYS Blueprint](using-blueprint.md)
-
+- [Installing using Telegram](Using-Telegram/using-Telegram.md) (recommended)
+- [Installing using an AYS Blueprint](Using-Blueprint/using-blueprint.md)
 
 Both options requires some pre-installation preparation:
 
