@@ -1,1 +1,1 @@
-## Create a GitHub repository
+## Create a GitHub Repository

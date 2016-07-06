@@ -1,1 +1,1 @@
-## Create a Telegram chatbot and get an HTTP API token for it
+## Create a Telegram Chatbot
