@@ -31,7 +31,7 @@ A popup form will appear. Provide a name for your new repository and click **Con
 
 You can now see your new repository in the list of repos. Click your newly created repository.
 
-![](AYS-repos-demo1.png)
+![](AYS-repo-demo1.png)
 
 
 ### Step 2: Create the blueprint
