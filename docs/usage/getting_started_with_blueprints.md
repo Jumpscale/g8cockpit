@@ -1,8 +1,9 @@
-## Getting Started
+## Getting Started with Blueprints
 
 This example will guide you through all the steps required to deploy a blueprint using the **Cockpit Portal**. The goal of this exercise will be to create a new virtual datacenter (VDC) on a G8 node.
 
 This will happen in 6 steps:
+
 - Step 1: Create a new AYS repository
 - Step 2: Create a blueprint for deploying a virtual datacenter
 - Step 3: Execute the blueprint, which will create the required service instances
@@ -27,7 +28,7 @@ On the right side of the page there is an drop-down menu. Choose **Create AYS re
 
 A popup form will appear. Provide a name for your new repository and click **Confirm**:
 
-![](2016-06-17_595x233_scrot.png)
+![](confirm-create-new-repo.png)
 
 You can now see your new repository in the list of repos. Click your newly created repository.
 
@@ -90,7 +91,7 @@ On the **AYS Repo Details** page of your newly created repository select **Execu
 
 In the popup that appears, leave the form empty and click **Confirm**
 
-![](confirm-execute.png)
+![](confirm-execute-blueprint.png)
 
 A message will tell you that your blueprint is executed
 
@@ -112,15 +113,15 @@ From here you can either
 
 ### Step 5: Simulate installation
 
-Before installing the service, we want to simulate the installation in order to make sure the service will behave as we want without having to actually install the service.
+Before installing the services, we want to simulate the installation in order to make sure the services will behave as we want without having to actually install the services.
 
-From **AYS Repos** click the **Simulator** link. The simulator lets you preview what action will happen without actually executing them. Fill the form like shown in the next picture.
+From **AYS Repos** click the **Simulator** link. The simulator lets you preview what action will happen without actually executing them. Fill out the form like shown in the next picture.
 
 ![](simulator-page.png)
 
-Here we want to simulate the `install` action and we don't want to specify a specific service role or instance. This means all services in the repository will be installed. Click the simulate button to have show the result of the simulation.
+Here we want to simulate the `install` action and we don't want to specify a specific service role or instance. This means all services in the repository will be installed. Click the **Simulate** button in order to see the result of the simulation.
 
-![](simulation-restult.png)
+![](simulation-result.png)
 
 We see that the installation will be executed in two steps. First the `g8client` and `vdcfarm` service will be installed. then the `vdc`. These two steps are due to the fact that the `vdc` depends on the `g8client` and `vdcfarm`.
 
@@ -130,11 +131,13 @@ We see that the installation will be executed in two steps. First the `g8client`
 Now that we are confident with the installation steps, we can actually do the installation.
 To do that select the **Install** from the action drop-down list.
 
-![](2016-06-17_254x273_scrot.png)
+![](install-service.png)
 
-Like before, a popup form will appear. Select the same value as in the simulation and click **Confirm**.
+Like before, a popup form will appear.
 
-![](2016-06-17_579x357_scrot.png)
+![](confirm-install-service.png)
+
+Select the same values as in the simulation and click **Confirm**.
 
 A message will tell you that the installation succeeded.  
 

@@ -1,27 +1,6 @@
-# Installation
+## Using an AYS blueprint
 
-There are two ways of install a new Cockpit:
-
-- Using the **Cockpit Deployer Chatbot** on Telegram
-- Using AtYourService
-
-
-## Using Cockpit Deployer Chatbot
-
-An instance of the **Cockpit Deployer Chatbot** is active as `Cockput` on Telegram.
-
-You can also install your own instance by following the [Cockpit Deployer Chatbot installation instructions](../deployer_bot/installation.md).
-
-Follow the [Cockpit Deployer Chatbot usage instructions](../deployer_bot/usage.md) in order to install your Cockpit.
-
-Once your Cockpit is installed, you will get following information about your Cockpit:
-
-- URL to reach the portal
-- IP address and SSH command to connect to the virtual machine running your Cockpit
-- SSH key to access the virtual machine
-
-
-## Using AtYourService
+> Using the **Cockpit Deployer Chatbot** is the recommanded way to install a Cockpit. The option to use an AYS blueprint is ment to only be used by Green IT Globe employees.
 
 If you have a system with JumpScale installed, you can also use AtYourService to create a new Cockpit.
 
@@ -91,14 +70,3 @@ cd /opt/code/ays_cockpit
 ays init
 ays install
 ```
-
-## Allow the Cockpit to push to your Github repository
-
-The last thing you need to do is configure your Cockpit to create a deploy key on your GitHub repository where all AYS service instances information will be saved.
-
-To do that:
-- Go to the **Settings** page of the GitHub repository specified during installation
-- Click **Add deploy key** in the **Deploy keys** tab
-- Copy the content of the public key that you can find in the portal information page
-
-![](Add-a-deply-key.png)
