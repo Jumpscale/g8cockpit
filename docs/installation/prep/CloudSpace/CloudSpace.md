@@ -16,7 +16,9 @@ Creating the cloud space upfront gives you the advantage that you can assert tha
 
 ![](deploy-VFW.png)
 
-![](deploy-VFW.png)
+- Specify a reason why you want to deploy the virtual firewall and click **Confirm**:
+
+![](confirm-deploy-VFW.png)
 
 You will specify the name of cloud space when asked for **the name of the Cockpit** during the installation, which is a little confusing since the name you specify will both be used as the name of the Cockpit **and** the name of the cloud space where the virtual machine hosting the Cockpit will be created during the installation.
 
