@@ -12,17 +12,47 @@ At the end of the deployment the chatbot will send you the information to access
 
 Detail about the questions:
 
-- **Organization**: a cockpit is always deployed for an organization, which needs to exists on https://itsyou.online/
+- **Organization**: a Cockpit is always deployed for an organization, which needs to exists on https://itsyou.online/
+  - See [ItsYou.online pre-installation preparation](../prep/Itsyou.online/Itsyou-online.md) section for more information about this
+  
 - **URL of the G8**: the chatbot will propose you multiple G8s where you can deploy your Cockpit, make sure to choose one where you have a username with access to a (cloud) account
-- **Login**: Your username on the selected G8
+
+- **Login**: your username on the selected G8
+
 - **Password**: the password of your username on the selected G8
+
 - **Telegram token**: next to a web portal the Cockpit also comes a Telegram chatbot interface, that you will need the create by talking to @botfather, another chatbot, from which you will receive an API token to paste into the conversation with @g8cockpitbot
-- **VDC Name**: the name of the VDC on the selected G8 where you want to deploy your Cockpit, if the VDC doesn't exist yes, it will be created
-- **Domain**: the domain name you want for your Cockpit, this can be anything as long as it's a valid/unique domain name
+  - See the [Telegram pre-installation preparation](../prep/Telegram/Telegram.md) section for more information about this
+  
+- **VDC Name**: the name of the VDC on the selected G8 where you want to deploy your Cockpit, if the VDC doesn't exist yet, it will be created
+  - See the section [Creating a Cloud Space](../prep/CloudSpace/CloudSpace.md) for more information about this
+  
+- **Domain**: the subdomain name you want for your Cockpit, this can be anything as long as it's a valid/unique subdomain name that will be created as subdomain of `aydo2.com`
 
-
+- **URL of the GitHub Repository**: a Cockpit can save (on-demand) all AYS service instance information into your GitHub repository
+  - See the [GitHub pre-installation preparation](../prep/GitHub/GitHub.md) section for more information about this
+     
+     
 Once your Cockpit is installed, you will get following information about your Cockpit:
 
 - URL to reach the portal
 - IP address and SSH command to connect to the virtual machine running your Cockpit
 - SSH key to access the virtual machine
+
+Below some screenshots of the installation conversation in Telegram:
+
+![](organization-name-and-authorization-request-URL.png)
+
+![](authorization-request.png)
+
+![](URL-of-G8.png)
+
+![](telegran-token.png)
+
+![](vdc-name.png)
+
+![](domain-name.png)
+
+![](GitHub-URL.png)
+
+![](deployment-in-progress.png)
