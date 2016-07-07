@@ -19,9 +19,11 @@ In order to get this API token, you need to create the create a new chatbot, thi
 
 ![](username-bot.png)
 
-As result you get the API token that will need to supply as part of the installation. 
+As a result you get the API token that you will need during installation. 
 
-- You also will want to add command descriptions to chatbot, this by using the `/setcommands` command:
+You also will want to add command descriptions for your chatbot.
+
+- Do this by using the `/setcommands` command:
 
 ![](set-commands.png)
 
@@ -31,11 +33,13 @@ As result you get the API token that will need to supply as part of the installa
 
 - Paste following lines:
 
+```
     start - Start discussion with the bot
     repo - Manage your AYS repositories
     blueprint - Manage your blueprints project
     service - Perform actions on your service instances
     help - Show you what I can do
+```
 
 - You'll folowing result:
 

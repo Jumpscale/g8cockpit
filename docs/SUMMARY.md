@@ -4,6 +4,7 @@
 * [Architecture](architecture.md)
 * [Installation](installation/installation.md)
   * [Preparation](installation/prep/prep.md)
+    * [Create a Cloud Space](installation/prep/CloudSpace/CloudSpace.md)
     * [Configure Itsyou.online](installation/prep/Itsyou.online/Itsyou-online.md)
     * [Create a Telegram Chatbot](installation/prep/Telegram/Telegram.md)
     * [Create a GitHub Repository](installation/prep/GitHub/GitHub.md)
