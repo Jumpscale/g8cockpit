@@ -4,7 +4,7 @@ The Cockpit will push all AYS service instance information into a GitHub reposit
 
 This is quite straight forward:
 
-- Goto  GitHub.com and click the **New repository** from the dropdown meny of the + sign:
+- Goto GitHub.com and click **New repository** from the drop-down menu that appears when clicking the **+** sign:
 
 ![](new-repository.png)
 
