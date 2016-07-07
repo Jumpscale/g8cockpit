@@ -43,12 +43,12 @@ Now that you have your repository ready, the next step is to create the blueprin
 ```yaml
 g8client__dubai:
   g8.url: 'du-conv-3.demo.greenitglobe.com'
-  g8.login: 'demo1'
-  g8.password: '*****'
-  g8.account: 'demo1'
+  g8.login: 'yves'
+  g8.password: '****'
+  g8.account: 'Account of Yves'
 
 vdc__demo1:
-  g8.client.name: ' dubai'
+  g8.client.name: 'dubai'
   maxMemoryCapacity: 2
   maxVDiskCapacity: 10
   maxCPUCapacity: 2
@@ -158,6 +158,6 @@ A message will tell you that the installation was scheduled:
 
 ## Congratulations
 
-You have just deployed a new VDC from your **Cockpit Portal** using AtYourService.
+You have just deployed a new VDC from your **Cockpit Portal** using AYS.
 
-You can go have a look in the instance page to check the state of your services and see that the `install` method has now a state `OK`.
+You can go have a look in the Instances page to check the state of your services and see that the `install` method has now a state `OK`.
