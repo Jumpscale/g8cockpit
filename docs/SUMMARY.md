@@ -12,6 +12,7 @@
 * [Usage](usage/usage.md)
   * [Telegram Chatbot](usage/telegram_bot.md)
   * [Getting Started with Blueprints](usage/getting_started_with_blueprints.md)
+  * [Commit Repositories](usage/commit-repositories.md)
 * [Configuration](configuration.md)  
 * [REST API](api.md)
 * [Build](build.md)
