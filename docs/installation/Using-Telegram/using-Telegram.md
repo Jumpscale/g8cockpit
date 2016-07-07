@@ -1,6 +1,6 @@
 ## Installation using the Cockpit Deployer Chatbot
 
-The recommended way to deploy a Cockpit is using the **Cockpit Deployer Chatbot**, as an alternative to installing using an AYS blueprint. 
+> The recommended way to deploy a Cockpit is using the **Cockpit Deployer Chatbot**, as an alternative to installing using an AYS blueprint. 
 
 An instance of the **Cockpit Deployer Chatbot** is active as `@g8cockpitbot` on Telegram. You can also install your own instance of this **Cockpit Deployer Chatbot** by following the [Cockpit Deployer Chatbot installation instructions](installation-of-the-deployer-chatbot.md).
 
@@ -10,10 +10,11 @@ The chatbot will ask you some questions about the Cockpit you want to deploy. Af
 
 At the end of the deployment the chatbot will send you the information to access/use your newly created Cockpit.
 
-Detail about the questions:
+Details about the questions:
 
 - **Organization**: a Cockpit is always deployed for an organization, which needs to exists on https://itsyou.online/
   - See [ItsYou.online pre-installation preparation](../prep/Itsyou.online/Itsyou-online.md) section for more information about this
+  
   
 - **URL of the G8**: the chatbot will propose you multiple G8s where you can deploy your Cockpit, make sure to choose one where you have a username with access to a (cloud) account
 
@@ -24,13 +25,16 @@ Detail about the questions:
 - **Telegram token**: next to a web portal the Cockpit also comes a Telegram chatbot interface, that you will need the create by talking to @botfather, another chatbot, from which you will receive an API token to paste into the conversation with @g8cockpitbot
   - See the [Telegram pre-installation preparation](../prep/Telegram/Telegram.md) section for more information about this
   
+  
 - **VDC Name**: the name of the VDC on the selected G8 where you want to deploy your Cockpit, if the VDC doesn't exist yet, it will be created
   - See the section [Creating a Cloud Space](../prep/CloudSpace/CloudSpace.md) for more information about this
+  
   
 - **Domain**: the subdomain name you want for your Cockpit, this can be anything as long as it's a valid/unique subdomain name that will be created as subdomain of `aydo2.com`
 
 - **URL of the GitHub Repository**: a Cockpit can save (on-demand) all AYS service instance information into your GitHub repository
   - See the [GitHub pre-installation preparation](../prep/GitHub/GitHub.md) section for more information about this
+  
      
      
 Once your Cockpit is installed, you will get following information about your Cockpit:
@@ -47,7 +51,7 @@ Below some screenshots of the installation conversation in Telegram:
 
 ![](URL-of-G8.png)
 
-![](telegran-token.png)
+![](telegram-token.png)
 
 ![](vdc-name.png)
 

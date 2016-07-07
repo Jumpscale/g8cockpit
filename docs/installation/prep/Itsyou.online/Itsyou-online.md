@@ -1,4 +1,4 @@
-## Configure Itsyou.online
+## Configure ItsYou.online
 
 The Cockpit uses ItsYou.online to authenticate users.
 
@@ -14,6 +14,6 @@ Let's start by creating a new organization at ItsYou.online.
 
 ![](create-new-organization.png)
 
-As part of the Cockpit installation process through Telegram the you will be requested to authenticate on ItsYou.online and authorize the chatbot to check that you are member/owner of the organization for which the Cockpit is setup.
+As part of the Cockpit installation process through Telegram you will be requested to authenticate on ItsYou.online and authorize the chatbot to check that you are member/owner of the organization for which the Cockpit is setup.
 
-Also later when using the Cockpit Portal, it will be verified that the user logging in to the Cockpit Portal are member of this organization.
+Also later when using the Cockpit Portal, it will be verified that the user logging in to the Cockpit Portal is member of this organization.
