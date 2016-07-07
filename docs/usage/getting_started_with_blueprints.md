@@ -2,14 +2,15 @@
 
 This example will guide you through all the steps required to deploy a blueprint using the **Cockpit Portal**. The goal of this exercise will be to create a new virtual datacenter (VDC) on a G8 node.
 
-This will happen in 6 steps:
+This will happen in 7 steps:
 
 - Step 1: Create a new AYS repository
 - Step 2: Create a blueprint for deploying a virtual datacenter
-- Step 3: Execute the blueprint, which will create the required service instances
-- Step 4: Make sure the service instances are created, and ready to install (step 6)
-- Step 5: Simulate the installation of the service instances as created from the blueprint
-- Step 6: Install the service instances as created by executing the blueprint (step 3)
+- Step 3: Load the blueprint in memory of the Cockpit Core module
+- Step 4: Execute the blueprint, which will create the required service instances
+- Step 5: Make sure the service instances are created, and ready to install (step 6)
+- Step 6: Simulate the installation of the service instances as created from the blueprint
+- Step 7: Install the service instances as created by executing the blueprint (step 3)
 
 
 ### Step 1: Creation of the AYS repository
@@ -81,9 +82,19 @@ To create this new blueprint click on the **Explorer** link on the repository pa
 ![](renamed-blueprint.png)
 
 
-### Step 3: Execute the blueprint
+### Step 3: Load the blueprint in memory of the Cockpit Core module
+
+The Cockpit Core module keeps all blueprints and service in memory once started. When creating a new blueprint using the Explorer however, the Core module is not aware of your new blueprint.
+
+
+In order to make the **Cockpit Core** module aware of your new blueprint, you need to execute of the **Reload all services** action on the **Repository Details** page, it basically empties the memory of the **Cockpit Core** and reloads everything:
+
+![](reload-all-services.png)
+
+
+### Step 4: Execute the blueprint
  
-Now that the blueprint is ready we need to execute it. This step will create (not install) all the necessary service instances required by the blueprint. The actual installation of these service instances happens in step 5.
+Now that the blueprint is load in the memory of the **Cockpit Core** moldule, it is ready to get executed. This step will create (not install) all the necessary service instances required by the blueprint. The actual installation of these service instances happens in step 7.
 
 On the **AYS Repo Details** page of your newly created repository select **Execute Blueprint** from the drop-down list
 
@@ -98,20 +109,20 @@ A message will tell you that your blueprint is executed
 ![](blueprint-executed.png)
 
 
-### Step 4: Make sure the service instances are created
+### Step 5: Make sure the service instances are created
 
 To be sure that the blueprint executed properly you can go back to **AYS Repos** and click the **Instances** link under your new repository.
 
 ![](instances.png)
 
-The instances page shows you all the service instances in your newly created repository. Clicking an instance will bring you to the **Instance Details** page of that service instance.
+The **Instances** page shows you all the service instances in your newly created repository. Clicking an instance will bring you to the **Instance Details** page of that service instance.
 
 From here you can either
-- First simulate the installation of the services instances, see step 5
-- Or immediately actually install the service instances, seet step 6
+- First simulate the installation of the services instances, see step 6
+- Or immediately actually install the service instances, seet step 7
 
 
-### Step 5: Simulate installation
+### Step 6: Simulate installation
 
 Before installing the services, we want to simulate the installation in order to make sure the services will behave as we want without having to actually install the services.
 
@@ -123,23 +134,26 @@ Here we want to simulate the `install` action and we don't want to specify a spe
 
 ![](simulation-result.png)
 
-We see that the installation will be executed in two steps. First the `g8client` and `vdcfarm` service will be installed. then the `vdc`. These two steps are due to the fact that the `vdc` depends on the `g8client` and `vdcfarm`.
+We see that the installation will be executed in two steps. First the `vdcfarm!main` and `g8client!dubai` services will be installed, then the `vdc!demo1`. These two steps are due to the fact that the `vdc!demo1` depends on the `g8client!dubai` and `vdcfarm!main`.
 
 
-### Step 6: Installing the services
+### Step 7: Installing the services
 
 Now that we are confident with the installation steps, we can actually do the installation.
-To do that select the **Install** from the action drop-down list.
+
+To do that select the **Install** from the action drop-down list on the **Repository Details** page.
 
 ![](install-service.png)
 
-Like before, a popup form will appear.
+Like before, a popup form will appear:
 
-![](confirm-install-service.png)
+![](confirm-install-serviceconfirm-install-service.png)
 
-Select the same values as in the simulation and click **Confirm**.
+Keep the default values and click **Confirm**.
 
-A message will tell you that the installation succeeded.  
+A message will tell you that the installation was scheduled:
+
+![](install-service-scheduled.png)  
 
 
 ## Congratulations
