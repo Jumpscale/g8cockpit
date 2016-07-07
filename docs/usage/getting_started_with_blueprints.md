@@ -59,7 +59,7 @@ vdc__demo1:
   maxNumPublicIP: 1
 ```
 
-To create this new blueprint click on the **Explorer** link on the repository page. This will open the explorer page where you then navigate to the directory of your new repository.
+To create this new blueprint click on the **Explorer** link on the **Repisitory Details** page. This will open the **Explorer** page where you then navigate to the directory of your new repository.
 
 ![](explorer.png)
 
@@ -84,7 +84,7 @@ To create this new blueprint click on the **Explorer** link on the repository pa
 
 ### Step 3: Load the blueprint in memory of the Cockpit Core module
 
-The Cockpit Core module keeps all blueprints and service in memory once started. When creating a new blueprint using the Explorer however, the Core module is not aware of your new blueprint.
+The Cockpit Core module keeps all blueprints and service in memory once started. When creating a new blueprint using the **Explorer** however, the Core module is not aware of your new blueprint.
 
 
 In order to make the **Cockpit Core** module aware of your new blueprint, you need to execute of the **Reload all services** action on the **Repository Details** page, it basically empties the memory of the **Cockpit Core** and reloads everything:
@@ -147,7 +147,7 @@ To do that select the **Install** from the action drop-down list on the **Reposi
 
 Like before, a popup form will appear:
 
-![](confirm-install-serviceconfirm-install-service.png)
+![](confirm-install-service.png)
 
 Keep the default values and click **Confirm**.
 
@@ -160,4 +160,4 @@ A message will tell you that the installation was scheduled:
 
 You have just deployed a new VDC from your **Cockpit Portal** using AYS.
 
-You can go have a look in the Instances page to check the state of your services and see that the `install` method has now a state `OK`.
+You can go have a look in the **Instances** page to check the state of your services and see that the **install** method has now a state `OK`.
