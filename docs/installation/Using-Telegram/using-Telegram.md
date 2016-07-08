@@ -2,6 +2,8 @@
 
 > The recommended way to deploy a Cockpit is using the **Cockpit Deployer Chatbot**, as an alternative to installing using an AYS blueprint. 
 
+Before continuing make sure you've done all preparation as documented in the [Prepararion](../prep/prep.md) section.
+
 An instance of the **Cockpit Deployer Chatbot** is active as `@g8cockpitbot` on Telegram. You can also install your own instance of this **Cockpit Deployer Chatbot** by following the [Cockpit Deployer Chatbot installation instructions](installation-of-the-deployer-chatbot.md).
 
 Talk to `@g8cockpitbot` on Telegram.  

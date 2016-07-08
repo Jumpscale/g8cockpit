@@ -1,6 +1,6 @@
 ## Create a Cloud Space
 
-This is optional.
+This is optional, and the below steps require access the Cloud Broker Portal. In case you don't have access to the Cloud Broker Portal, simply skip this step.
 
 The Cockpit will run in a virtual machine that is part of a cloud space. This cloud space can be an existing cloud space, or a cloud space that already exists.
 
