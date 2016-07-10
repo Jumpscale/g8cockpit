@@ -19,7 +19,7 @@ def main(j, args, params, tags, tasklet):
             line = [""]
             for field in fields:
                 if field.lower() == 'instance':
-                    line.append('[%s|cockpit/AYSInstance?shortkey=%s&ayspath=%s]' % (service['instance'],
+                    line.append('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (service['instance'],
                                                                                      service['key'],
                                                                                      ayspath))
                 else:

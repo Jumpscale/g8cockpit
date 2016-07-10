@@ -16,7 +16,7 @@ def main(j, args, params, tags, tasklet):
     instances = []
     for ayspath, services in j.apps.system.atyourservice.listServices(repo_path=ayspath, role=name).items():
         for service in services.values():
-            instances.append('[%s|cockpit/AYSInstance?shortkey=%s&ayspath=%s]' % (service['instance'], service['key'], ayspath))
+            instances.append('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (service['instance'], service['key'], ayspath))
 
     info = OrderedDict(sorted(info.items()))
     args.doc.applyTemplate({'data': info, 'instances': instances, 'code_bloks': code_bloks})

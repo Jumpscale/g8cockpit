@@ -7,7 +7,7 @@
 
 h2. Run $$runid Details:
 
-*Repo*: [${model.reponame}|/cockpit/aysrepo?repo=${model.reponame}]
+*Repo*: [${model.reponame}|/cockpit/repo?repo=${model.reponame}]
 {% if model.state in ['ERROR'] %}
     *State*: {{html: <red style='color:red'>ERROR</red> }} [ (Details)|/cockpit/action?runid=ays_${model.reponame}&actionkey=${model.actionkey}]
 {% elif model.state in 'OK' %}
@@ -42,7 +42,7 @@ h2. Run $$runid Details:
                         **** state: ${actiondetail.state}
                         **** result: ${actiondetail.result}
                     {% endif -%}
-                **** [HRD and Source |/cockpit/aysstepinfo?repo=${model.reponame}&hrd=${actiondetail.hrd}&source=${actiondetail.source}]
+                **** [HRD and Source |/cockpit/stepinfo?repo=${model.reponame}&hrd=${actiondetail.hrd}&source=${actiondetail.source}]
             {% endfor -%}
         {% endif -%}
     {% endfor -%}

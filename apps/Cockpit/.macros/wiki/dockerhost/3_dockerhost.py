@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
 
     dockerhost = j.apps.system.atyourservice.listServices(repo_path=ayspath)[ayspath]['node!%s' % (dockerhost)]
 
-    link = ('[%s|cockpit/AYSInstance?shortkey=%s&ayspath=%s]' % (dockerhost.instance, dockerhost.key, ayspath))
+    link = ('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (dockerhost.instance, dockerhost.key, ayspath))
     children = {}
     for key, dockers in dockerhost.listChildren().items():
         for docker in dockers:

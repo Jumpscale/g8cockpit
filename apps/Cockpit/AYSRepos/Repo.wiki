@@ -3,16 +3,16 @@
 {{timestamp}}
 @block
 @row
-h2. Repository: [$$repo|/cockpit/AysRepo?repo=$$repo]
+h2. Repository: [$$repo|/cockpit/Repo?repo=$$repo]
 
 @col 6
 h2. Links:
-* [Templates|cockpit/AYSTemplates?ayspath=$$repo]
-* [Instances|cockpit/AYSInstances?ayspath=$$repo]
-* [Blueprints|cockpit/AYSBlueprints?ayspath=$$repo]
-* [Explorer|cockpit/AYSRepo/Explorer?repo=$$repo]
-* [Simulator|cockpit/AYSRepo/simulate?repo=$$repo]
-* [Runs|cockpit/AYSRuns?repo=$$repo]
+* [Templates|cockpit/Templates?ayspath=$$repo]
+* [Instances|cockpit/Instances?ayspath=$$repo]
+* [Blueprints|cockpit/Blueprints?ayspath=$$repo]
+* [Explorer|cockpit/Repo/Explorer?repo=$$repo]
+* [Simulator|cockpit/Repo/simulate?repo=$$repo]
+* [Runs|cockpit/Runs?repo=$$repo]
 @colend
 
 

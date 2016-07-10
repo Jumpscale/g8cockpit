@@ -21,17 +21,17 @@ def main(j, args, params, tags, tasklet):
         role = producer['role']
         if role not in producers:
             producers[role] = []
-        producer['link'] = '[{instance}|/cockpit/AYSInstance?shortkey={key}&ayspath={path}]'.format(
+        producer['link'] = '[{instance}|/cockpit/Instance?shortkey={key}&ayspath={path}]'.format(
             instance=producer['instance'], key=producer['key'], path=ayspath)
         producers[role].append(producer)
 
     parent = {}
     if service['parent'] is not None:
         parent = service.pop('parent')
-        parent['link'] = '[{instance}|/cockpit/AYSInstance?shortkey={key}&ayspath={path}]'.format(
+        parent['link'] = '[{instance}|/cockpit/Instance?shortkey={key}&ayspath={path}]'.format(
             instance=parent['instance'], key=parent['key'], path=ayspath)
 
-    link_to_template = ('[%s|cockpit/AYSTemplate?ayspath=%s&aysname=%s]' % (service['name'],
+    link_to_template = ('[%s|cockpit/Template?ayspath=%s&aysname=%s]' % (service['name'],
                                                                             ayspath, service['role']))
 
     # we prepend service path with '$codedir' to make it work in the explorer.

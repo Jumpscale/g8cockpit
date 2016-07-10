@@ -1,9 +1,9 @@
 Actions:/cockpit/Actions
-AYS Repos:/cockpit/AYSRepos
-AYS Instances:/cockpit/AYSInstances
-AYS Templates:/cockpit/AYSTemplates
-AYS Runs:/cockpit/AYSRuns
-Blueprints:/cockpit/AYSBlueprints
+AYS Repos:/cockpit/Repos
+AYS Instances:/cockpit/Instances
+AYS Templates:/cockpit/Templates
+AYS Runs:/cockpit/Runs
+Blueprints:/cockpit/Blueprints
 Information:/cockpit/Information
 JWT:/cockpit/JWT
 Documentation:https://gig.gitbooks.io/cockpit/content/

@@ -31,7 +31,7 @@ h6. Number of Dockers
 @col 6
 h5. Performance Dashboard
 
-{{html: <p><a href="/cockpit/AYSRepos"><i class="glyphicon glyphicon-tasks margin-right-small"></i>AYS Repos</a></p> }}
+{{html: <p><a href="/cockpit/Repos"><i class="glyphicon glyphicon-tasks margin-right-small"></i>AYS Repos</a></p> }}
 
 @colend
 @col 6

@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
 
         runs = OrderedDict(sorted(runs['aysruns'].items()))
         for runid, run_info in runs.items():
-            line = ['|[%s|cockpit/AYSRun?repo=%s&runid=%s]' % (runid, repo_path, runid)]
+            line = ['|[%s|cockpit/Run?repo=%s&runid=%s]' % (runid, repo_path, runid)]
             time, state = run_info.split('|')
             time = j.data.time.epoch2HRDateTime(time)
             line.extend([time, state])

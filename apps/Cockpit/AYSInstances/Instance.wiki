@@ -6,7 +6,7 @@
 
 h3. Service Info:
 h4. Role: ${role} - Instance: ${instance}
-Repository: [$$ayspath|/cockpit/AysRepo?repo=$$ayspath]
+Repository: [$$ayspath|/cockpit/Repo?repo=$$ayspath]
 
 h5. Instance values
 || Parameter || Value||

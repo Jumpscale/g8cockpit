@@ -15,7 +15,7 @@ def main(j, args, params, tags, tasklet):
         templates = sorted(templates, key=lambda template: template['name'])
         for template in templates:
             line = [""]
-            line.append('[%s|cockpit/AYSTemplate?ayspath=%s&aysname=%s]|' % (template['name'],
+            line.append('[%s|cockpit/Template?ayspath=%s&aysname=%s]|' % (template['name'],
                                                                              ayspath, template['name']))
             out.append("|".join(line))
 

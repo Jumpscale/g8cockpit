@@ -9,13 +9,13 @@
 h2. AtYourService Repositories:
 {{aysrepos}}
 {% for repo in repos -%}
-h3. [${repo}|/cockpit/aysrepo?repo=${repo}]:
-    * [Templates|cockpit/AYSTemplates?ayspath=${repo}]
-    * [Instances|cockpit/AYSInstances?ayspath=${repo}]
-    * [Blueprints|cockpit/AYSBlueprints?ayspath=${repo}]
-    * [Explorer|cockpit/AYSRepo/Explorer?repo=${repo}]
-    * [Simulator|cockpit/AYSRepo/simulate?repo=${repo}]
-    * [Runs|cockpit/AYSRuns?repo=$$repo]
+h3. [${repo}|/cockpit/repo?repo=${repo}]:
+    * [Templates|cockpit/Templates?ayspath=${repo}]
+    * [Instances|cockpit/Instances?ayspath=${repo}]
+    * [Blueprints|cockpit/Blueprints?ayspath=${repo}]
+    * [Explorer|cockpit/Repo/Explorer?repo=${repo}]
+    * [Simulator|cockpit/Repo/simulate?repo=${repo}]
+    * [Runs|cockpit/Runs?repo=$$repo]
 {% endfor %}
 @colend
 
