@@ -83,7 +83,7 @@ def callback():
     data = j.data.serializer.json.dumps({'client_secret': cockpit_client_secret, 'client_id': app.config['client_id']})
     j.core.db.lpush(state, data)
 
-    return "Cockpit deployement in progress."
+    return "Cockpit deployment in progress."
 
 
 @oauth_api.route('/oauthurl', methods=['GET'])

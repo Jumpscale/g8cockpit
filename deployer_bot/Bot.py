@@ -218,7 +218,7 @@ class CockpitDeployerBot:
     def _attache_logger(self, deployer, chat_id):
         """
         Add a telegram handler to the logger of the deployer objects
-        To forward the output of the deployement execution to telegram
+        To forward the output of the deployment execution to telegram
         """
         q = queue.Queue()
         qh = logging.handlers.QueueHandler(q)
@@ -261,7 +261,7 @@ class CockpitDeployerBot:
             self.deploy(username, chat_id, args)
         except Exception as e:
             self.logger.error(e)
-            self.bot.sendMessage(chat_id=chat_id, text="Error during deployement : %s\n\n Please /start again." % str(e))
+            self.bot.sendMessage(chat_id=chat_id, text="Error during deployment : %s\n\n Please /start again." % str(e))
 
     def deploy(self, username, chat_id, args):
         oauth_data = self.oauth(chat_id, args)
@@ -294,11 +294,11 @@ class CockpitDeployerBot:
                                            repo_url=args.repo_url,
                                            )
 
-        msg = "Deployement of you cockpit in progress, please be patient.\nYou can follow progress using the /status command"
+        msg = "Deployment of you cockpit in progress, please be patient.\nYou can follow progress using the /status command"
         self.bot.sendMessage(chat_id=chat_id, text=msg, reply_markup=telegram.ReplyKeyboardHide())
         self.bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
-        self.logger.info('Deployement of cockpit for user %s in progress' % username)
+        self.logger.info('Deployment of cockpit for user %s in progress' % username)
         j.sal.fs.writeFile("%s/blueprints/cockpit" % path, content)
         repo.init()
         repo.execute_blueprint(path="%s/blueprints/cockpit" % path)
@@ -315,7 +315,7 @@ class CockpitDeployerBot:
 
         # deplyement done, remove user fromc cahce
         del self.in_progess_args[username]
-        self.logger.info('Deployement of cockpit for user %s done.' % username)
+        self.logger.info('Deployment of cockpit for user %s done.' % username)
 
 
     def oauth(self, chat_id, args):
@@ -362,7 +362,7 @@ class CockpitDeployerBot:
         if username in self.repos:
             repo = self.repos[username]
         else:
-            msg = "Not deployement in progress. start one with the `/start` command"
+            msg = "Not deployment in progress. start one with the `/start` command"
             self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
             return
 
