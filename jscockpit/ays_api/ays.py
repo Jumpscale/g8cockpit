@@ -175,7 +175,7 @@ def executeAction(repository):
         logger.error(error_msg)
         return jsonify(error=error_msg), 500
 
-    msg = "Action %s on service %s instance %s in repo %s exectued without error" % (action, role, instance, repo.name)
+    msg = "Action %s on service %s instance %s in repo %s executed without error" % (action, role, instance, repo.name)
     return jsonify(msg=msg), 200
 
 
