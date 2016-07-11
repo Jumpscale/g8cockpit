@@ -64,13 +64,13 @@ class TelegramAsker(object):
     def ask_ovc_login(self):
         def validate(input):
             return True
-        login = self.askString("Please enter the login of your account on the G8 where to deploy the cockpit")
+        login = self.askString("Please enter the username of your user account on the G8 where to deploy the G8 Cockpit")
         return login
 
     def ask_ovc_password(self):
         def validate(input):
             return True
-        passwd = self.askString("Please enter the password of your account on the G8 where to deploy cockpit")
+        passwd = self.askString("Please enter the password")
         return passwd
 
     def ask_ovc_vdc(self):
