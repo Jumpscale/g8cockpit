@@ -3,7 +3,7 @@
 # Issues per assignee
 - [abdulrahmantkhalifa](#abdulrahmantkhalifa) has 1 assigned
 - [rkhamis](#rkhamis) has 1 assigned
-- [zaibon](#zaibon) has 2 assigned
+- [zaibon](#zaibon) has 1 assigned
 
 
 
@@ -26,5 +26,4 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#34](https://github.com/jumpscale/jscockpit/issues/34)|502 Bad Gateway when deploying the Cockpit using the Telegrambot|:red_circle: Open|bug|
-|[#51](https://github.com/jumpscale/jscockpit/issues/51)|doc on cockpit out of date for bot deployment|:red_circle: Open||
 
