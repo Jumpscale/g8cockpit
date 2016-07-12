@@ -6,28 +6,15 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|---|
+|[#64](https://github.com/jumpscale/jscockpit/issues/64)|Allow to change the name of the Cockpit VM in blueprint|:red_circle: Open|feature|
 
 
 ## Issues per assignee
-- [abdulrahmantkhalifa](#abdulrahmantkhalifa)
 - [rkhamis](#rkhamis)
-- [zaibon](#zaibon)
 
-
-
-### [abdulrahmantkhalifa](https://github.com/abdulrahmantkhalifa)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
 
 
 ### [rkhamis](https://github.com/rkhamis)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
-### [zaibon](https://github.com/zaibon)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
