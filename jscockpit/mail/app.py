@@ -47,7 +47,7 @@ class Server(SMTPServer):
             if part.get_content_maintype() == 'multipart':
                 continue
 
-            if part.get_content_maintype() == 'text':
+            if part.get_content_type() == 'text/html':
                 # TODO: convert html to md.
                 # more check on content type for text
                 email.body += part.get_payload()
