@@ -10,11 +10,25 @@
 
 
 ## Issues per assignee
+- [grimpy](#grimpy)
 - [rkhamis](#rkhamis)
+- [xmonader](#xmonader)
 
+
+
+### [grimpy](https://github.com/grimpy)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
 
 
 ### [rkhamis](https://github.com/rkhamis)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [xmonader](https://github.com/xmonader)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
