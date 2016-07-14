@@ -2,6 +2,10 @@
 
 {{timestamp}}
 
+{{datatables_use}}
+
+h3. Templates
+
 {{aystemplates: ayspath:$$ayspath}}
 
 # TODO list ays templates 
