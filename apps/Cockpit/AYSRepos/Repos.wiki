@@ -2,28 +2,16 @@
 
 {{timestamp}}
 
-@block
-@row
+h2. Repositories
 
-@col 6
-h2. AtYourService Repositories:
-{{aysrepos}}
-{% for repo in repos -%}
-h3. [${repo}|/cockpit/repo?repo=${repo}]:
-    * [Templates|cockpit/Templates?ayspath=${repo}]
-    * [Instances|cockpit/Instances?ayspath=${repo}]
-    * [Blueprints|cockpit/Blueprints?ayspath=${repo}]
-    * [Explorer|cockpit/Repo/Explorer?repo=${repo}]
-    * [Simulator|cockpit/Repo/simulate?repo=${repo}]
-    * [Runs|cockpit/Runs?repo=$$repo]
-{% endfor %}
-@colend
+{{datatables_use}}
+{{action id:'action-Createrepository' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Create Repository'}}
+{{action id:'action-Commitrepositories' class:'glyphicon glyphicon-save margin-bottom-medium margin-left-medium' label:'Commit Repositories'}}
 
-@col 6
-h3. Actions on repositories
 {{actions:
-- display: Create AYS repository
+- display: Create repository
   action: /restmachine/system/atyourservice/createRepo
+  hide: true
   input:
     - name: name
       label: Name
@@ -32,6 +20,7 @@ h3. Actions on repositories
 - display: Commit repositories
   action: /restmachine/system/atyourservice/commit
   showresponse: True
+  hide: true
   input:
     - name: branch
       label: Branch
@@ -48,5 +37,18 @@ h3. Actions on repositories
     - name: message
       label: Commit message
       type: text
+
+- display: Delete this repository
+  hide: true
+  reload: false
+  action: /restmachine/system/atyourservice/deleteRepo
 }}
-@colend
+
+{{aysrepos}}
+||Name||Actions||
+{% for repo in repos -%}
+|[${repo}|/cockpit/repo?repo=${repo}]| {{action label:'Delete' deleterow:true id:'action-Deletethisrepository' data-repository:'${repo}' class:'glyphicon glyphicon-trash'}} |
+{% else %}
+| | |
+{% endfor %}
+
