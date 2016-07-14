@@ -25,5 +25,5 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#89](https://github.com/jumpscale/jscockpit/issues/89)|Remove the "AYS" prefix from all the items in the "hamburger" menu |:red_circle: Open|feature|
+|[#85](https://github.com/jumpscale/jscockpit/issues/85)|Error when deleting Repo|:red_circle: Open|bug|
 
