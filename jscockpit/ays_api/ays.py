@@ -289,8 +289,7 @@ def archiveBlueprint(blueprint, repository):
 
     if bp is None:
         return jsonify(error="blueprint with the name %s' not found" % blueprint), 404
-
-    repo.archive_blueprint(bp)
+    bp.disable()
 
     return jsonify(msg='Blueprint %s archived' % bp.name), 200
 
