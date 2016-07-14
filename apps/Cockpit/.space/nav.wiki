@@ -1,8 +1,8 @@
 Actions:/cockpit/Actions
-AYS Repos:/cockpit/Repos
-AYS Instances:/cockpit/Instances
-AYS Templates:/cockpit/Templates
-AYS Runs:/cockpit/Runs
+Repositories:/cockpit/Repos
+Instances:/cockpit/Instances
+Templates:/cockpit/Templates
+Runs:/cockpit/Runs
 Blueprints:/cockpit/Blueprints
 Information:/cockpit/Information
 JWT:/cockpit/JWT
