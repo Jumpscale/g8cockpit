@@ -2,7 +2,7 @@
 
 # Issues per assignee
 - [rkhamis](#rkhamis) has 1 assigned
-- [xmonader](#xmonader) has 3 assigned
+- [xmonader](#xmonader) has 4 assigned
 
 
 
@@ -20,4 +20,5 @@
 |[#74](https://github.com/jumpscale/jscockpit/issues/74)|Ugly conversation text when asking for the Telegram API token |:large_blue_circle: In Progress|feature|
 |[#84](https://github.com/jumpscale/jscockpit/issues/84)|Error when clicking the "enable" button next to a blueprint|:red_circle: Open|bug|
 |[#85](https://github.com/jumpscale/jscockpit/issues/85)|Error when deleting Repo|:white_circle: Verification||
+|[#96](https://github.com/jumpscale/jscockpit/issues/96)|Deleting Repos from Repositories table doesn't work|:red_circle: Open|bug|
 
