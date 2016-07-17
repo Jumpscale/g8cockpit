@@ -184,11 +184,11 @@ class CockpitDeployerBot:
         self._register_handlers()
         if 'git' in self.config:
             cuisine = j.tools.cuisine.local
-            rc, resp = cuisine.core.run('git config --global user.name', die=False)
-            if resp == '':
+            rc, out, err = cuisine.core.run('git config --global user.name', die=False)
+            if not out:
                 cuisine.core.run('git config --global user.name %s' % self.config['git']['username'])
-            rc, resp = cuisine.core.run('git config --global user.email', die=False)
-            if resp == '':
+            rc, out, err = cuisine.core.run('git config --global user.email', die=False)
+            if not out:
                 cuisine.core.run('git config user.email %s' % self.config['git']['email'])
 
     def generate_config(self, path):
