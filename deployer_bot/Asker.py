@@ -157,10 +157,9 @@ class TelegramAsker(object):
         def validate(input):
             return True
         msg = """
-"AtYourService Robot creation
-"Please connect to telegram and talk to @botfather.
-"execute the command /newbot and choose a name and username for your bot
-"@botfather should give you a token, paste it here please :
+We now need you to create a new Telegram chatbot.
+Please start a conversation with @botfather, execute the command /newbot, follow the instructions,
+come back to this conversation when you received the API token, and paste it here:
 """
         token = self.askString(msg)
         return token
