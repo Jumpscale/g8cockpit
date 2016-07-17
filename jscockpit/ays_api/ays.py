@@ -314,8 +314,8 @@ def restoreBlueprint(blueprint, repository):
     if bp is None:
         return jsonify(error="blueprint with the name %s' not found" % blueprint), 404
 
-    repo.restore_blueprint(bp)
-
+    bp.enable()
+    
     return jsonify(msg='Blueprint %s restored' % bp.name), 200
 
 
