@@ -10,16 +10,9 @@
 
 
 ## Issues per assignee
-- [mie00](#mie00)
 - [rkhamis](#rkhamis)
 - [xmonader](#xmonader)
 
-
-
-### [mie00](https://github.com/mie00)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
 
 
 ### [rkhamis](https://github.com/rkhamis)
