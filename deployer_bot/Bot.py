@@ -189,7 +189,7 @@ class CockpitDeployerBot:
                 cuisine.core.run('git config --global user.name %s' % self.config['git']['username'])
             rc, out, err = cuisine.core.run('git config --global user.email', die=False)
             if rc > 0:
-                cuisine.core.run('git config user.email %s' % self.config['git']['email'])
+                cuisine.core.run('git config --global user.email %s' % self.config['git']['email'])
 
     def generate_config(self, path):
         """
