@@ -10,7 +10,7 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#8](https://github.com/jumpscale/jscockpit/issues/8)|Create dashboard templates for different types of statistics|:red_circle: Open||
+|[#104](https://github.com/jumpscale/jscockpit/issues/104)|There is no cockpit API|:red_circle: Open|bug|
 
 
 ## [xmonader](https://github.com/xmonader)
