@@ -28,6 +28,7 @@ class TGBot():
     def __init__(self, config, rootpath='', redis=None):
         self.token = config.get('token', '')
         self.config = config
+        self._errmessages = []
 
         if rootpath == "":
             rootpath = j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit")
@@ -61,6 +62,8 @@ class TGBot():
         # commands
         dispatcher.addHandler(CommandHandler('start', self.start_cmd))
         dispatcher.addHandler(CommandHandler('reload', self.reload_cmd))
+        dispatcher.addHandler(CommandHandler('errors', self.list_errors_cmd))
+        dispatcher.addHandler(CommandHandler('errorsof', self.errorsof_cmd, pass_args=True))
         dispatcher.addHandler(CommandHandler('repo', self.repo_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('blueprint', self.blueprint_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('service', self.service_mgmt.handler, pass_args=True))
@@ -129,12 +132,48 @@ class TGBot():
                 chat_id = data['chat_id']
                 if chat_id:
                     chat_ids.add(chat_id)
-
         for chat_id in chat_ids:
             try:
-                self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+                import re
+
+                def normalize_runid(s):
+                    """
+                    RUN:testg82 111
+
+                    :param s:
+                    :return returns a normalized string because it gets a different RUNID on everyrun.
+                    """
+                    return re.sub("RUN:.+?\n", "NOOOONE", s)
+
+                comparemsg=normalize_runid(msg)
+                normalized_msgs = [normalize_runid(x) for x in self._errmessages]
+
+                if "error" in comparemsg.lower():
+                    if comparemsg not in normalized_msgs :
+                        self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+                    self._errmessages.append(msg)
+                    if len(self._errmessages) > 20:
+                        self._errmessages = self._errmessages[-20:]
+                else: #not an error
+                    self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+
+
             except Exception as e:
                 self.logger.error("Error sending message (chat id %s)'%s' : %s" % (chat_id, msg, str(e)))
+
+    def errorsof_cmd(self, bot, update, args):
+        #only the first arg
+        arg = args[0]
+        errmsgs = "LIST OF ERRORS related to %s:\n"%arg
+        if self._errmessages:
+            errmsgs += "\n".join(errmsg for errmsg in self._errmessages if arg in errmsg)
+            self.bot.sendMessage(chat_id=update.message.chat_id, text=errmsgs)
+
+    def list_errors_cmd(self, bot, update):
+        errmsgs = "LIST OF ERRORS:\n"
+        if self._errmessages:
+            errmsgs += "\n".join(self._errmessages)
+            self.bot.sendMessage(chat_id=update.message.chat_id, text=errmsgs)
 
     def _handle_event_service_com(self, evt):
         # If no key, we can't send response. exit here.
@@ -236,6 +275,10 @@ class TGBot():
             "*/service*: will control your services instances",
             "",
             "*/reload*: will force the reloading of all the service in memory",
+            "",
+            "*/errors*: will show all errors",
+            "",
+            "*/errorsof*: will show errors related to its first argument",
             "",
             "This message was given by `/help`, have fun with me !",
         ]
