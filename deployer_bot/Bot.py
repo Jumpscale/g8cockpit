@@ -185,10 +185,10 @@ class CockpitDeployerBot:
         if 'git' in self.config:
             cuisine = j.tools.cuisine.local
             rc, out, err = cuisine.core.run('git config --global user.name', die=False)
-            if not out:
+            if rc > 0:
                 cuisine.core.run('git config --global user.name %s' % self.config['git']['username'])
             rc, out, err = cuisine.core.run('git config --global user.email', die=False)
-            if not out:
+            if rc > 0:
                 cuisine.core.run('git config user.email %s' % self.config['git']['email'])
 
     def generate_config(self, path):
