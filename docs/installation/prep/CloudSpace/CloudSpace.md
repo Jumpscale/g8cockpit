@@ -6,7 +6,7 @@ The Cockpit will run in a virtual machine that is part of a cloud space. This cl
 
 Creating the cloud space upfront gives you the advantage that you can assert that your cloud space gets a public IP address before continuing with the installation.
 
-> When creating a new cloud space through the it is highly recommended not to use any capital letters
+> When creating a new cloud space through the it is highly recommended not to use any capital letters, since uppercases will be ignored/converted to lowercases
 
 - Creating a new cloud space with the **Cloud Broker Portal**:
 
