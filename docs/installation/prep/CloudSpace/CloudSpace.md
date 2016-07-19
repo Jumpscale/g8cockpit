@@ -2,7 +2,7 @@
 
 This is optional, and the below steps require access to the **Cloud Broker Portal**. In case you don't have access to the **Cloud Broker Portal**, simply skip this step, and allow the installation (through AYS or Telegram) create a new cloud space or use an existing cloud space. 
 
-The Cockpit will run in a virtual machine that is part of a cloud space. This cloud space can be an existing cloud space, or a cloud space that already exists.
+The Cockpit will run in a virtual machine that is part of a cloud space. This cloud space can be an existing cloud space, or a new cloud space will be created.
 
 Creating the cloud space upfront gives you the advantage that you can assert that your cloud space gets a public IP address before continuing with the installation.
 
