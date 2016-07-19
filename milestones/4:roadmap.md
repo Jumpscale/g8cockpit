@@ -12,7 +12,6 @@
 ## Issues per assignee
 - [rkhamis](#rkhamis)
 - [samaradel](#samaradel)
-- [xmonader](#xmonader)
 
 
 
@@ -23,12 +22,6 @@
 
 
 ### [samaradel](https://github.com/samaradel)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
-### [xmonader](https://github.com/xmonader)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
