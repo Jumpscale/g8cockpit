@@ -1,7 +1,7 @@
 @userdefault
 {{cockpitinfo}}
 
-h1. Welcom in the Cockpit of ${organization}
+h1. Welcome to the Cockpit of ${organization}
 h2. SSH access
 
 h3. Over  SSH
