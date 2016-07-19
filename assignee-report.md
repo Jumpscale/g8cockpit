@@ -2,6 +2,7 @@
 
 # Issues per assignee
 - [rkhamis](#rkhamis) has 3 assigned
+- [samaradel](#samaradel) has 1 assigned
 - [xmonader](#xmonader) has 2 assigned
 
 
@@ -13,6 +14,13 @@
 |[#65](https://github.com/jumpscale/jscockpit/issues/65)|Error deploying Cockpit through AYS|:red_circle: Open|bug|
 |[#97](https://github.com/jumpscale/jscockpit/issues/97)|The cockpit trying to ssh to itself and this causes it to crash |:red_circle: Open|bug|
 |[#104](https://github.com/jumpscale/jscockpit/issues/104)|There is no cockpit API|:red_circle: Open|bug|
+
+
+## [samaradel](https://github.com/samaradel)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#76](https://github.com/jumpscale/jscockpit/issues/76)|Better text/message needed after user authorized access to his ItsYou.online profile to verify organization membership|:red_circle: Open|feature|
 
 
 ## [xmonader](https://github.com/xmonader)
