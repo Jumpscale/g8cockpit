@@ -48,7 +48,6 @@ def main(j, args, params, tags, tasklet):
                 'period': "not recurrent",
                 'last': "never",
             }
-    path = service['path'].replace(j.dirs.codeDir, '$codedir')
     args.doc.applyTemplate({
         'service': service,
         'type': link_to_template,
@@ -56,7 +55,6 @@ def main(j, args, params, tags, tasklet):
         'role': service['role'],
         'state': state,
         'producers': OrderedDict(sorted(producers.items())),
-        'path': path,
         'hrd': OrderedDict(sorted(hrd.items())),
         'parent': parent,
     })
