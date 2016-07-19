@@ -220,7 +220,7 @@ class TGBot():
 
         # send message
         try:
-            send_msg = self.bot.sendMessage(chat_id=data['chat_id'], text=msg, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
+            send_msg = self.bot.sendMessage(chat_id=data['chat_id'], text=msg, parse_mode=telegram.ParseMode.HTML, reply_markup=reply_markup)
         except Exception as e:
             err_msg = "Error sending message (chat id %s)'%s' : %s" % (data['chat_id'], msg, str(e))
             self.logger.error(err_msg)
