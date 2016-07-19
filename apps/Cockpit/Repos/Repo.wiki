@@ -28,10 +28,7 @@ h3. Actions:
     type: hidden
     value: $$repo
 
-- display: Go to shell
-  action: /restmachine/system/atyourservice/shell
-
-- display: Reload all Services
+- display: Reload All Services
   action: /restmachine/system/atyourservice/reload
   showresponse: True
 
@@ -101,7 +98,7 @@ h3. Actions:
     label: Instance
     type: text
 
-- display: Execute Action
+- display: Execute action
   action: /restmachine/system/atyourservice/executeAction
   input:
   - name: repository
@@ -145,11 +142,11 @@ h3. Actions:
     - name: role
       type: text
       label: Role
-      required: True
+      required: False
     - name: instance
       type: text
       label: Instance
-      required: True
+      required: False
 
 }}
 @colend

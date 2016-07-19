@@ -75,7 +75,7 @@ def deleteRepository(repository):
         repo = j.atyourservice.get(repository)
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
-    repo.uninstall()
+
     del j.atyourservice.repos[repo.basepath]
     j.sal.fs.removeDirTree(repo.basepath)
     return '', 204
@@ -315,7 +315,7 @@ def restoreBlueprint(blueprint, repository):
         return jsonify(error="blueprint with the name %s' not found" % blueprint), 404
 
     bp.enable()
-    
+
     return jsonify(msg='Blueprint %s restored' % bp.name), 200
 
 
