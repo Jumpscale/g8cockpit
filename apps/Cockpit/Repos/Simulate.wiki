@@ -6,13 +6,6 @@
 @row
 @col 4
 {{actions:
-- display: go to shell
-  action: /restmachine/system/atyourservice/shell
-
-- display: Reload all Services
-  action: /restmachine/system/atyourservice/reload
-  showresponse: True
-
 - display: Execute blueprint
   action: /restmachine/system/atyourservice/executeBlueprint
   showresponse: True
@@ -27,7 +20,7 @@
     label: Instance
     type: text
 
-- display: init
+- display: Init
   action: /restmachine/system/atyourservice/init
   showresponse: True
   input:
@@ -49,7 +42,7 @@
     label: Instance
     type: text
 
-- display: install
+- display: Install
   action: /restmachine/system/atyourservice/install
   showresponse: True
   input:
@@ -79,7 +72,7 @@
     label: Instance
     type: text
 
-- display: Execute Action
+- display: Execute action
   action: /restmachine/system/atyourservice/executeAction
   input:
   - name: repository
@@ -123,7 +116,7 @@
       value: ''
       required: True
 
-- display: commit
+- display: Commit
   action: /restmachine/system/atyourservice/commit
 
 }}
