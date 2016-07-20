@@ -51,4 +51,3 @@ h2. Repositories
 {% else %}
 | | |
 {% endfor %}
-

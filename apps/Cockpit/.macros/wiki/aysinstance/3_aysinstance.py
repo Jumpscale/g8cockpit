@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
     ayspath = args.getTag('ayspath')
 
     # from IPython import embed;embed()
-    actor = j.apps.actorsloader.getActor("system", "atyourservice")
+    actor = j.apps.actorsloader.getActor("cockpit", "atyourservice")
     domain, name, instance, role = j.atyourservice._parseKey(shortkey)
     service = actor.getService(repository=ayspath, role=role, instance=instance, ctx=args.requestContext)
     state = service.pop('state')
