@@ -79,8 +79,6 @@ class AYSBot(object):
             service = restuls[0]
             rq = self.schedule_single_action('update', service, None, notify=False, chat_id=None)
             result = rq.get()
-            if 'error' in result:
-                raise j.exceptions.RuntimeError(result['error'])
 
     def worker(self, i):
         nbr = i
