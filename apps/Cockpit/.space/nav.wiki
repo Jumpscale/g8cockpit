@@ -8,6 +8,7 @@ Information:/cockpit/Information
 JWT:/cockpit/JWT
 Documentation:https://gig.gitbooks.io/cockpit/content/
 API:/api/apidocs/index.html?raml=api.raml
+Cockpit version:/cockpit/version
 #Dockerhosts:/cockpit/Dockerhosts
 #Dockers:/cockpit/Dockers
 #Error Conditions:/cockpit/ECOs

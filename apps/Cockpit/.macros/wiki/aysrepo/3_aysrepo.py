@@ -2,7 +2,7 @@
 
 def main(j, args, params, tags, tasklet):
     arg_repo = args.getTag('repo')
-    repos = j.apps.system.atyourservice.listRepos(ctx=args.requestContext)
+    repos = j.apps.cockpit.atyourservice.listRepos(ctx=args.requestContext)
     repo = None
     for r in repos:
         if arg_repo == r['name']:

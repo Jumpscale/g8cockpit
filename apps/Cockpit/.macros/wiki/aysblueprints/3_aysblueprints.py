@@ -4,7 +4,7 @@ def main(j, args, params, tags, tasklet):
     result = list()
     result.append('''{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}''')
 
-    for ayspath, blueprints in j.apps.system.atyourservice.listBlueprints(ayspath, ctx=args.requestContext).items():
+    for ayspath, blueprints in j.apps.cockpit.atyourservice.listBlueprints(ayspath, ctx=args.requestContext).items():
         result.append('{{html: <h4> %s </h4>}}' % ayspath)
         for blueprint in blueprints:
             bpid = blueprint['path'].replace('/', '')
@@ -51,9 +51,9 @@ def main(j, args, params, tags, tasklet):
         repo = ss[0]
         bp = ss[1]
         if (this.innerText == 'enable'){
-            url = '/restmachine/system/atyourservice/archiveBlueprint';
+            url = '/restmachine/cockpit/atyourservice/archiveBlueprint';
         }else{
-            url = '/restmachine/system/atyourservice/restoreBlueprint';
+            url = '/restmachine/cockpit/atyourservice/restoreBlueprint';
         }
         $.ajax({
           type: 'GET',

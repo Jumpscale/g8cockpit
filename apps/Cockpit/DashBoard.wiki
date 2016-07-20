@@ -7,7 +7,7 @@
 h6. AtYourService commands:
 {{actions:
 - display: Reload all Services
-  action: /restmachine/system/atyourservice/reload
+  action: /restmachine/cockpit/atyourservice/reload
 }}
 
 @col 5

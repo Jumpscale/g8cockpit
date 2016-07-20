@@ -10,7 +10,7 @@ h2. Repositories
 
 {{actions:
 - display: Create repository
-  action: /restmachine/system/atyourservice/createRepo
+  action: /restmachine/cockpit/atyourservice/createRepo
   hide: true
   input:
     - name: name
@@ -18,7 +18,7 @@ h2. Repositories
       type: text
       default: ''
 - display: Commit repositories
-  action: /restmachine/system/atyourservice/commit
+  action: /restmachine/cockpit/atyourservice/commit
   showresponse: True
   hide: true
   input:
@@ -41,7 +41,7 @@ h2. Repositories
 - display: Delete this repository
   hide: true
   reload: false
-  action: /restmachine/system/atyourservice/deleteRepo
+  action: /restmachine/cockpit/atyourservice/deleteRepo
 }}
 
 {{aysrepos}}

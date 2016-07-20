@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
 
     # this makes sure bootstrap datatables functionality is used
     out.append('||Repository||Name||')
-    for ayspath, templates in j.apps.system.atyourservice.listTemplates(ayspath, ctx=args.requestContext).items():
+    for ayspath, templates in j.apps.cockpit.atyourservice.listTemplates(ayspath, ctx=args.requestContext).items():
 
         templates = sorted(templates, key=lambda template: template['name'])
         for template in templates:
