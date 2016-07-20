@@ -4,6 +4,7 @@ import wtforms_json
 from .ays import ays_api
 from .oauth import oauth_api
 from .webhooks import webhooks_api
+from .cockpit import cockpit_api
 from JumpScale import j
 
 
@@ -65,9 +66,12 @@ def process_jwt_token():
 
 
 ays_api.before_request(process_jwt_token)
+cockpit_api.before_request(process_jwt_token)
+
 app.register_blueprint(ays_api)
 app.register_blueprint(oauth_api)
 app.register_blueprint(webhooks_api)
+app.register_blueprint(cockpit_api)
 
 
 @app.route('/apidocs/<path:path>')

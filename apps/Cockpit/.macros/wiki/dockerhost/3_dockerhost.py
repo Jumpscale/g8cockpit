@@ -4,7 +4,7 @@ def main(j, args, params, tags, tasklet):
     dockerhost = args.getTag('dockerhost')
     ayspath = args.getTag('ayspath')
 
-    dockerhost = j.apps.system.atyourservice.listServices(repo_path=ayspath)[ayspath]['node!%s' % (dockerhost)]
+    dockerhost = j.apps.cockpit.atyourservice.listServices(repo_path=ayspath)[ayspath]['node!%s' % (dockerhost)]
 
     link = ('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (dockerhost.instance, dockerhost.key, ayspath))
     children = {}

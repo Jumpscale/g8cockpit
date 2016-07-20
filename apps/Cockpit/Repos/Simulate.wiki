@@ -6,8 +6,12 @@
 @row
 @col 4
 {{actions:
+- display: Reload all Services
+  action: /restmachine/cockpit/atyourservice/reload
+  showresponse: True
+
 - display: Execute blueprint
-  action: /restmachine/system/atyourservice/executeBlueprint
+  action: /restmachine/cockpit/atyourservice/executeBlueprint
   showresponse: True
   input:
   - name: repository
@@ -97,9 +101,18 @@
   - name: instance
     label: Instance
     type: text
+  - name: async
+    label: Async
+    type: dropdown
+    values:
+    - label: True
+      value: True
+    - label: False
+      value: False
+
 
 - display: Delete service
-  action: /restmachine/system/atyourservice/deleteService
+  action: /restmachine/cockpit/atyourservice/deleteService
   showresponse: True
   input:
     - name: repository
@@ -118,7 +131,6 @@
 
 - display: Commit
   action: /restmachine/system/atyourservice/commit
-
 }}
 
 h3. Repository: [$$repo|/cockpit/repo?repo=$$repo]

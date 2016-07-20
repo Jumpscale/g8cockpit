@@ -7,7 +7,7 @@ def main(j, args, params, tags, tasklet):
 
     # this makes sure bootstrap datatables functionality is used
     out.append("{{datatables_use}}\n")
-    for repo_path, runs in j.apps.system.atyourservice.listRuns(repository=arg_repo, ctx=args.requestContext).items():
+    for repo_path, runs in j.apps.cockpit.atyourservice.listRuns(repository=arg_repo, ctx=args.requestContext).items():
         out.append('h5. AYSRepo: %s' % repo_path)
         out.append('|| Run ID || Ran At || State ||')
 

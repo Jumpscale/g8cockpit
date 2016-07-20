@@ -5,7 +5,7 @@ def main(j, args, params, tags, tasklet):
     name = args.getTag('aysname')
     ayspath = args.getTag('ayspath') or None
 
-    template = j.apps.system.atyourservice.getTemplate(repository=ayspath, template=name, ctx=args.requestContext)
+    template = j.apps.cockpit.atyourservice.getTemplate(repository=ayspath, template=name, ctx=args.requestContext)
     info = {}
     code_bloks = {
         'schema.hrd': template['schema.hrd'],
@@ -14,7 +14,7 @@ def main(j, args, params, tags, tasklet):
     }
 
     instances = []
-    for ayspath, services in j.apps.system.atyourservice.listServices(repo_path=ayspath, role=name).items():
+    for ayspath, services in j.apps.cockpit.atyourservice.listServices(repo_path=ayspath, role=name).items():
         for service in services.values():
             instances.append('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (service['instance'], service['key'], ayspath))
 

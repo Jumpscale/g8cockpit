@@ -4,7 +4,7 @@ def main(j, args, params, tags, tasklet):
 
     out = list()
 
-    dockerhosts = j.apps.system.atyourservice.listServices(role='node')
+    dockerhosts = j.apps.cockpit.atyourservice.listServices(role='node')
 
     if not any(dockerhosts.values()):
         out = 'no Dockerhosts running on this enviroment'

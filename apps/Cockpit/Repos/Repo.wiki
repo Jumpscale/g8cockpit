@@ -21,7 +21,7 @@ h3. Actions:
 
 {{actions:
 - display: Delete this repository
-  action: /restmachine/system/atyourservice/deleteRepo
+  action: /restmachine/cockpit/atyourservice/deleteRepo
   navigateback: True
   input:
   - name: repository
@@ -33,7 +33,7 @@ h3. Actions:
   showresponse: True
 
 - display: Execute blueprint
-  action: /restmachine/system/atyourservice/executeBlueprint
+  action: /restmachine/cockpit/atyourservice/executeBlueprint
   showresponse: True
   input:
   - name: repository
@@ -47,7 +47,7 @@ h3. Actions:
     type: text
 
 - display: Init
-  action: /restmachine/system/atyourservice/init
+  action: /restmachine/cockpit/atyourservice/init
   showresponse: True
   input:
   - name: repository
@@ -69,7 +69,7 @@ h3. Actions:
     type: text
 
 - display: Install
-  action: /restmachine/system/atyourservice/install
+  action: /restmachine/cockpit/atyourservice/install
   showresponse: True
   input:
   - name: repository
@@ -99,7 +99,7 @@ h3. Actions:
     type: text
 
 - display: Execute action
-  action: /restmachine/system/atyourservice/executeAction
+  action: /restmachine/cockpit/atyourservice/executeAction
   input:
   - name: repository
     type: hidden
@@ -133,7 +133,7 @@ h3. Actions:
     type: text
 
 - display: Delete service
-  action: /restmachine/system/atyourservice/deleteService
+  action: /restmachine/cockpit/atyourservice/deleteService
   showresponse: True
   input:
     - name: repository

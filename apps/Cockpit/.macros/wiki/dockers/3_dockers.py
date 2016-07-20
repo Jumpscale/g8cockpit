@@ -3,7 +3,7 @@ def main(j, args, params, tags, tasklet):
     doc = args.doc
 
     out = list()
-    dockers = j.apps.system.atyourservice.listServices(templatename='node.docker')
+    dockers = j.apps.cockpit.atyourservice.listServices(templatename='node.docker')
 
     if not any(dockers.values()):
         out = 'No dockers installed'
