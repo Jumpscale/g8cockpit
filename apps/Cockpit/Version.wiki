@@ -20,5 +20,6 @@ h3. Update
 {{actions:
 - display: Update cockpit
   action: /restmachine/cockpit/atyourservice/cockpitUpdate
+  reload: false
   hide: true
 }}
