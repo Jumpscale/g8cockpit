@@ -182,6 +182,21 @@ types:
         code: 404
         error: "repository not found"
 
+/cockpit:
+    securedBy: [ JWT ]
+    /update:
+        post:
+            displayName: update
+            description: update the cockpit to the last version
+            responses:
+                404:
+                    description: "can't find cockpit repo or os.cockpit service"
+                    body:
+                        application/json:
+                            type: Error
+                204:
+                    description: "update in progress"
+
 /ays:
     securedBy: [ JWT ]
     /reload:

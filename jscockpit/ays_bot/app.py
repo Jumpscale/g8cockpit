@@ -64,6 +64,24 @@ class AYSBot(object):
         self.recurring._load_aysrepos()
         self.logger.info("reload_all: reload done")
 
+    def update(self):
+        repo_path = j.sal.fs.joinPaths(j.dirs.codeDir, 'cockpit/ays_cockpit')
+        if repo_path not in j.atyourservice.repos:
+            raise j.exceptions.NotFound("AYS Repository of this cockpit not found.")
+
+        repo = j.atyourservice.repos[repo_path]
+        restuls = repo.findServices(templatename='os.cockpit')
+        if len(restuls) > 1:
+            raise j.exceptions.AYSNotFound("too many service os.cockpit found")
+        elif len(restuls) <= 0:
+            raise j.exceptions.AYSNotFound("service os.cockpit not found")
+        elif len(restuls) == 1:
+            service = restuls[0]
+            rq = self.schedule_single_action('update', service, None, notify=False, chat_id=None)
+            result = rq.get()
+            if 'error' in result:
+                raise j.exceptions.RuntimeError(result['error'])
+
     def worker(self, i):
         nbr = i
         self.logger.info('start worker Nr %d' % i)

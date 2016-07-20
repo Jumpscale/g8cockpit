@@ -17,7 +17,6 @@ def reloadAll():
     current_app.ays_bot.reload_all()
     return jsonify(msg='reload done'), 200
 
-
 @ays_api.route('/ays/repository', methods=['GET'])
 def listRepositories():
     '''
