@@ -28,7 +28,7 @@ h3. Actions:
     type: hidden
     value: $$repo
 
-- display: Reload All Services
+- display: Reload all Services
   action: /restmachine/system/atyourservice/reload
   showresponse: True
 
