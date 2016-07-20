@@ -92,7 +92,7 @@ class AYSBot(object):
             result = {}
             try:
                 repo = j.atyourservice.get(work['repo'])
-                run = repo.getRun(role=work['role'], instance=work['instance'], action=work['action'], force=work['force'])
+                run = repo.getRun(role=work['role'], instance=work['instance'], action=work['action'], producerRoles=work['producerroles'], force=work['force'])
 
                 self.logger.debug('worker %d execute action %s for %s!%s in %s' %
                                   (nbr, work['action'], work['role'], work['instance'], work['repo']))
@@ -118,7 +118,12 @@ class AYSBot(object):
                 service = work['service']
                 self.logger.debug('worker single %s execute action %s for %s' % (nbr, work['action'], service.key))
                 func = service.getAction(work['action'])
-                func(service=work['service'], event=work['args'])
+
+                action_args = {'service': work['service']}
+                if work['args']:
+                    action_args['event'] = work['args']
+                func(**action_args)
+
             except Exception as e:
                 self.logger.error('worker single %d error during execution of action %s for %s: %s' %
                                   (nbr, work['action'], service.key, str(e)))
@@ -128,13 +133,16 @@ class AYSBot(object):
                 resp_q.put(result)
                 self.tasks_queue2.task_done()
 
-    def schedule_action(self, action, repo, role="", instance="", force=False, notify=False, chat_id=None):
+    def schedule_action(self, action, repo, role="", instance="", producerroles='*', force=False, notify=False, chat_id=None):
         """
         @action: str, name of the action to Execute
         @repo: str, name of the repo to use
         @role: str, role of the services to executes
         @instance: str, instance of the services to executes
+        @producerroles: str, role of the producer you want to include in the Run
         @force: bool, force action or not
+        @notify: bool, show result in telegram
+        @chat_id: int, telegram chat_id where to notify
 
         put the action on the worker queue and return a response queue.
         if you care about the response, just get on the queue returned by this method.
@@ -145,6 +153,7 @@ class AYSBot(object):
             'repo': repo,
             'role': role,
             'instance': instance,
+            'producerroles': producerroles,
             'force': force,
             'resp_q': response_queue
         }
