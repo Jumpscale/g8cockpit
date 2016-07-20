@@ -1,0 +1,24 @@
+@usedefault
+@@title Software Versions
+
+@row
+@col 6
+h3. JumpScale
+   * Core: {{repoversion: account:jumpscale repo:jumpscale_core8 provider:github}}
+   * Portal: {{repoversion: account:jumpscale repo:jumpscale_portal8 provider:github}}
+
+h3. JSCockpit
+   * Core: {{repoversion: account:jumpscale repo:jscockpit provider:github}}
+@divend
+
+@col 6
+h3. Update
+{{action id:'action-Updatecockpit' class:'glyphicon glyphicon glyphicon-open margin-bottom-medium margin-left-medium' label:'Update the cockpit'}}
+@divend
+
+
+{{actions:
+- display: Update cockpit
+  action: /restmachine/cockpit/manager/update
+  hide: true
+}}
