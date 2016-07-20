@@ -7,6 +7,7 @@ h2. Repositories
 {{datatables_use}}
 {{action id:'action-Createrepository' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Create Repository'}}
 {{action id:'action-Commitrepositories' class:'glyphicon glyphicon-save margin-bottom-medium margin-left-medium' label:'Commit Repositories'}}
+{{action id:'action-ReloadCockpit' class:'glyphicon glyphicon-refresh margin-bottom-medium margin-left-medium' label:'Reload cockpit'}}
 
 {{actions:
 - display: Create repository
@@ -42,6 +43,11 @@ h2. Repositories
   hide: true
   reload: false
   action: /restmachine/cockpit/atyourservice/deleteRepo
+
+- display: Reload Cockpit
+  hide: true
+  action: /restmachine/cockpit/atyourservice/reload
+  showresponse: True
 }}
 
 {{aysrepos}}

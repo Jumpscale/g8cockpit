@@ -277,8 +277,11 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
 
     def reload(self, **kwargs):
         cl = self.get_client(**kwargs)
-        cl.reloadAll()
-        return 'service reloaded'
+        try:
+            cl.reloadAll()
+        except j.exceptions.RuntimeError as e:
+            return 'Error during reloading : %s' % e.message1
+        return 'Cockpit reloaded'
 
     def commit(self, message, branch='master', push=True, **kwargs):
         if not j.atyourservice.exist('ays_cockpit'):
