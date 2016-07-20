@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
     if not action or not repo:
         params.result = ('', args.doc)
         return params
-    actor = j.apps.actorsloader.getActor("system", "atyourservice")
+    actor = j.apps.actorsloader.getActor("cockpit", "atyourservice")
 
     out = ["h3. Result of simulation for action '%s'" % action]
     try:

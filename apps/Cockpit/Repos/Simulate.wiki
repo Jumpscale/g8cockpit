@@ -25,7 +25,7 @@
     type: text
 
 - display: Init
-  action: /restmachine/system/atyourservice/init
+  action: /restmachine/cockpit/atyourservice/init
   showresponse: True
   input:
   - name: repository
@@ -47,7 +47,7 @@
     type: text
 
 - display: Install
-  action: /restmachine/system/atyourservice/install
+  action: /restmachine/cockpit/atyourservice/install
   showresponse: True
   input:
   - name: repository
@@ -77,7 +77,7 @@
     type: text
 
 - display: Execute action
-  action: /restmachine/system/atyourservice/executeAction
+  action: /restmachine/cockpit/atyourservice/executeAction
   input:
   - name: repository
     type: hidden
@@ -130,7 +130,7 @@
       required: True
 
 - display: Commit
-  action: /restmachine/system/atyourservice/commit
+  action: /restmachine/cockpit/atyourservice/commit
 }}
 
 h3. Repository: [$$repo|/cockpit/repo?repo=$$repo]

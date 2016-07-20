@@ -5,7 +5,7 @@ def main(j, args, params, tags, tasklet):
     params.merge(args)
     out = []
 
-    actor = j.apps.actorsloader.getActor("system", "atyourservice")
+    actor = j.apps.actorsloader.getActor("cockpit", "atyourservice")
 
     # this makes sure bootstrap datatables functionality is used
     out.append("{{datatables_use}}\n")
@@ -20,8 +20,8 @@ def main(j, args, params, tags, tasklet):
             for field in fields:
                 if field.lower() == 'instance':
                     line.append('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (service['instance'],
-                                                                                     service['key'],
-                                                                                     ayspath))
+                                                                                  service['key'],
+                                                                                  ayspath))
                 else:
                     line.append(service[field.lower()])
 
