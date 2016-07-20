@@ -66,6 +66,8 @@ def process_jwt_token():
 
 
 ays_api.before_request(process_jwt_token)
+cockpit_api.before_request(process_jwt_token)
+
 app.register_blueprint(ays_api)
 app.register_blueprint(oauth_api)
 app.register_blueprint(webhooks_api)
