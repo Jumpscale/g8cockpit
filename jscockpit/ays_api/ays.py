@@ -305,7 +305,7 @@ def restoreBlueprint(blueprint, repository):
         return jsonify(error='Repository not found with name %s' % repository), 404
 
     bp = None
-    for item in repo.blueprints_archive:
+    for item in repo.blueprints_disabled:
         if item.name == blueprint:
             bp = item
             break
