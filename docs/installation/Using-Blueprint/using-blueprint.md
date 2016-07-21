@@ -30,6 +30,7 @@ g8client__main:
 
 cockpit.g8__pilot:
   g8.client: 'main'
+  g8.location: '{g8-location}'
   telegram.token: '{telegram-token}'
   cockpit.name: '{cockpit-name}'
   dns.sshkey: '{dns-sshkey-path}'
