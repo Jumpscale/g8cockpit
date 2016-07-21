@@ -14,7 +14,7 @@ def main(j, args, params, tags, tasklet):
     }
 
     instances = []
-    for ayspath, services in j.apps.cockpit.atyourservice.listServices(repo_path=ayspath, role=name).items():
+    for ayspath, services in j.apps.cockpit.atyourservice.listServices(repo_path=ayspath, role=name, templatename=template['name'], ctx=args.requestContext).items():
         for service in services.values():
             instances.append('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (service['instance'], service['key'], ayspath))
 
