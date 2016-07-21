@@ -15,7 +15,7 @@ def main(j, args, params, tags, tasklet):
             line.append('[%s|cockpit/Template?ayspath=%s&aysname=%s]' % (template['name'],
                                                                              ayspath, template['name']))
             line.append("|")
-        out.append("".join(line))
+            out.append("".join(line))
 
     out = '\n'.join(out)
     params.result = (out, doc)
