@@ -298,7 +298,7 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         try:
             cl.reloadAll()
         except j.exceptions.RuntimeError as e:
-            return 'Error during reloading : %s' % e.message1
+            return 'Error during reloading : %s' % e.message
         return 'Cockpit reloaded'
 
     def commit(self, message, branch='master', push=True, **kwargs):
