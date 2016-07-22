@@ -19,6 +19,6 @@ def main(j, args, params, tags, tasklet):
             instances.append('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (service['instance'], service['key'], ayspath))
 
     info = OrderedDict(sorted(info.items()))
-    args.doc.applyTemplate({'data': info, 'instances': instances, 'code_bloks': code_bloks})
+    args.doc.applyTemplate({'data': info, 'instances': instances, 'code_bloks': code_bloks, 'template_name': name})
     params.result = (args.doc, args.doc)
     return params

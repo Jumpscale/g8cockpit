@@ -2,6 +2,8 @@
 
 {{aystemplate ayspath:$$ayspath aysname:$$aysname}}
 
+@@title ${template_name}
+
 h3. Service Template Info:
 h4. Name: $$aysname
 {% for key, value in data.items() -%}

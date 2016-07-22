@@ -22,6 +22,8 @@ def main(j, args, params, tags, tasklet):
                     line.append('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (service['instance'],
                                                                                   service['key'],
                                                                                   ayspath))
+                elif field.lower() == 'repository':
+                    line.append('[%s|/cockpit/repo?repo=%s]' % (service['repository'], service['repository']))
                 else:
                     line.append(service[field.lower()])
 

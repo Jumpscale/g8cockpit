@@ -138,11 +138,11 @@ h3. Actions:
     - name: role
       type: text
       label: Role
-      required: False
+      required: True
     - name: instance
       type: text
       label: Instance
-      required: False
+      required: True
 
 }}
 @colend
