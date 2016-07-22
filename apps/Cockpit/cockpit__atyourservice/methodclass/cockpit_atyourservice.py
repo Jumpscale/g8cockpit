@@ -286,8 +286,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         instance = '' if not instance else instance
         try:
             resp = cl.deleteServiceByInstance(repository=repository, role=role, instance=instance)
-        except Exception as e:
-            raise exceptions.BadRequest(str(e))
+        except j.exceptions.RuntimeError as e:
+            raise exceptions.BadRequest(e.message)
         return "Service deleted"
 
     def commit(self, name, **kwargs):

@@ -515,7 +515,7 @@ def deleteServiceByInstance(instance, role, repository):
     try:
         scope = request.args.getlist('scope')
         producerRoles = ','.join(scope) if scope else '*'
-        repo.uninstall(role=role, instance=instance, producerRoles=producerRoles)
+        repo.uninstall(role=role, instance=instance, producerRoles=producerRoles, force=True)
         del repo.services[service.key]
         j.sal.fs.removeDirTree(service.path)
     except Exception as e:

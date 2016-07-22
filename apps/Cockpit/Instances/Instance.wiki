@@ -3,6 +3,58 @@
 {{timestamp}}
 
 {{aysinstance: shortkey:$$shortkey ayspath:$$ayspath}}
+@@title ${role}!${instance}
+
+
+h3. Actions:
+{{actions:
+- display: Uninstall
+  action: /restmachine/cockpit/atyourservice/executeAction
+  showresponse: True
+  navigateback: False
+  input:
+    - name: repository
+      type: hidden
+      value: $$ayspath
+    - name: action
+      type: hidden
+      value: 'uninstall'
+    - name: force
+      label: Force
+      type: dropdown
+      values:
+      - label: False
+        value: False
+      - label: True
+        value: True
+    - name: async
+      type: hidden
+      value: False
+    - name: role
+      value: ${role}
+      type: hidden
+    - name: instance
+      value: ${instance}
+      type: hidden
+- display: Delete service
+  action: /restmachine/cockpit/atyourservice/deleteService
+  showresponse: True
+  navigateback: True
+  input:
+    - name: repository
+      type: hidden
+      value: $$ayspath
+    - name: role
+      type: hidden
+      label: Role
+      required: True
+      value: '${role}'
+    - name: instance
+      type: hidden
+      label: Instance
+      required: True
+      value: '${instance}'
+}}
 
 h3. Service Info:
 h4. Role: ${role} - Instance: ${instance}
