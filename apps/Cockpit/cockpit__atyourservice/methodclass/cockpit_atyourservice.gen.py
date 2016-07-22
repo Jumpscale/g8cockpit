@@ -13,6 +13,16 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         #cockpit_atyourservice_osis.__init__(self)
 
 
+    def addTemplateRepo(self, url, branch, **kwargs):
+        """
+        Add a new service template repository.
+        param:url Service template repository URL
+        param:branch Branch of the repo to use default:master
+        result str
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method addTemplateRepo")
+
     def archiveBlueprint(self, repository, blueprint, **kwargs):
         """
         archive a blueprint

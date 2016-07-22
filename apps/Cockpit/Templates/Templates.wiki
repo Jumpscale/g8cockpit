@@ -5,7 +5,22 @@
 {{datatables_use}}
 
 h3. Templates
-
+{{action id:'action-Addtemplatesrepository' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add templates repository'}}
 {{aystemplates: ayspath:$$ayspath}}
 
-# TODO list ays templates 
+{{actions:
+- display: Add templates repository
+  action: /restmachine/cockpit/atyourservice/addTemplateRepo
+  hide: true
+  showresponse: true
+  reload: true
+  input:
+    - name: url
+      label: URL
+      type: text
+    - name: branch
+      label: Branch
+      type: text
+      default: 'master'
+      placeholder: 'master'
+}}

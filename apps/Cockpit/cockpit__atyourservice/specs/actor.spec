@@ -5,6 +5,14 @@
     method:cockpitUpdate
         result:json
 
+    method:addTemplateRepo
+        """
+        Add a new service template repository.
+        """
+        var:url str,, Service template repository URL
+        var:branch str,, Branch of the repo to use default:master
+        result:str
+
     method:listRepos
         """
         list all repository

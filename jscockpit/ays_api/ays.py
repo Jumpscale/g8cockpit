@@ -6,6 +6,7 @@ from .views import service_view, template_view, blueprint_view, repository_view
 from .Repository import Repository
 from .Blueprint import Blueprint
 from .Template import Template
+from .TemplateRepo import TemplateRepo
 
 
 ays_api = fBlueprint('ays_api', __name__)
@@ -541,6 +542,50 @@ def listTemplates(repository):
     templates = sorted(templates, key=lambda template: template['name'])
 
     return json.dumps(templates), 200, {'Content-Type': 'application/json'}
+
+
+
+@ays_api.route('/ays/template', methods=['POST'])
+def addTemplateRepo():
+    '''
+    add a new service template repository
+    It is handler for POST /ays/template
+    '''
+
+    inputs = TemplateRepo.from_json(request.get_json())
+    if not inputs.validate():
+        return jsonify(errors=inputs.errors), 400
+
+    url = inputs.url.data
+    branch = inputs.branch.data
+
+    if url == '':
+        return jsonify(error="URL can't be empty"), 400
+
+    if not url.startswith('http'):
+        return jsonify(error="URL Format not valid. It should starts with http"), 400
+
+    if url.endswith('.git'):
+        url = url[:-len('.git')]
+
+    hrd = j.data.hrd.get(j.sal.fs.joinPaths(j.dirs.hrd, 'atyourservice.hrd'))
+    metadata = hrd.getDictFromPrefix('metadata')
+    urls = [m['url'] for m in metadata.values()]
+    if url in urls:
+        return "Repository already exists."
+
+    name = url.split('/')[-1]
+    template = {
+        'branch': branch,
+        'url': url
+    }
+    hrd.set('metadata.%s' % name, template)
+    hrd.save()
+
+    # reload config
+    j.application._config = j.data.hrd.get(j.dirs.hrd)
+
+    return jsonify(url=url, branch=branch), 201
 
 
 @ays_api.route('/ays/repository/<repository>/template', methods=['POST'])

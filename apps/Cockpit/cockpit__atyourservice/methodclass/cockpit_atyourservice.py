@@ -34,6 +34,33 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         cl = self.get_client(**kwargs)
         return cl.updateCockpit()
 
+    def addTemplateRepo(self, url, branch='master', **kwargs):
+        """
+        Add a new service template repository.
+        param:url Service template repository URL
+        param:branch Branch of the repo to use default:master
+        result json
+        """
+        if url == '':
+            raise exceptions.BadRequest("URL can't be empty")
+
+        if not url.startswith('http'):
+            raise exceptions.BadRequest("URL Format not valid. It should starts with http")
+
+        if url.endswith('.git'):
+            url = url[:-len('.git')]
+
+        cl = self.get_client(**kwargs)
+
+        try:
+            resp = cl.addTemplateRepo(url=url, branch=branch)
+        except j.exceptions.RuntimeError as e:
+            raise exceptions.BadRequest(e.message)
+
+        self.reload(**kwargs)
+
+        return "Repository added"
+
     def listRepos(self, **kwargs):
         cl = self.get_client(**kwargs)
         repos = cl.listRepositories()

@@ -148,6 +148,15 @@ types:
             milestones = type:'str' list consume:'github_milestone'
         service.hrd:
             recurring.monitor: "1h"
+  TemplateRepo:
+      properties:
+          url:
+            type: string
+            required: true
+          branch:
+             type: string
+             required: true
+             default: 'master'
   AYSStep:
      properties:
         number:
@@ -205,6 +214,20 @@ types:
             description: empty memory and reload all services
             responses:
                 200:
+    /template:
+        post:
+            displayName: addTemplateRepo
+            description: add a new service template repository
+            body:
+              application/json:
+                type: TemplateRepo
+            responses:
+                201:
+                    description:
+                        "Repository added"
+                    body:
+                      application/json:
+                        type: TemplateRepo
     /repository:
         description: a repository
         get:
