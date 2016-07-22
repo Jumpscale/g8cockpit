@@ -25,16 +25,7 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
                 jwttoken = None
 
         if jwttoken is None:
-            username = session['user']
-            qs = j.data.models.oauth.JWTToken.find({'username': username, 'expire': {'$gt': j.data.time.epoch}})
-            if qs.count() <= 0:
-                # no JWT token valid in DB, generate a new one.
-                token = j.apps.system.oauthtoken.generateJwtToken(scope='', audience='', **kwargs)
-            else:
-                # JWT available, use this one
-                token = qs.first()
-
-            jwttoken = token['jwt_token']
+            jwttoken = j.apps.system.oauthtoken.generateJwtToken(scope='', audience='', **kwargs)
             session['jwt_token'] = jwttoken
             session.save()
         return j.clients.cockpit.getClient(self.base_url, jwttoken)
