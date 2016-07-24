@@ -324,7 +324,7 @@ class TGBot():
             "Let's start:",
             " - manage your repositories with: `/repo`",
             " - manage your blueprints with: `/blueprint`",
-            " - manage your services with: `/services`",
+            " - manage your services with: `/service`",
             " - reload your services with: `/reload`",
             "For more information, just type `/help` :)"
         ]
