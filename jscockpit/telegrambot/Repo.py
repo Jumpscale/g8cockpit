@@ -170,7 +170,7 @@ class RepoMgmt:
                 self.checkout(bot, update, repo)
         self.callbacks[username] = cb
 
-        repos = list(j.atyourservice.repos.keys())
+        repos = [repo.name for repo in j.atyourservice.repos.values()]
         repos.sort()
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(repos, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
         return bot.sendMessage(chat_id=update.message.chat_id, text="Choose the repo you want to work on.", reply_markup=reply_markup)
