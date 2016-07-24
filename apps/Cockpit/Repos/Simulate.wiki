@@ -115,19 +115,28 @@
   action: /restmachine/cockpit/atyourservice/deleteService
   showresponse: True
   input:
-    - name: repository
-      type: hidden
-      value: $$repo
-    - name: role
-      type: text
-      label: Role
-      value: ''
-      required: True
-    - name: instance
-      type: text
-      label: Instance
-      value: ''
-      required: True
+  - name: repository
+    type: hidden
+    value: $$repo
+  - name: force
+    type: hidden
+    value: True
+  - name: role
+    type: text
+    label: Role
+    required: True
+  - name: instance
+    type: text
+    label: Instance
+    required: True
+  - name: uninstall
+    label: Uninstall service before deletion
+    type: dropdown
+    values:
+    - label: True
+      value: True
+    - label: False
+      value: False
 
 - display: Commit
   action: /restmachine/cockpit/atyourservice/commit

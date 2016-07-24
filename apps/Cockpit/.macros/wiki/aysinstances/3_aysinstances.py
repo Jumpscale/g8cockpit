@@ -3,32 +3,13 @@ def main(j, args, params, tags, tasklet):
     doc = args.doc
     ayspath = args.getTag('ayspath')
     params.merge(args)
-    out = []
 
     actor = j.apps.actorsloader.getActor("cockpit", "atyourservice")
+    out = []
+    for _, services in actor.listServices(ayspath, ctx=args.requestContext).items():
+        out.extend(services)
 
-    # this makes sure bootstrap datatables functionality is used
-    out.append("{{datatables_use}}\n")
+    args.doc.applyTemplate({'services': out})
+    params.result = (args.doc, args.doc)
 
-    fields = ['Role', 'Instance', 'Repository']
-    out.append('||Role||Instance||Repository||')
-
-    for ayspath, services in actor.listServices(ayspath, ctx=args.requestContext).items():
-        services = sorted(services, key=lambda service: service['role'])
-        for service in services:
-            line = [""]
-            for field in fields:
-                if field.lower() == 'instance':
-                    line.append('[%s|cockpit/Instance?shortkey=%s&ayspath=%s]' % (service['instance'],
-                                                                                  service['key'],
-                                                                                  ayspath))
-                elif field.lower() == 'repository':
-                    line.append('[%s|/cockpit/repo?repo=%s]' % (service['repository'], service['repository']))
-                else:
-                    line.append(service[field.lower()])
-
-            line.append("")
-            out.append("|".join(line))
-
-    params.result = ('\n'.join(out), doc)
     return params

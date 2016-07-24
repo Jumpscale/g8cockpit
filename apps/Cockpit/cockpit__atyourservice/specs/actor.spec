@@ -149,6 +149,8 @@
         var:repository str,, name of the repository
         var:role str,, role of the services to delete @tag optional
         var:instance str,, instance name of the service to delete @tag optional
+        var:force bool,, default:True
+        var:uninstall bool,, default:True
         result:json
 
     method:commit

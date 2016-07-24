@@ -135,6 +135,9 @@ h3. Actions:
     - name: repository
       type: hidden
       value: $$repo
+    - name: force
+      type: hidden
+      value: True
     - name: role
       type: text
       label: Role
@@ -143,6 +146,14 @@ h3. Actions:
       type: text
       label: Instance
       required: True
+    - name: uninstall
+      label: Uninstall service before deletion
+      type: dropdown
+      values:
+      - label: True
+        value: True
+      - label: False
+        value: False
 
 }}
 @colend

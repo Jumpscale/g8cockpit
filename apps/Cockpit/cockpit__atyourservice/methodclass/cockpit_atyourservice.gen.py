@@ -69,12 +69,14 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method deleteRepo")
 
-    def deleteService(self, repository, role, instance, **kwargs):
+    def deleteService(self, repository, role, instance, force, uninstall, **kwargs):
         """
         Uninstall a service
         param:repository name of the repository
         param:role role of the services to delete
         param:instance instance name of the service to delete
+        param:force default:True
+        param:uninstall default:True
         result json
         """
         #put your code here to implement this method

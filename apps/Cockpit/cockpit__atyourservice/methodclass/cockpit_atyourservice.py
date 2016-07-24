@@ -280,7 +280,7 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
             raise exceptions.BadRequest(str(e))
         return resp['msg']
 
-    def deleteService(self, repository, role='', instance='', force=False, **kwargs):
+    def deleteService(self, repository, role='', instance='', force=False, uninstall=True, **kwargs):
         cl = self.get_client(**kwargs)
         role = '' if not role else role
         instance = '' if not instance else instance

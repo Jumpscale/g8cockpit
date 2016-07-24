@@ -506,16 +506,22 @@ def deleteServiceByInstance(instance, role, repository):
     repo = None
     if j.atyourservice.exist(repository):
         repo = j.atyourservice.get(repository)
+
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
+
     service = repo.getService(role=role, instance=instance, die=False)
     if service is None:
         return jsonify(error='Service role:%s instance:%s not found in the repo %s' % (role, instance, repository)), 404
 
     try:
         scope = request.args.getlist('scope')
-        producerRoles = ','.join(scope) if scope else '*'
-        repo.uninstall(role=role, instance=instance, producerRoles=producerRoles, force=True)
+        uninstall = j.data.types.bool.fromString(request.args.get('uninstall', True))
+
+        if uninstall:
+            producerRoles = ','.join(scope) if scope else '*'
+            repo.uninstall(role=role, instance=instance, producerRoles=producerRoles, force=True)
+
         del repo.services[service.key]
         j.sal.fs.removeDirTree(service.path)
     except Exception as e:
