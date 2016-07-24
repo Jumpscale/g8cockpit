@@ -45,15 +45,14 @@ def main(j, args, params, tags, tasklet):
 {{jscript
   $(function() {
       $('.label').click(function() {
-        that = this
-        id = this.id
-        ss = id.split('-')
-        repo = ss[0]
-        bp = ss[1]
+        var that = this
+        var ss = this.id.split('-')
+        var repo = ss.shift()
+        var bp = ss.join('-')
         if (this.innerText == 'enable'){
-            url = '/restmachine/cockpit/atyourservice/archiveBlueprint';
+            var url = '/restmachine/cockpit/atyourservice/archiveBlueprint';
         }else{
-            url = '/restmachine/cockpit/atyourservice/restoreBlueprint';
+            var url = '/restmachine/cockpit/atyourservice/restoreBlueprint';
         }
         $.ajax({
           type: 'GET',
