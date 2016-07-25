@@ -200,7 +200,7 @@ class AYSBot(object):
             self.logger.error('Error execution of action %s of service %s!%s from repo %s: %s' % (action, role, instance, repo, result['error']))
             msg = "Error happened on action %s on service %s instance %s in repo %s:\n %s" % (action, role, instance, repo, result['error'])
         elif notify:
-            msg = "Action *%s* on service %s instance %s in repo %s executed without error" % (action, role, instance, repo)
+            msg = "Action %s on service %s instance %s in repo %s executed without error" % (action, role, instance, repo)
 
         if msg:
             self.send_tg_msg(msg=msg, chat_id=chat_id)

@@ -157,12 +157,12 @@ class TGBot():
 
                 if "error" in comparemsg.lower():
                     if comparemsg not in normalized_msgs:
-                        self.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+                        self.sendMessage(chat_id=chat_id, text=msg, parse_mode=None)
                     self._errmessages.append(msg)
                     if len(self._errmessages) > 20:
                         self._errmessages = self._errmessages[-20:]
                 else:  # not an error
-                    self.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+                    self.sendMessage(chat_id=chat_id, text=msg, parse_mode=None)
 
             except Exception as e:
                 self.logger.error("Error sending message (chat id %s)'%s' : %s" % (chat_id, msg, str(e)))
