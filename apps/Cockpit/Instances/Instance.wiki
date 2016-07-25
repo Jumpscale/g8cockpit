@@ -54,6 +54,9 @@ h3. Actions:
       label: Instance
       required: True
       value: '${instance}'
+    - name: force
+      type: hidden
+      value: True
 }}
 
 h3. Service Info:
