@@ -14,7 +14,7 @@ def service_view(s):
         'producers': [],
         'parent': None,
         'path': s.path,
-        'repository': s.aysrepo.name
+        'repository': s.aysrepo.name,
         'state': {},
         'action.py': None,
     }
