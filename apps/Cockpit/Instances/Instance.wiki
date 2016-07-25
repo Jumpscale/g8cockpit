@@ -57,6 +57,9 @@ h3. Actions:
     - name: force
       type: hidden
       value: True
+    - name: uninstall
+      type: hidden
+      value: False
 }}
 
 h3. Service Info:
