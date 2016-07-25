@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
     actor = j.apps.actorsloader.getActor("cockpit", "atyourservice")
     domain, name, instance, role = j.atyourservice._parseKey(shortkey)
     service = actor.getService(repository=ayspath, role=role, instance=instance, ctx=args.requestContext)
-    state = service.pop('state')
+    state = state = service.pop('state', {'state': {}})
     hrd = service.pop('instance.hrd')
 
     hidden = ['key.priv', 'password', 'passwd', 'pwd', 'oauth.jwt_key']

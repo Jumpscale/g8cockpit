@@ -83,9 +83,9 @@ h5. Parent:
 h5. Producers:
 || Role || instance ||
 {% for role, prods in producers.items() -%}
-{% for prod in prods -%}
-    |${role}|${prod['link']}|
-{% endfor %}
+  {% for prod in prods -%}
+     |${role}|${prod['link']}|
+  {% endfor -%}
 {% endfor %}
 {% endif %}
 
