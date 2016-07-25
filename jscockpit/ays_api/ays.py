@@ -222,7 +222,7 @@ def createNewBlueprint(repository):
     new_name = inputs.name.data
     content = inputs.content.data
 
-    names = [bp.name for bp in repo.blueprints]
+    names = [bp.name for bp in repo._blueprints.values()]
     if new_name in names:
         return jsonify(error="blueprint with the name %s' already exsits" % new_name), 409
 
