@@ -189,7 +189,7 @@ class RepoMgmt:
             self.delete(bot, update, [update.message.text])
         self.callbacks[username] = cb
 
-        repos = list(j.atyourservice.repos.keys())
+        repos = [r.name for r in j.atyourservice.repos.values()]
         repos.sort()
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(repos, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
         return self.bot.sendMessage(chat_id=update.message.chat_id, text="Please enter the name of the repo you want to delete", reply_markup=reply_markup)
