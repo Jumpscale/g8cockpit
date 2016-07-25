@@ -76,7 +76,7 @@ h5. Instance values
 {% if parent['link'] is defined %}
 h5. Parent:
 || Role || Instance ||
-||${parent['role']}|${parent['link']}|
+| ${parent['role']} | ${parent['link']} |
 {% endif %}
 
 {% if producers|length > 0 %}
