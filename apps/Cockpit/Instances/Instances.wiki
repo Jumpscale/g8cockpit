@@ -11,9 +11,6 @@ h3. AYS Instances
   showresponse: True
   hide: True
   input:
-    - name: repository
-      type: hidden
-      value: $$ayspath
     - name: force
       type: hidden
       value: True
@@ -24,7 +21,7 @@ h3. AYS Instances
 
 ||Role||Instance||Repository||Actions||
 {% for service in services -%}
-| ${service['role']} | [${service['instance']}|cockpit/Instance?shortkey=${service['key']}&ayspath=${service['repository']}] | [${service['repository']} | /cockpit/repo?repo=${service['repository']}] | {{action label:'Delete' deleterow:true id:'action-DeleteService' class:'glyphicon glyphicon-trash' data-role:'${service['role']}' data-instance:'${service['instance']}'}} |
+| ${service['role']} | [${service['instance']}|cockpit/Instance?shortkey=${service['key']}&ayspath=${service['repository']}] | [${service['repository']} | /cockpit/repo?repo=${service['repository']}] | {{action label:'Delete' deleterow:true id:'action-DeleteService' class:'glyphicon glyphicon-trash' data-repository:'${service['repository']}' data-role:'${service['role']}' data-instance:'${service['instance']}'}} |
 {% else %}
 | | | |
 {% endfor %}
