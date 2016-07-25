@@ -38,7 +38,7 @@ h3. Actions:
       type: hidden
 - display: Delete service
   action: /restmachine/cockpit/atyourservice/deleteService
-  showresponse: True
+  showresponse: False
   navigateback: True
   input:
     - name: repository
