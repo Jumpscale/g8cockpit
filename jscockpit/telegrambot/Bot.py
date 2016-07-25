@@ -21,6 +21,8 @@ from JumpScale import j
 
 
 STATE_KEY = 'cockpit.telegram.state'
+MAX_MESSAGE_LENGTH = 4096
+
 
 class TGBot():
 
@@ -74,6 +76,11 @@ class TGBot():
 
         # internal
         dispatcher.addHandler(RegexHandler(r'/.*', self.unknown_cmd))
+
+    def sendMessage(self, chat_id, text, parse_mode=None, disable_web_page_preview=None, **kwargs):
+        for chunk in chunks(text, MAX_MESSAGE_LENGTH):
+            send_msg = self.bot.sendMessage(chat_id=chat_id, text=chunk, parse_mode=parse_mode, disable_web_page_preview=disable_web_page_preview, **kwargs)
+        return send_msg
 
     def _register_event_handlers(self):
         evt_map = {
@@ -145,35 +152,34 @@ class TGBot():
                     """
                     return re.sub("RUN:.+?\n", "NOOOONE", s)
 
-                comparemsg=normalize_runid(msg)
+                comparemsg = normalize_runid(msg)
                 normalized_msgs = [normalize_runid(x) for x in self._errmessages]
 
                 if "error" in comparemsg.lower():
-                    if comparemsg not in normalized_msgs :
-                        self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+                    if comparemsg not in normalized_msgs:
+                        self.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
                     self._errmessages.append(msg)
                     if len(self._errmessages) > 20:
                         self._errmessages = self._errmessages[-20:]
-                else: #not an error
-                    self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
-
+                else:  # not an error
+                    self.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
             except Exception as e:
                 self.logger.error("Error sending message (chat id %s)'%s' : %s" % (chat_id, msg, str(e)))
 
     def errorsof_cmd(self, bot, update, args):
-        #only the first arg
+        # only the first arg
         arg = args[0]
-        errmsgs = "LIST OF ERRORS related to %s:\n"%arg
+        errmsgs = "LIST OF ERRORS related to %s:\n" % arg
         if self._errmessages:
             errmsgs += "\n".join(errmsg for errmsg in self._errmessages if arg in errmsg)
-            self.bot.sendMessage(chat_id=update.message.chat_id, text=errmsgs)
+            self.sendMessage(chat_id=update.message.chat_id, text=errmsgs)
 
     def list_errors_cmd(self, bot, update):
         errmsgs = "LIST OF ERRORS:\n"
         if self._errmessages:
             errmsgs += "\n".join(self._errmessages)
-            self.bot.sendMessage(chat_id=update.message.chat_id, text=errmsgs)
+            self.sendMessage(chat_id=update.message.chat_id, text=errmsgs)
 
     def _handle_event_service_com(self, evt):
         # If no key, we can't send response. exit here.
@@ -220,7 +226,7 @@ class TGBot():
 
         # send message
         try:
-            send_msg = self.bot.sendMessage(chat_id=data['chat_id'], text=msg, parse_mode=telegram.ParseMode.HTML, reply_markup=reply_markup)
+            send_msg = self.sendMessage(chat_id=data['chat_id'], text=msg, parse_mode=telegram.ParseMode.HTML, reply_markup=reply_markup)
         except Exception as e:
             err_msg = "Error sending message (chat id %s)'%s' : %s" % (data['chat_id'], msg, str(e))
             self.logger.error(err_msg)
@@ -236,9 +242,9 @@ class TGBot():
             return
 
         chat_id = update.message.chat_id
-        self.bot.sendMessage(chat_id=chat_id, text="Start reloading of services")
+        self.sendMessage(chat_id=chat_id, text="Start reloading of services")
         self.ays_bot.reload_all()
-        self.bot.sendMessage(chat_id=chat_id, text="Reloading of services done")
+        self.sendMessage(chat_id=chat_id, text="Reloading of services done")
 
     @run_async
     def message_cmd(self, bot, update, **kwargs):
@@ -283,7 +289,7 @@ class TGBot():
             "This message was given by `/help`, have fun with me !",
         ]
 
-        bot.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode=telegram.ParseMode.MARKDOWN)
+        self.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode=telegram.ParseMode.MARKDOWN)
 
     # initialize
     def start_cmd(self, bot, update):
@@ -308,7 +314,7 @@ class TGBot():
             }
             resp = self.oauth(bot, update)
             if 'error' in resp:
-                return bot.sendMessage(chat_id=update.message.chat_id, text=resp['error'], parse_mode=telegram.ParseMode.MARKDOWN)
+                return self.endMessage(chat_id=update.message.chat_id, text=resp['error'], parse_mode=telegram.ParseMode.MARKDOWN)
             else:
                 hello = "You have been authorized. Welcome !"
                 data['access_token'] = resp['access_token']
@@ -329,11 +335,11 @@ class TGBot():
             "For more information, just type `/help` :)"
         ]
 
-        bot.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode=telegram.ParseMode.MARKDOWN)
+        self.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode=telegram.ParseMode.MARKDOWN)
 
     # project manager
     def unknown_cmd(self, bot, update):
-        bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, I didn't understand that command.")
+        self.sendMessage(chat_id=update.message.chat_id, text="Sorry, I didn't understand that command.")
 
     def oauth(self, bot, update):
         user_id = update.message.from_user.id
@@ -357,7 +363,7 @@ class TGBot():
         url = 'https://itsyou.online/v1/oauth/authorize?%s' % urllib.parse.urlencode(params)
 
         msg = "I don't know you yet, pease click on the following link and authorize us to verify you are part of the organization '%s'\n%s" % (organization, url)
-        self.bot.sendMessage(chat_id=chat_id, text=msg)
+        self.sendMessage(chat_id=chat_id, text=msg)
 
         # wait for user to login on itsyou.online
         data = j.core.db.blpop(state, timeout=120)

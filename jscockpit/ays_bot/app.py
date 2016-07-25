@@ -158,7 +158,7 @@ class AYSBot(object):
 
         self.logger.debug('schedule action %s for %s!%s in %s' % (action, role, instance, repo))
         if notify:
-            msg = "Schedule action *%s* on service `%s` instance `%s` in repo `%s`" % (action, role, instance, repo)
+            msg = "Schedule action %s on service %s instance %s in repo %s" % (action, role, instance, repo)
             self.send_tg_msg(msg=msg, chat_id=chat_id)
 
         self.tasks_queue.put(work)
@@ -183,7 +183,7 @@ class AYSBot(object):
 
         self.logger.debug('schedule action single %s for %s' % (action, service.key))
         if notify:
-            msg = "Schedule action *%s* on service `%s` instance `%s` in repo `%s`" % (action, role, instance, repo)
+            msg = "Schedule action %s on service %s instance %s in repo %s" % (action, role, instance, repo)
             self.send_tg_msg(msg=msg, chat_id=chat_id)
 
         self.tasks_queue2.put(work)
@@ -197,10 +197,10 @@ class AYSBot(object):
         result = q.get()
         msg = None
         if 'error' in result:
-            self.logger.error('Error execution of action %s of service %s!%s from repo `%s`: %s' % (action, role, instance, repo, result['error']))
-            msg = "Error happened on action *%s* on service `%s` instance `%s` in repo `%s`:\n ```%s```" % (action, role, instance, repo, result['error'])
+            self.logger.error('Error execution of action %s of service %s!%s from repo %s: %s' % (action, role, instance, repo, result['error']))
+            msg = "Error happened on action %s on service %s instance %s in repo %s:\n %s" % (action, role, instance, repo, result['error'])
         elif notify:
-            msg = "Action *%s* on service `%s` instance `%s` in repo `%s` executed without error" % (action, role, instance, repo)
+            msg = "Action *%s* on service %s instance %s in repo %s executed without error" % (action, role, instance, repo)
 
         if msg:
             self.send_tg_msg(msg=msg, chat_id=chat_id)

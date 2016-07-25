@@ -51,7 +51,7 @@ class ServiceMgmt(object):
         repo = j.atyourservice.get(name=repo_name)
 
         if len(repo.services) <= 0:
-            bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains services for now.")
+            self.bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains services for now.")
             return
 
         services_list = []
@@ -59,7 +59,7 @@ class ServiceMgmt(object):
             services_list.append('- %s' % service.replace("_", "\_"))
 
         msg = '\n'.join(services_list)
-        bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+        self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def inspect(self, bot, update, services):
         for service in services:
@@ -72,7 +72,7 @@ State:
  {state}
 ```
 """.format(role=service.role, instance=service.instance, hrd=str(service.hrd), state=str(service.state))
-            bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=telegram.ReplyKeyboardHide())
+            self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=telegram.ReplyKeyboardHide())
 
     def delete(self, bot, update, repo, names):
         username = update.message.from_user.username
@@ -86,7 +86,7 @@ State:
         self.callbacks[update.message.from_user.username] = self.dispatch_choice
         choices = ['list', 'inspect', 'execute']
         reply_markup = telegram.ReplyKeyboardMarkup([choices], resize_keyboard=True, one_time_keyboard=True)
-        return bot.sendMessage(chat_id=update.message.chat_id, text="What do you want to do ?", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text="What do you want to do ?", reply_markup=reply_markup)
 
     def dispatch_choice(self, bot, update):
         message = update.message
@@ -119,7 +119,7 @@ State:
             keys = list(chunks(actions, 4))
             reply_markup = telegram.ReplyKeyboardMarkup(keys, resize_keyboard=True, one_time_keyboard=True)
             msg = 'Select the action you want to execute'
-            bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
+            self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
             self.callbacks[username] = execute
 
         self.callbacks[username] = select_action
@@ -128,7 +128,7 @@ State:
         services.sort()
         if len(repo.services) <= 0:
             msg = "There is not service instance in this repo yet. Deploy a blueprint to create service instances"
-            return bot.sendMessage(chat_id=update.message.chat_id, text=msg)
+            return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
 
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(services, 4)), resize_keyboard=True, one_time_keyboard=True)
         msg = """
@@ -137,7 +137,7 @@ State:
         `@node` to match all service with role node
         `node!bot` to match the service with role node and instance name bot.
         """
-        return bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def inspect_prompt(self, bot, update):
         username = update.message.from_user.username
@@ -147,7 +147,7 @@ State:
         services.sort()
         if len(repo.services) <= 0:
             msg = "There is not service instance in this repo yet. Deploy a blueprint to create service instances"
-            return bot.sendMessage(chat_id=update.message.chat_id, text=msg)
+            return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
 
         def select_service(bot, update):
             domain, name, instance, role = j.atyourservice._parseKey(update.message.text)
@@ -162,7 +162,7 @@ State:
         `@node` to match all service with role node
         `node!bot` to match the service with role node and instance name bot.
         """
-        return bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def delete_prompt(self, bot, update, repo):
         username = update.message.from_user.username
@@ -175,7 +175,7 @@ State:
             bluelist.append(blueprint)
 
         if len(bluelist) == 0:
-            return bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
+            return self.bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
 
         def cb(bot, update):
             self.delete(bot, update, self._currentRepo(username), [update.message.text])
@@ -183,7 +183,7 @@ State:
 
         custom_keyboard = [bluelist]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, resize_keyboard=True, one_time_keyboard=True)
-        return bot.sendMessage(chat_id=update.message.chat_id, text="Which blueprint do you want to delete ?", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text="Which blueprint do you want to delete ?", reply_markup=reply_markup)
 
     # Handler for robot
     def handler(self, bot, update, args):
@@ -195,7 +195,7 @@ State:
 
         if not self._currentRepo(username):
             message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
-            return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
+            return self.bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
 
         # no arguments
         if len(args) == 0:
@@ -225,7 +225,7 @@ State:
 
         if not self._currentRepo(username):
             message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
-            return bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
+            return self.bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode="Markdown")
 
         if j.sal.fs.exists(local):
             j.sal.fs.remove(local)
@@ -233,4 +233,4 @@ State:
         self.bot.logger.debug("document: %s -> %s" % (item.file_path, local))
         j.sal.nettools.download(item.file_path, local)
 
-        bot.sendMessage(chat_id=update.message.chat_id, text="File received: %s" % doc.file_name)
+        self.bot.sendMessage(chat_id=update.message.chat_id, text="File received: %s" % doc.file_name)

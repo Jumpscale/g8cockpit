@@ -43,7 +43,7 @@ class RepoMgmt:
             valid = False
 
         if not valid:
-            bot.sendMessage(chat_id=chat_id, text="Hello buddy, I don't know you yet, please use /start so we can meet")
+            self.bot.sendMessage(chat_id=chat_id, text="Hello buddy, I don't know you yet, please use /start so we can meet")
 
         return valid
 
@@ -69,21 +69,21 @@ class RepoMgmt:
         # check repo name validity
         if not re.search(self.reg_repo, repo_name):
             message = "Sorry, I don't support this repo name, please name it without any special characters or spaces."
-            return bot.sendMessage(chat_id=chat_id, text=message)
+            return self.bot.sendMessage(chat_id=chat_id, text=message)
 
         # repo already exists
         if j.atyourservice.exist(repo_name):
             self._setCurrentRepo(username, repo_name)
 
             message = "This repo already exists, `%s` is now your current working repo." % repo_name
-            return bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+            return self.bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         # creating new repo
         self.init_repo(update, bot, repo_name)
         self._setCurrentRepo(username, repo_name)
 
         message = "Repo `%s` created, it's now your current working repo." % repo_name
-        bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+        self.bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def list(self, bot, update):
         self.bot.logger.debug('listing repos')
@@ -94,15 +94,15 @@ class RepoMgmt:
 
         # current repo (working on)
         if not self._currentRepo(username):
-            bot.sendMessage(chat_id=chat_id, text="No repo selected now.")
+            self.bot.sendMessage(chat_id=chat_id, text="No repo selected now.")
         else:
-            bot.sendMessage(chat_id=chat_id, text="Current repo: *%s*" % self._currentRepo(username), parse_mode=telegram.ParseMode.MARKDOWN)
+            self.bot.sendMessage(chat_id=chat_id, text="Current repo: *%s*" % self._currentRepo(username), parse_mode=telegram.ParseMode.MARKDOWN)
 
         repos = j.atyourservice.repos.values()
         # repos list
         if len(repos) == 0:
             message = "You don't have any repo for now, create the first one with: `/repo create [name]`"
-            return bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+            return self.bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         ln = len(repos)
         reposList = ["I have %d repo%s for you:" % (ln, "s" if ln > 1 else "")]
@@ -110,7 +110,7 @@ class RepoMgmt:
         for repo in repos:
             reposList.append("- %s" % repo.name)
 
-        bot.sendMessage(chat_id=chat_id, text="\n".join(reposList))
+        self.bot.sendMessage(chat_id=chat_id, text="\n".join(reposList))
 
     def delete(self, bot, update, repo_names):
         self.bot.logger.debug('deleting repos: %s' % ', '.join(repo_names))
@@ -122,11 +122,11 @@ class RepoMgmt:
 
         for name in repo_names:
             try:
-                repo = j.atyourservice.get(name)
+                repo = j.atyourservice.get(name=name)
             except KeyError:
                 message = "Sorry, I can't find any repo named `%s` :/" % name
                 reply_markup = telegram.ReplyKeyboardHide()
-                bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
+                self.bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
                 continue
 
             if name == self._currentRepo(username):
@@ -147,7 +147,7 @@ class RepoMgmt:
             self.bot.send_event(evt.to_json())
 
             message = "Repo `%s` removed" % name
-            bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+            self.bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
     # UI interaction
     def choose_action(self, bot, update):
@@ -157,7 +157,7 @@ class RepoMgmt:
             ['create', 'list', 'delete']
         ]
         reply_markup = telegram.ReplyKeyboardMarkup(choices, resize_keyboard=True, one_time_keyboard=True)
-        return bot.sendMessage(chat_id=update.message.chat_id, text="What do you want to do ?", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text="What do you want to do ?", reply_markup=reply_markup)
 
     def select_prompt(self, bot, update):
         username = update.message.from_user.username
@@ -165,7 +165,7 @@ class RepoMgmt:
         def cb(bot, update):
             repo = update.message.text
             if repo not in repos:
-                bot.sendMessage(chat_id=update.message.chat_id, text="Selected repo doesn't exsits.")
+                self.bot.sendMessage(chat_id=update.message.chat_id, text="Selected repo doesn't exsits.")
             else:
                 self.checkout(bot, update, repo)
         self.callbacks[username] = cb
@@ -173,14 +173,14 @@ class RepoMgmt:
         repos = [repo.name for repo in j.atyourservice.repos.values()]
         repos.sort()
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(repos, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
-        return bot.sendMessage(chat_id=update.message.chat_id, text="Choose the repo you want to work on.", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text="Choose the repo you want to work on.", reply_markup=reply_markup)
 
     def create_prompt(self, bot, update):
         def cb(bot, update):
             self.checkout(bot, update, update.message.text)
         self.callbacks[update.message.from_user.username] = cb
         reply_markup = telegram.ReplyKeyboardHide()
-        return bot.sendMessage(chat_id=update.message.chat_id, text="Please enter the name of your repo", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text="Please enter the name of your repo", reply_markup=reply_markup)
 
     def delete_prompt(self, bot, update):
         username = update.message.from_user.username
@@ -192,7 +192,7 @@ class RepoMgmt:
         repos = list(j.atyourservice.repos.keys())
         repos.sort()
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(repos, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
-        return bot.sendMessage(chat_id=update.message.chat_id, text="Please enter the name of the repo you want to delete", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text="Please enter the name of the repo you want to delete", reply_markup=reply_markup)
 
     def dispatch_choice(self, bot, update):
         message = update.message
