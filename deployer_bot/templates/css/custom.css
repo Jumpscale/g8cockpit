@@ -1,0 +1,33 @@
+.white {
+  background: #FFF;
+  padding: 0 79px;
+}
+.logo img{
+  margin: 5px 0;
+}
+.navbar {
+  margin-bottom: 0;
+  border-radius: 0;
+  border: none;
+}
+.navbar-inverse {
+  background-color: #f2f2f2;
+  border: 0;
+  margin: 0;
+}
+.navbar-form {
+  margin: 0;
+  padding: 0;
+}
+.navbar-default {
+  background-color: #345E79;
+}
+.glyphicon{
+  margin-right: 5px;
+  font-size: 15px;
+}
+small{
+  display: block;
+  margin-top: 5px;
+  margin-left: 25px;
+}

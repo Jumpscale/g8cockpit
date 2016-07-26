@@ -1,7 +1,7 @@
 import click
 from JumpScale import j
 from flask import Flask
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_from_directory
 import os.path
 import json
 import urllib
@@ -83,7 +83,7 @@ def callback():
     data = j.data.serializer.json.dumps({'client_secret': cockpit_client_secret, 'client_id': app.config['client_id']})
     j.core.db.lpush(state, data)
 
-    return "Cockpit deployment in progress."
+    return send_from_directory('templates', 'confirm.html')
 
 
 @oauth_api.route('/oauthurl', methods=['GET'])
@@ -108,7 +108,16 @@ def oauthurl():
     url = '%s/v1/oauth/authorize?%s' % (app.config['itsyouonlinehost'], urllib.parse.urlencode(params))
     return jsonify({'url': url, 'state': state})
 
-app = Flask(__name__)
+
+
+
+app = Flask(__name__, static_folder='templates')
+
+@app.route('/static/<path:path>')
+def static_file(path):
+    print("path: ", path)
+    return send_from_directory('templates', path)
+
 app.register_blueprint(oauth_api)
 
 if __name__ == "__main__":
