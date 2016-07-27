@@ -2,5 +2,5 @@
 
 {{timestamp}}
 
-{{AYSBlueprints ayspath:$$ayspath}}
+{{aysblueprints ayspath:$$ayspath}}
 @colend

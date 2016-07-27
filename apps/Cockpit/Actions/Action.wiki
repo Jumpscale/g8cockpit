@@ -2,7 +2,7 @@
 
 {{timestamp}}
 
-{{JSAction: runid:$$runid actionkey:$$actionkey}}
+{{jsaction: runid:$$runid actionkey:$$actionkey}}
 
 h2. Action Details:
 

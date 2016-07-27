@@ -2,7 +2,7 @@
 
 {{timestamp}}
 
-{{AYSRun: repo:$$repo runid:$$runid}}
+{{aysrun: repo:$$repo runid:$$runid}}
 
 
 h2. Run $$runid Details:
