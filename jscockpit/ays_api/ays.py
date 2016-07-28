@@ -73,6 +73,7 @@ def deleteRepository(repository):
     repo = None
     if j.atyourservice.exist(repository):
         repo = j.atyourservice.get(repository)
+        repo.db.destroy()
     if repo is None:
         return jsonify(error='Repository not found with name %s' % repository), 404
 
