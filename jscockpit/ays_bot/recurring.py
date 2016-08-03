@@ -1,6 +1,8 @@
 from JumpScale import j
 import gevent
-from . import AYS_REPO_DIR
+
+from .app import AYS_REPO_DIR
+
 
 class AysRecurring:
 

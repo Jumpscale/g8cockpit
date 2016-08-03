@@ -2,6 +2,8 @@ from JumpScale import j
 import gevent
 from gevent import queue
 
+AYS_REPO_DIR = j.sal.fs.joinPaths(j.dirs.codeDir, 'cockpit')
+
 from .event import EventDispatcher
 from .recurring import AysRecurring
 
