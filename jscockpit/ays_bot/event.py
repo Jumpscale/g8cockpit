@@ -1,6 +1,6 @@
 from JumpScale import j
 import gevent
-
+from . import AYS_REPO_DIR
 
 class EventDispatcher:
 
@@ -110,7 +110,7 @@ class EventDispatcher:
                 )
             elif evt.action == 'bp.create':
                 # new blueprint, search for new service that subscribe to event or recurring
-                repo = j.atyourservice.repos.get(evt.args['path'], None)
+                repo = j.atyourservice.get(path=evt.args['path'])
                 if repo is None:
                     return
                 self._load_aysrepos([repo])
@@ -136,7 +136,8 @@ class EventDispatcher:
                 }
 
             if repos == []:
-                repos = j.atyourservice.repos.values()
+                for path in j.atyourservice.findAYSRepos(AYS_REPO_DIR):
+                    repos.append(j.atyourservice.get(path=path))
 
             for repo in repos:
                 for service in repo.findServices():

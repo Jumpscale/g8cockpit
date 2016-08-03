@@ -127,7 +127,6 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
 
         for aysrepo in repos:
             services = cl.listServices(repository=aysrepo)
-            # repo = j.atyourservice.repos[aysrepo]
             if role:
                 output_services.update({aysrepo: {service['key']: service for service in services if service['role'] == role}})
             elif templatename:
@@ -302,9 +301,10 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         return 'Cockpit reloaded'
 
     def commit(self, message, branch='master', push=True, **kwargs):
-        if not j.atyourservice.exist('ays_cockpit'):
-            return "can't find ays repository for cockpit at /opt/code/cockpit/ays_cockpit"
-        repo = j.atyourservice.get('ays_cockpit')
+        path = j.sal.fs.joinPaths(j.dirs.codeDir, 'ays_cockpit')
+        if not j.atyourservice.exist(path=path):
+            return "can't find ays repository for cockpit at %s" % path
+        repo = j.atyourservice.get(path=path)
 
         sshkey_service = repo.getService('sshkey', 'main', die=False)
         if sshkey_service is None:

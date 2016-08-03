@@ -72,7 +72,8 @@ class RepoMgmt:
             return self.bot.sendMessage(chat_id=chat_id, text=message)
 
         # repo already exists
-        if j.atyourservice.exist(repo_name):
+        path = j.sal.fs.joinPaths(j.dirs.codeDir, 'cockpit', repo_name)
+        if j.atyourservice.exist(path=path):
             self._setCurrentRepo(username, repo_name)
 
             message = "This repo already exists, `%s` is now your current working repo." % repo_name

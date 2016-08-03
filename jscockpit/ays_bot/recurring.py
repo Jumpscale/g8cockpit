@@ -1,6 +1,6 @@
 from JumpScale import j
 import gevent
-
+from . import AYS_REPO_DIR
 
 class AysRecurring:
 
@@ -61,7 +61,8 @@ class AysRecurring:
         walk over all the service in repos and look for service that define recurring actions.
         """
         if repos == []:
-            repos = j.atyourservice.repos.values()
+            for path in j.atyourservice.findAYSRepos(AYS_REPO_DIR):
+                repos.append(j.atyourservice.get(path=path))
 
         for repo in repos:
             for service in repo.findServices():
