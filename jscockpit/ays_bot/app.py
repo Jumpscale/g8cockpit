@@ -66,10 +66,10 @@ class AYSBot(object):
 
     def update(self):
         repo_path = j.sal.fs.joinPaths(j.dirs.codeDir, 'cockpit/ays_cockpit')
-        if repo_path not in j.atyourservice.repos:
+        if not j.atyourservice.exist(path=repo_path):
             raise j.exceptions.NotFound("AYS Repository of this cockpit not found.")
 
-        repo = j.atyourservice.repos[repo_path]
+        repo = j.atyourservice.get(path=repo_path)
         restuls = repo.findServices(templatename='os.cockpit')
         if len(restuls) > 1:
             raise j.exceptions.AYSNotFound("too many service os.cockpit found")
