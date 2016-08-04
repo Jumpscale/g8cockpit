@@ -73,7 +73,7 @@ types:
         role:
            type: string
            required: true
-        actions.py:
+        actions_py:
            type: string
            required: false
         state:
@@ -94,7 +94,7 @@ types:
         name: "github_repo"
         instance: "main"
         role: "github_repo"
-        actions.py: |
+        actions_py: |
                 class Actions(ActionsBaseMgmt):
                     @action()
                     def foor(self):
@@ -120,7 +120,7 @@ types:
         name:
             type: string
             required: true
-        actions.py:
+        actions_py:
             type: string
             required: false
         schema.hrd:
@@ -131,7 +131,7 @@ types:
             required: false
     example:
         name: "github_repo"
-        actions.py: |
+        actions_py: |
                 class Actions(ActionsBaseMgmt):
                     @action()
                     def foor(self):
