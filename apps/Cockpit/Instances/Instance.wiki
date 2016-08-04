@@ -62,9 +62,10 @@ h3. Actions:
       value: False
 }}
 
+h2. Repository: [$$ayspath| /cockpit/repo?repo=$$ayspath]
+
 h3. Service Info:
 h4. Role: ${role} - Instance: ${instance}
-Repository: [$$ayspath|/cockpit/Repo?repo=$$ayspath]
 
 h5. Instance values
 || Parameter || Value||
