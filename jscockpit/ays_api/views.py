@@ -10,13 +10,13 @@ def service_view(s):
         'role': s.role,
         'name': s.recipe.name,
         'instance': s.instance,
-        'instance.hrd': s.hrd.getHRDAsDict()if s.hrd is not None else None,
+        'instance_hrd': s.hrd.getHRDAsDict()if s.hrd is not None else None,
         'producers': [],
         'parent': None,
         'path': s.path,
         'repository': s.aysrepo.name,
         'state': {},
-        'action.py': None,
+        'action_py': None,
     }
 
     state_path = j.sal.fs.joinPaths(s.path, 'state.yaml')
@@ -44,9 +44,9 @@ def template_view(t):
     """
     template = {
         'name': t.name,
-        'service.hrd': t.hrd.getHRDAsDict() if t.hrd else None,
-        'schema.hrd': j.sal.fs.fileGetContents(t.path_hrd_schema) if j.sal.fs.exists(t.path_hrd_schema) else None,
-        'actions.py': j.sal.fs.fileGetContents(t.path_actions) if j.sal.fs.exists(t.path_actions) else None,
+        'service_hrd': t.hrd.getHRDAsDict() if t.hrd else None,
+        'schema_hrd': j.sal.fs.fileGetContents(t.path_hrd_schema) if j.sal.fs.exists(t.path_hrd_schema) else None,
+        'actions_py': j.sal.fs.fileGetContents(t.path_actions) if j.sal.fs.exists(t.path_actions) else None,
     }
     return template
 

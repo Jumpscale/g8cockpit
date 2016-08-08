@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
     domain, name, instance, role = j.atyourservice._parseKey(shortkey)
     service = actor.getService(repository=ayspath, role=role, instance=instance, ctx=args.requestContext)
     state = state = service.pop('state', {'state': {}})
-    hrd = service.pop('instance.hrd')
+    hrd = service.pop('instance_hrd')
 
     hidden = ['key.priv', 'password', 'passwd', 'pwd', 'oauth.jwt_key']
     for key in list(set(hrd.keys()) & set(hidden)):

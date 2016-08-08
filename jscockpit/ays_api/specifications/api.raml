@@ -73,13 +73,13 @@ types:
         role:
            type: string
            required: true
-        actions.py:
+        actions_py:
            type: string
            required: false
         state:
            type: object
            required: true
-        instance.hrd:
+        instance_hrd:
            type: object
            required: false
         parent:
@@ -94,7 +94,7 @@ types:
         name: "github_repo"
         instance: "main"
         role: "github_repo"
-        actions.py: |
+        actions_py: |
                 class Actions(ActionsBaseMgmt):
                     @action()
                     def foor(self):
@@ -111,7 +111,7 @@ types:
               install: "OK"
               start: "OK"
 
-        instance.hrd:
+        instance_hrd:
             github.client: "main"
             github.url: "https://github.com/zaibon"
 
@@ -120,23 +120,23 @@ types:
         name:
             type: string
             required: true
-        actions.py:
+        actions_py:
             type: string
             required: false
-        schema.hrd:
+        schema_hrd:
             type: string
             required: true
-        service.hrd:
+        service_hrd:
             type: object
             required: false
     example:
         name: "github_repo"
-        actions.py: |
+        actions_py: |
                 class Actions(ActionsBaseMgmt):
                     @action()
                     def foor(self):
                         print('do something')
-        schema.hrd: |
+        schema_hrd: |
             repo.name = type:'str' descr:'name of repo' @ASK
             repo.url = type:'str' descr:'url of github repo' default:''
             repo.account = parent:'github_account' @ASK
@@ -146,7 +146,7 @@ types:
             github.config= type:'str' consume:'github_config:1' auto
             milestone.category = type:'str' list
             milestones = type:'str' list consume:'github_milestone'
-        service.hrd:
+        service_hrd:
             recurring.monitor: "1h"
   TemplateRepo:
       properties:
