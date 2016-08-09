@@ -3,6 +3,7 @@ from .utils import chunks
 import telegram
 import re
 
+AYS_REPO_DIR = j.sal.fs.joinPaths(j.dirs.codeDir, 'cockpit')
 
 class RepoMgmt:
 
@@ -29,6 +30,12 @@ class RepoMgmt:
             'repo_path': repopath
         }
         self.bot.send_event(evt.to_json())
+
+    def _list_repos(self):
+        repos = []
+        for path in j.atyourservice.findAYSRepos(AYS_REPO_DIR):
+            repos.append(j.atyourservice.get(path=path))
+        return repos
 
     # Helpers
     def _userCheck(self, bot, update):
@@ -99,7 +106,7 @@ class RepoMgmt:
         else:
             self.bot.sendMessage(chat_id=chat_id, text="Current repo: *%s*" % self._currentRepo(username), parse_mode=telegram.ParseMode.MARKDOWN)
 
-        repos = j.atyourservice.repos.values()
+        repos = self._list_repos()
         # repos list
         if len(repos) == 0:
             message = "You don't have any repo for now, create the first one with: `/repo create [name]`"
@@ -171,7 +178,7 @@ class RepoMgmt:
                 self.checkout(bot, update, repo)
         self.callbacks[username] = cb
 
-        repos = [repo.name for repo in j.atyourservice.repos.values()]
+        repos = [repo.name for repo in self._list_repos()]
         repos.sort()
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(repos, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
         return self.bot.sendMessage(chat_id=update.message.chat_id, text="Choose the repo you want to work on.", reply_markup=reply_markup)
@@ -190,7 +197,7 @@ class RepoMgmt:
             self.delete(bot, update, [update.message.text])
         self.callbacks[username] = cb
 
-        repos = [r.name for r in j.atyourservice.repos.values()]
+        repos = [r.name for r in self._list_repos()]
         repos.sort()
         reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(repos, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
         return self.bot.sendMessage(chat_id=update.message.chat_id, text="Please enter the name of the repo you want to delete", reply_markup=reply_markup)
