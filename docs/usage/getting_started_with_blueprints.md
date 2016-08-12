@@ -87,9 +87,7 @@ To create this new blueprint click on the **Explorer** link on the **Repisitory 
 The Cockpit Core module keeps all blueprints and service in memory once started. When creating a new blueprint using the **Explorer** however, the Core module is not aware of your new blueprint.
 
 
-In order to make the **Cockpit Core** module aware of your new blueprint, you need to execute of the **Reload all services** action on the **Repository Details** page, it basically empties the memory of the **Cockpit Core** and reloads everything:
-
-![](reload-all-services.png)
+In order to make the **Cockpit Core** module aware of your new blueprint, you need to execute of the **Reload Cockpit** action on the **Repository's** page, it basically empties the memory of the **Cockpit Core** and reloads everything:
 
 
 ### Step 4: Execute the blueprint
