@@ -5,7 +5,7 @@ def main(j, args, params, tags, tasklet):
     result.append('''{{html: <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">}}''')
 
     for ayspath, blueprints in j.apps.cockpit.atyourservice.listBlueprints(ayspath, ctx=args.requestContext).items():
-        result.append('{{html: <a href="/cockpit/repo?repo=%s"><h4>%s</h4></a>}}'%(ayspath))
+        result.append('{{html: <a href="/cockpit/repo?repo=%s"><h4>%s</h4></a>}}' % (ayspath, ayspath))
         for blueprint in blueprints:
             bpid = blueprint['path'].replace('/', '')
             bpid = bpid.rsplit('.' + j.sal.fs.getFileExtension(bpid))[0]
