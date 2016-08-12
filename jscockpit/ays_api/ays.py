@@ -188,7 +188,7 @@ def executeAction(repository):
     producer_roles = request.args.get('producerroles', '*')
     async = j.data.types.bool.fromString(request.args.get('async', 'False'))
 
-    rq = current_app.ays_bot.schedule_action(action, repo.name, role=role, instance=instance, force=force, notify=False, chat_id=None)
+    rq = current_app.ays_bot.schedule_action(action, repo.basepath, role=role, instance=instance, force=force, notify=False, chat_id=None)
 
     if async:
         msg = "Action %s scheduled" % (action)
