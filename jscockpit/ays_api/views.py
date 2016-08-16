@@ -17,6 +17,7 @@ def service_view(s):
         'repository': s.aysrepo.name,
         'state': {},
         'action_py': None,
+        'model': s.model
     }
 
     state_path = j.sal.fs.joinPaths(s.path, 'state.yaml')
