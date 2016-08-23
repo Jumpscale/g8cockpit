@@ -49,11 +49,11 @@ def build(host, sshkey, nopush):
     container.installerdevelop.jumpscale8()
     container.apps.portal.install(start=False)
     container.apps.mongodb.build(start=False)
-    container.apps.influxdb.build(start=False)
+    container.apps.influxdb.install(start=False)
     container.apps.grafana.build(start=False)
     container.core.run("js 'j.actions.resetAll()'")  # FIXME find why if we don't reset action before installing controller, everything explode
     container.apps.controller.build(start=False)
-    container.apps.caddy.build(start=False)
+    container.apps.caddy.install(start=False)
     container.apps.cockpit.build(start=False)
     container.package.install('shellinabox')
     bin_path = container.bash.cmdGetPath('shellinaboxd')
