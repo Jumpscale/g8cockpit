@@ -1,4 +1,4 @@
-
+from JumpScale.portal.portal import exceptions
 
 def main(j, args, params, tags, tasklet):
     doc = args.doc
@@ -6,27 +6,28 @@ def main(j, args, params, tags, tasklet):
     if not repo_name:
         repo_name = 'ays_cockpit'
 
-    services = j.apps.cockpit.atyourservice.listServices(repository=repo_name, templatename='os.cockpit', ctx=args.requestContext)[repo_name]
-    if len(services) != 1:
-        params.result = ("Can't find os.cockpit service", doc)
-    else:
-        service = list(services.values())[0]
-        service = j.apps.cockpit.atyourservice.getService(repository=repo_name, role='os', instance=service['instance'], ctx=args.requestContext)
-        domain = service['instance.hrd']['dns.domain']
-        ssh_port = service['instance.hrd']['ssh.port']
-        organization = service['instance.hrd']['oauth.organization']
-        service_sshkey = j.apps.cockpit.atyourservice.getService(repository=repo_name, role='sshkey', instance='main', ctx=args.requestContext)
+    try:
+        services = j.apps.cockpit.atyourservice.listServices(repository=repo_name, templatename='os.cockpit', ctx=args.requestContext)[repo_name]
+        if len(services) != 1:
+            params.result = ("Can't find os.cockpit service", doc)
+        else:
+            service = list(services.values())[0]
+            service = j.apps.cockpit.atyourservice.getService(repository=repo_name, role='os', instance=service['instance'], ctx=args.requestContext)
+            service_sshkey = j.apps.cockpit.atyourservice.getService(repository=repo_name, role='sshkey', instance='main', ctx=args.requestContext)
 
-        data = {
-            'organization': organization,
-            'domain': domain,
-            'ssh_port': ssh_port,
-            'private_key': service_sshkey['instance.hrd']['key.priv'],
-            'public_key': service_sshkey['instance.hrd']['key.pub'],
-            'ays_repo_url': service['instance.hrd']['ays.repo.url'],
-            'shellinbox_url': service['instance.hrd']['shellinabox.url']
-        }
-        args.doc.applyTemplate(data)
-        params.result = (args.doc, doc)
+            data = {
+                'organization': service['instance_hrd']['oauth.organization'],
+                'domain': "%s.%s" % (service['instance_hrd']['dns.domain'], service['instance_hrd']['dns.root']),
+                'ssh_port': service['instance_hrd']['ssh.port'],
+                'private_key': service_sshkey['instance_hrd']['key.priv'],
+                'public_key': service_sshkey['instance_hrd']['key.pub'],
+                'ays_repo_url': service['instance_hrd']['ays.repo.url'],
+                'shellinbox_url': service['instance_hrd']['shellinabox.url']
+            }
+            args.doc.applyTemplate(data)
+    except exceptions.BaseError as e:
+        args.doc.applyTemplate({'error': e.msg})
+
+    params.result = (args.doc, doc)
 
     return params

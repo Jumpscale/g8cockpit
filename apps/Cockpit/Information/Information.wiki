@@ -1,33 +1,37 @@
 @userdefault
 {{cockpitinfo}}
 
-h1. Welcome to the Cockpit of ${organization}
-h2. SSH access
+{% if error is defined %}
+    Error: ${error}
+{% else %}
+    h1. Welcome to the Cockpit of ${organization}
+    h2. SSH access
 
-h3. Over  SSH
-Command to connect into the cockpit VM:
-{{code:
-ssh root@${domain} -p ${ssh_port}
-}}
+    h3. Over  SSH
+    Command to connect into the cockpit VM:
+    {{code:
+    ssh root@${domain} -p ${ssh_port}
+    }}
 
-Use the following ssh key to access the cockpit VM:
-{{code:
-${private_key}
-}}
+    Use the following ssh key to access the cockpit VM:
+    {{code:
+    ${private_key}
+    }}
 
-The following public key is the key used to push your AYS repository on github.
-You need to make this key a deploy key on your repository : ${ays_repo_url}
-{{code:
-${public_key}
-}}
+    The following public key is the key used to push your AYS repository on github.
+    You need to make this key a deploy key on your repository : ${ays_repo_url}
+    {{code:
+    ${public_key}
+    }}
 
 
-h3. Over http
-Address :
-[https://${domain}/${shellinbox_url}|https://${domain}/${shellinbox_url}]
+    h3. Over http
+    Address :
+    [https://${domain}/${shellinbox_url}|https://${domain}/${shellinbox_url}]
 
-h2. REST API
-Base URL :
-[https://${domain}/api|https://${domain}/api]
-Documentation URL :
-[https://${domain}/api/apidocs|https://${domain}/api/apidocs/index.html?raml=api.raml]
+    h2. REST API
+    Base URL :
+    [https://${domain}/api|https://${domain}/api]
+    Documentation URL :
+    [https://${domain}/api/apidocs|https://${domain}/api/apidocs/index.html?raml=api.raml]
+{% endif %}

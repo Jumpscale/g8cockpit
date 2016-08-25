@@ -1,6 +1,7 @@
 from flask import Blueprint as fBlueprint, jsonify, request, json, Response, current_app
 from JumpScale import j
 from JumpScale.baselib.atyourservice.Blueprint import Blueprint as JSBlueprint
+from JumpScale.core.errorhandling.OurExceptions import BaseJSException
 from .views import service_view, template_view, blueprint_view, repository_view
 
 from .Repository import Repository
@@ -759,7 +760,13 @@ def getRun(aysrun, repository):
     if repo is None:
         return jsonify(error='Repository not found at %s' % path), 404
 
-    aysrun = repo.getRun(id=aysrun)
+    try:
+        aysrun = repo.getRun(id=aysrun)
+    except j.exceptions.Input as e:
+        return jsonify(error=e.msg), 404
+    except Exception as e:
+        return jsonify(error=e.msg), 500
+
     data = {'model': aysrun.model, 'repr': aysrun.__repr__()}
     return json.dumps(data), 200, {'Content-Type': 'application/json'}
 
