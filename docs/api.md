@@ -41,3 +41,17 @@ client.createNewRepository             client.deleteServiceByInstance         cl
 client.createNewTemplate               client.executeBlueprint                client.getRepository                   client.listRepositories                client.listTemplates
 client.deleteBlueprint                 client.executeServiceActionByInstance  client.getServiceByInstance            client.listServiceActions              client.updateBlueprint
 ```
+
+## API from the portal
+The cockpit portal also expose the REST API using [api-console](https://github.com/mulesoft/api-console/).
+You can access the api console at `http://mycockpit.aydo2.com/api`.
+
+### How to use
+To be able to make call to the API, you need JWT token. Use the portal page dedicated to JWT to create a new token and copy it.
+
+Then in the api console, configure the header as show here: 
+![](2016-08-25_414x150_scrot.png)
+
+The format is `bearer $JWT`
+
+Once the header is configured, you can execute the call on the API
