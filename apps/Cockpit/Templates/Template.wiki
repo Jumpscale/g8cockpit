@@ -5,19 +5,29 @@
 @@title ${template_name}
 
 h3. Service Template Info:
-h4. Name: $$aysname
-{% for key, value in data.items() -%}
-    |${key}|${value}|
-{% endfor %}
 
-{% for key, value in code_bloks.items() -%}
-h5. ${key} :
-{{code:
-${value}
-}}
-{% endfor %}
+{% if error is defined %}
+    Error: ${error}
+{% else %}
+    h4. Name: $$aysname
+    {% for key, value in data.items() -%}
+        |${key}|${value}|
+    {% endfor %}
 
-h3. Instances of this template:
-{% for value in instances -%}
-    |${value}|
-{% endfor %}
+    {% for key, value in code_bloks.items() -%}
+    h5. ${key} :
+    {{code:
+    ${value}
+    }}
+    {% endfor %}
+
+    h3. Instances of this template:
+    || Instance ||
+    {% for repo, services in instances.items() -%}
+        {% for instance in services.values() -%}
+            | [${instance['instance']}|cockpit/Instance?shortkey=${instance['key']}&ayspath=${repo}]|
+        {% endfor %}
+    {% else %}
+    No instance for this template
+    {% endfor %}
+{% endif %}

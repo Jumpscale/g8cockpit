@@ -91,11 +91,12 @@ class AYSBot(object):
 
             result = {}
             try:
-                repo = j.atyourservice.get(work['repo'])
+                repo = j.atyourservice.get(path=work['repo'])
                 run = repo.getRun(role=work['role'], instance=work['instance'], action=work['action'], producerRoles=work['producerroles'], force=work['force'])
 
                 self.logger.debug('worker %d execute action %s for %s!%s in %s' %
                                   (nbr, work['action'], work['role'], work['instance'], work['repo']))
+
                 run.execute()
             except Exception as e:
                 self.logger.error('worker %d error during execution of action %s for %s!%s in %s\n%s' %

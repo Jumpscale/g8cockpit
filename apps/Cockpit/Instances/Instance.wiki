@@ -3,95 +3,100 @@
 {{timestamp}}
 
 {{aysinstance: shortkey:$$shortkey ayspath:$$ayspath}}
-@@title ${role}!${instance}
+
+{% if error is defined -%}
+    Error: ${error}
+{% else %}
+    @@title ${role}!${instance}
 
 
-h3. Actions:
-{{actions:
-- display: Uninstall
-  action: /restmachine/cockpit/atyourservice/executeAction
-  showresponse: True
-  navigateback: False
-  input:
-    - name: repository
-      type: hidden
-      value: $$ayspath
-    - name: action
-      type: hidden
-      value: 'uninstall'
-    - name: force
-      label: Force
-      type: dropdown
-      values:
-      - label: False
-        value: False
-      - label: True
-        value: True
-    - name: async
-      type: hidden
-      value: False
-    - name: role
-      value: ${role}
-      type: hidden
-    - name: instance
-      value: ${instance}
-      type: hidden
-- display: Delete service
-  action: /restmachine/cockpit/atyourservice/deleteService
-  showresponse: False
-  navigateback: True
-  input:
-    - name: repository
-      type: hidden
-      value: $$ayspath
-    - name: role
-      type: hidden
-      label: Role
-      required: True
-      value: '${role}'
-    - name: instance
-      type: hidden
-      label: Instance
-      required: True
-      value: '${instance}'
-    - name: force
-      type: hidden
-      value: True
-    - name: uninstall
-      type: hidden
-      value: False
-}}
+    h3. Actions:
+    {{actions:
+    - display: Uninstall
+      action: /restmachine/cockpit/atyourservice/executeAction
+      showresponse: True
+      navigateback: False
+      input:
+        - name: repository
+          type: hidden
+          value: $$ayspath
+        - name: action
+          type: hidden
+          value: 'uninstall'
+        - name: force
+          label: Force
+          type: dropdown
+          values:
+          - label: False
+            value: False
+          - label: True
+            value: True
+        - name: async
+          type: hidden
+          value: False
+        - name: role
+          value: ${role}
+          type: hidden
+        - name: instance
+          value: ${instance}
+          type: hidden
+    - display: Delete service
+      action: /restmachine/cockpit/atyourservice/deleteService
+      showresponse: False
+      navigateback: True
+      input:
+        - name: repository
+          type: hidden
+          value: $$ayspath
+        - name: role
+          type: hidden
+          label: Role
+          required: True
+          value: '${role}'
+        - name: instance
+          type: hidden
+          label: Instance
+          required: True
+          value: '${instance}'
+        - name: force
+          type: hidden
+          value: True
+        - name: uninstall
+          type: hidden
+          value: False
+    }}
 
-h2. Repository: [$$ayspath| /cockpit/repo?repo=$$ayspath]
+    h2. Repository: [$$ayspath| /cockpit/repo?repo=$$ayspath]
 
-h3. Service Info:
-h4. Role: ${role} - Instance: ${instance}
+    h3. Service Info:
+    h4. Role: ${role} - Instance: ${instance}
 
-h5. Instance values
-|| Parameter || Value||
-|Service Template| ${type}|
-{% for key, value in hrd.items() -%}
-    |${key}|${value}|
-{% endfor %}
+    h5. Instance values
+    || Parameter || Value||
+    |Service Template| ${type}|
+    {% for key, value in hrd.items() -%}
+        |${key}|${value}|
+    {% endfor %}
 
-{% if parent['link'] is defined %}
-h5. Parent:
-|| Role || Instance ||
-| ${parent['role']} | ${parent['link']} |
+    {% if parent['link'] is defined %}
+    h5. Parent:
+    || Role || Instance ||
+    | ${parent['role']} | ${parent['link']} |
+    {% endif %}
+
+    {% if producers|length > 0 %}
+    h5. Producers:
+    || Role || instance ||
+    {% for role, prods in producers.items() -%}
+      {% for prod in prods -%}
+         |${role}|${prod['link']}|
+      {% endfor -%}
+    {% endfor %}
+    {% endif %}
+
+    h5. Service State:
+    || Action || State || Period || Last ||
+    {% for action, value in state['state'].items() -%}
+       |${action}|${value}| ${state['recurring'][action]['period']} | {{ts:${state['recurring'][action]['last']}}} |
+    {% endfor %}
 {% endif %}
-
-{% if producers|length > 0 %}
-h5. Producers:
-|| Role || instance ||
-{% for role, prods in producers.items() -%}
-  {% for prod in prods -%}
-     |${role}|${prod['link']}|
-  {% endfor -%}
-{% endfor %}
-{% endif %}
-
-h5. Service State:
-|| Action || State || Period || Last ||
-{% for action, value in state['state'].items() -%}
-   |${action}|${value}| ${state['recurring'][action]['period']} | {{ts:${state['recurring'][action]['last']}}} |
-{% endfor %}

@@ -55,5 +55,6 @@ h2. Repositories
 {% for repo in repos -%}
 |[${repo}|/cockpit/repo?repo=${repo}]| {{action label:'Delete' deleterow:true id:'action-Deletethisrepository' data-repository:'${repo}' class:'glyphicon glyphicon-trash'}} |
 {% else %}
-| | |
+The is no AYS repository yet.
+Create one by clicking 'Create Repository'
 {% endfor %}

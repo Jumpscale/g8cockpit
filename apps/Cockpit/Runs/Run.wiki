@@ -6,19 +6,22 @@
 
 
 h2. Run $$runid Details:
-
-*Repo*: [${model.reponame}|/cockpit/repo?repo=${model.reponame}]
-*Time*: ${model.time}
-*Model*: [Model Details|/cockpit/runmodel?repo=${model.reponame}&runid=$$runid]
-{% if model.state in ['ERROR'] %}
-    *State*: {{html: <red style='color:red'>ERROR</red> }} [ (Details)|/cockpit/action?runid=ays_${model.reponame}&actionkey=${model.actionkey}]
-{% elif model.state in 'OK' %}
-    *State*: {{html: <green style='color:green'>OK</green> }}
+{% if error is defined %}
+    Error : ${error}
 {% else %}
-    *State*:${mode.state}
-{% endif -%}
+    *Repo*: [${model.reponame}|/cockpit/repo?repo=${model.reponame}]
+    *Time*: ${model.time}
+    *Model*: [Model Details|/cockpit/runmodel?repo=${model.reponame}&runid=$$runid]
+    {% if model.state in ['ERROR'] %}
+        *State*: {{html: <red style='color:red'>ERROR</red> }} [ (Details)|/cockpit/action?runid=ays_${model.reponame}&actionkey=${model.actionkey}]
+    {% elif model.state in 'OK' %}
+        *State*: {{html: <green style='color:green'>OK</green> }}
+    {% else %}
+        *State*:${mode.state}
+    {% endif -%}
 
 
-{{code:
-    ${repr}
-}}
+    {{code:
+        ${repr}
+    }}
+{% endif %}
