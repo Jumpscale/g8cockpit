@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from JumpScale.portal.portal import exceptions
+
 
 
 def main(j, args, params, tags, tasklet):
@@ -28,8 +28,8 @@ def main(j, args, params, tags, tasklet):
             data[repo_path].extend(sorted(aysruns, key=lambda x: x['id']))
 
         args.doc.applyTemplate({'data': data})
-    except exceptions.BaseError as e:
-        args.doc.applyTemplate({'error': e.msg})
+    except Exception as e:
+        args.doc.applyTemplate({'error': str(e)})
 
     params.result = (args.doc, args.doc)
     return params

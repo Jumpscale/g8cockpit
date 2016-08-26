@@ -1,4 +1,4 @@
-from JumpScale.portal.portal import exceptions
+
 
 def main(j, args, params, tags, tasklet):
     doc = args.doc
@@ -25,8 +25,8 @@ def main(j, args, params, tags, tasklet):
                 'shellinbox_url': service['instance_hrd']['shellinabox.url']
             }
             args.doc.applyTemplate(data)
-    except exceptions.BaseError as e:
-        args.doc.applyTemplate({'error': e.msg})
+    except Exception as e:
+        args.doc.applyTemplate({'error': str(e)})
 
     params.result = (args.doc, doc)
 
