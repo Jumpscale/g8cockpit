@@ -1,7 +1,7 @@
 from flask import Blueprint as fBlueprint, jsonify, request, json, Response, current_app
 from JumpScale import j
 from JumpScale.baselib.atyourservice.Blueprint import Blueprint as JSBlueprint
-from JumpScale.core.errorhandling.OurExceptions import BaseJSException
+from JumpScale.core.errorhandling.JSExceptions import BaseJSException
 from .views import service_view, template_view, blueprint_view, repository_view
 
 from .Repository import Repository
