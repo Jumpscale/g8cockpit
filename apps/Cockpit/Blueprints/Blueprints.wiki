@@ -3,4 +3,23 @@
 {{timestamp}}
 
 {{aysblueprints ayspath:$$ayspath}}
+
+{% if error is defined %}
+Error : ${error}
+{% else %}
+{% for ayspath, bps in data.items() -%}
+    h4. ${ayspath}
+    {{accordion:
+        {%for bp in bps -%}
+        - title: ${bp.title}
+          label_color: ${bp.label_color}
+          label_icon: ${bp.icon}
+          content: |
+              ${bp.content}
+          label_content: ${bp.label_content}
+          code: True
+      {% endfor %}
+    }}
+{% endfor %}
+{% endif %}
 @colend

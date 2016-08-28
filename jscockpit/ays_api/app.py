@@ -1,4 +1,5 @@
-from flask import Flask, send_from_directory, make_response, request, send_file
+from flask import Flask, send_from_directory, make_response, request, send_file, jsonify
+import werkzeug.exceptions
 import jwt
 import wtforms_json
 from .ays import ays_api
@@ -79,11 +80,36 @@ def send_js(path):
     root = j.sal.fs.joinPaths(j.sal.fs.getParent(__file__), 'apidocs')
     return send_from_directory(root, path)
 
+
 @app.route('/', methods=['GET'])
 def home():
     path = j.sal.fs.joinPaths(j.sal.fs.getParent(__file__), 'index.html')
-    print(path)
     return send_file(path)
+
+
+@app.errorhandler(j.exceptions.NotFound)
+def handle_bad_request(e):
+    return jsonify(error=e.msg), 404
+
+
+@app.errorhandler(j.exceptions.AYSNotFound)
+def handle_bad_request(e):
+    return jsonify(error=e.msg), 404
+
+
+@app.errorhandler(j.exceptions.Timeout)
+def handle_bad_request(e):
+    return jsonify(error=e.msg), 408
+
+
+@app.errorhandler(j.exceptions.BaseJSException)
+def handle_bad_request(e):
+    return jsonify(error=e.msg), 500
+
+@app.errorhandler(werkzeug.exceptions.HTTPException)
+def handle_bad_request(e):
+    return jsonify(error=e.msg), e.code
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
