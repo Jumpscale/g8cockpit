@@ -6,7 +6,7 @@ The REST interface is generated from a [RAML](http://raml.org/) specification us
 
 RAML file is located at https://github.com/Jumpscale/jscockpit/blob/master/jscockpit/ays_api/specifications/api.raml
 
-A live documentation about the REST API can is available in your Cockpit at the address :
+A live documentation about the REST API can is available in your Cockpit at the address:
 https://my-cockpit.com/api/apidocs/index.html
 
 
