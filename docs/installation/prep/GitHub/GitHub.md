@@ -1,21 +1,19 @@
 ## Create a GitHub Repository
 
-The Cockpit will push all AYS service instance information into a GitHub repository that you need to create yourself.
+The **Cockpit** will push all AYS service instance information into a **GitHub** repository that you need to create yourself.
 
 This is quite straight forward:
 
-- Goto GitHub.com and click **New repository** from the drop-down menu that appears when clicking the **+** sign:
+- Go to GitHub.com and click **New repository** from the drop-down menu that appears when clicking the **+** sign:
 
-![](new-repository.png)
+  ![](new-repository.png)
 
 - Specify a repository name and click the **Create repository** button
 
-![](create-new-repository.png)
+  ![](create-new-repository.png)
 
 - Your repository is ready:
 
-![](cockpit-gig-demo.png)
+  ![](cockpit-gig-demo.png)
 
-You will need the address of your repository when installing your Cockpit, this is simply the URL in the address bar of your browser, in this example: `https://github.com/yveskerwyn/cockpit_gig_demo`.
-
-
+You will need the address of your repository when installing your Cockpit, this is simply the URL in the address bar of your browser, in this example: `https://github.com/gig-projects/cockpit_gig_moehaha-demo`.
