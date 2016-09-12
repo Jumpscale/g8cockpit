@@ -1,6 +1,7 @@
 {
     "plugins": [
-        "puml"
+        "puml",
+        "collapsible-menu"
     ],
     "pluginsConfig": {},
     "root": "./docs"
