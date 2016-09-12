@@ -3,6 +3,6 @@
 Both installation options require some preparation:
 
 - [Create a Cloud Space](CloudSpace/CloudSpace.md) (optionally)
-- [Configure Itsyou.online](Itsyou.online/Itsyou-online.md)
+- [Configure ItsYou.online](Itsyou.online/Itsyou-online.md)
 - [Create a Telegram Chatbot](Telegram/Telegram.md)
 - [Create a GitHub Repository](GitHub/GitHub.md)

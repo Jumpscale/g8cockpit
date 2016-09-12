@@ -9,6 +9,7 @@
     * [Create a Telegram Chatbot](installation/prep/Telegram/Telegram.md)
     * [Create a GitHub Repository](installation/prep/GitHub/GitHub.md)
   * [Installing using Telegram](installation/Using-Telegram/using-Telegram.md)
+    * [Cockpit Deployer Chatbot Installation Instructions](installation/Using-Telegram/installation-of-the-deployer-chatbot.md)
   * [Installing using an AYS Blueprint](installation/Using-Blueprint/using-blueprint.md)
 * [Usage](usage/usage.md)
   * [Telegram Chatbot](usage/telegram_bot.md)
