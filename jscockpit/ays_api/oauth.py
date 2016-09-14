@@ -15,7 +15,8 @@ def get_user_token(code, state):
         'client_secret': current_app.config['oauth']['client_secret'],
         'state': state,
     }
-    url = '%s/v1/oauth/access_token?%s' % (current_app.config['oauth']['itsyouonlinehost'], urllib.parse.urlencode(params))
+    url = '%s/v1/oauth/access_token?%s' % (current_app.config['oauth']
+                                           ['itsyouonlinehost'], urllib.parse.urlencode(params))
     resp = requests.post(url, verify=False)
     resp.raise_for_status()
     return resp.json()

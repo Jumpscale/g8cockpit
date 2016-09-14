@@ -1,12 +1,14 @@
 from functools import wraps
 from flask import g, request, jsonify
 
+
 class oauth2_oauth_2_0:
+
     def __init__(self, scopes=None):
-        
+
         self.described_by = "headers"
         self.field = "Authorization"
-        
+
         self.allowed_scopes = scopes
 
     def __call__(self, f):

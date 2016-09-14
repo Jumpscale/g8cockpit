@@ -5,6 +5,7 @@ import re
 
 AYS_REPO_DIR = j.sal.fs.joinPaths(j.dirs.codeDir, 'cockpit')
 
+
 class RepoMgmt:
 
     def __init__(self, bot):
@@ -50,7 +51,8 @@ class RepoMgmt:
             valid = False
 
         if not valid:
-            self.bot.sendMessage(chat_id=chat_id, text="Hello buddy, I don't know you yet, please use /start so we can meet")
+            self.bot.sendMessage(chat_id=chat_id,
+                                 text="Hello buddy, I don't know you yet, please use /start so we can meet")
 
         return valid
 
@@ -104,7 +106,11 @@ class RepoMgmt:
         if not self._currentRepo(username):
             self.bot.sendMessage(chat_id=chat_id, text="No repo selected now.")
         else:
-            self.bot.sendMessage(chat_id=chat_id, text="Current repo: *%s*" % self._currentRepo(username), parse_mode=telegram.ParseMode.MARKDOWN)
+            self.bot.sendMessage(
+                chat_id=chat_id,
+                text="Current repo: *%s*" %
+                self._currentRepo(username),
+                parse_mode=telegram.ParseMode.MARKDOWN)
 
         repos = self._list_repos()
         # repos list
@@ -134,7 +140,11 @@ class RepoMgmt:
             except KeyError:
                 message = "Sorry, I can't find any repo named `%s` :/" % name
                 reply_markup = telegram.ReplyKeyboardHide()
-                self.bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
+                self.bot.sendMessage(
+                    chat_id=chat_id,
+                    text=message,
+                    parse_mode=telegram.ParseMode.MARKDOWN,
+                    reply_markup=reply_markup)
                 continue
 
             if name == self._currentRepo(username):
@@ -165,7 +175,8 @@ class RepoMgmt:
             ['create', 'list', 'delete']
         ]
         reply_markup = telegram.ReplyKeyboardMarkup(choices, resize_keyboard=True, one_time_keyboard=True)
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text="What do you want to do ?", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="What do you want to do ?", reply_markup=reply_markup)
 
     def select_prompt(self, bot, update):
         username = update.message.from_user.username
@@ -178,17 +189,25 @@ class RepoMgmt:
                 self.checkout(bot, update, repo)
         self.callbacks[username] = cb
 
-        repos = [repo.name for repo in self._list_repos()]
-        repos.sort()
-        reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(repos, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text="Choose the repo you want to work on.", reply_markup=reply_markup)
+        repos = sorted([repo.name for repo in self._list_repos()])
+        reply_markup = telegram.ReplyKeyboardMarkup(
+            list(
+                chunks(
+                    repos,
+                    4)),
+            resize_keyboard=True,
+            one_time_keyboard=True,
+            selective=True)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="Choose the repo you want to work on.", reply_markup=reply_markup)
 
     def create_prompt(self, bot, update):
         def cb(bot, update):
             self.checkout(bot, update, update.message.text)
         self.callbacks[update.message.from_user.username] = cb
         reply_markup = telegram.ReplyKeyboardHide()
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text="Please enter the name of your repo", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="Please enter the name of your repo", reply_markup=reply_markup)
 
     def delete_prompt(self, bot, update):
         username = update.message.from_user.username
@@ -197,10 +216,17 @@ class RepoMgmt:
             self.delete(bot, update, [update.message.text])
         self.callbacks[username] = cb
 
-        repos = [r.name for r in self._list_repos()]
-        repos.sort()
-        reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(repos, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text="Please enter the name of the repo you want to delete", reply_markup=reply_markup)
+        repos = sorted([r.name for r in self._list_repos()])
+        reply_markup = telegram.ReplyKeyboardMarkup(
+            list(
+                chunks(
+                    repos,
+                    4)),
+            resize_keyboard=True,
+            one_time_keyboard=True,
+            selective=True)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="Please enter the name of the repo you want to delete", reply_markup=reply_markup)
 
     def dispatch_choice(self, bot, update):
         message = update.message

@@ -145,9 +145,13 @@ class EventDispatcher:
                 for service in repo.findServices():
                     for event_name, actions in service.state.events.items():
                         if event_name not in self._services_events.keys():
-                            self.bot.logger.warning("service %s try to register to non existing event %s" % (service, event_name))
+                            self.bot.logger.warning(
+                                "service %s try to register to non existing event %s" %
+                                (service, event_name))
                             continue
                         for action_name in actions:
-                            self.bot.logger.debug("register service events from repo %s, service %s" % (repo.basepath, service.key))
+                            self.bot.logger.debug(
+                                "register service events from repo %s, service %s" %
+                                (repo.basepath, service.key))
                             data = (repo, service, action_name)
                             self._services_events[event_name].add(data)

@@ -79,7 +79,12 @@ class TGBot():
 
     def sendMessage(self, chat_id, text, parse_mode=None, disable_web_page_preview=None, **kwargs):
         for chunk in chunks(text, MAX_MESSAGE_LENGTH):
-            send_msg = self.bot.sendMessage(chat_id=chat_id, text=chunk, parse_mode=parse_mode, disable_web_page_preview=disable_web_page_preview, **kwargs)
+            send_msg = self.bot.sendMessage(
+                chat_id=chat_id,
+                text=chunk,
+                parse_mode=parse_mode,
+                disable_web_page_preview=disable_web_page_preview,
+                **kwargs)
         return send_msg
 
     def _register_event_handlers(self):
@@ -220,13 +225,24 @@ class TGBot():
         # create keyboard is needed
         keyboard = evt.args.get('keyboard', [])
         if keyboard:
-            reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(keyboard, 4)), resize_keyboard=True, one_time_keyboard=True, selective=True)
+            reply_markup = telegram.ReplyKeyboardMarkup(
+                list(
+                    chunks(
+                        keyboard,
+                        4)),
+                resize_keyboard=True,
+                one_time_keyboard=True,
+                selective=True)
         else:
             reply_markup = None
 
         # send message
         try:
-            send_msg = self.sendMessage(chat_id=data['chat_id'], text=msg, parse_mode=telegram.ParseMode.HTML, reply_markup=reply_markup)
+            send_msg = self.sendMessage(
+                chat_id=data['chat_id'],
+                text=msg,
+                parse_mode=telegram.ParseMode.HTML,
+                reply_markup=reply_markup)
         except Exception as e:
             err_msg = "Error sending message (chat id %s)'%s' : %s" % (data['chat_id'], msg, str(e))
             self.logger.error(err_msg)
@@ -289,7 +305,10 @@ class TGBot():
             "This message was given by `/help`, have fun with me !",
         ]
 
-        self.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode=telegram.ParseMode.MARKDOWN)
+        self.sendMessage(
+            chat_id=update.message.chat_id,
+            text="\n".join(message),
+            parse_mode=telegram.ParseMode.MARKDOWN)
 
     # initialize
     def start_cmd(self, bot, update):
@@ -314,7 +333,8 @@ class TGBot():
             }
             resp = self.oauth(bot, update)
             if 'error' in resp:
-                return self.endMessage(chat_id=update.message.chat_id, text=resp['error'], parse_mode=telegram.ParseMode.MARKDOWN)
+                return self.endMessage(chat_id=update.message.chat_id, text=resp[
+                                       'error'], parse_mode=telegram.ParseMode.MARKDOWN)
             else:
                 hello = "You have been authorized. Welcome !"
                 data['access_token'] = resp['access_token']
@@ -335,7 +355,10 @@ class TGBot():
             "For more information, just type `/help` :)"
         ]
 
-        self.sendMessage(chat_id=update.message.chat_id, text="\n".join(message), parse_mode=telegram.ParseMode.MARKDOWN)
+        self.sendMessage(
+            chat_id=update.message.chat_id,
+            text="\n".join(message),
+            parse_mode=telegram.ParseMode.MARKDOWN)
 
     # project manager
     def unknown_cmd(self, bot, update):
@@ -362,7 +385,8 @@ class TGBot():
         }
         url = 'https://itsyou.online/v1/oauth/authorize?%s' % urllib.parse.urlencode(params)
 
-        msg = "I don't know you yet, pease click on the following link and authorize us to verify you are part of the organization '%s'\n%s" % (organization, url)
+        msg = "I don't know you yet, pease click on the following link and authorize us to verify you are part of the organization '%s'\n%s" % (
+            organization, url)
         self.sendMessage(chat_id=chat_id, text=msg)
 
         # wait for user to login on itsyou.online

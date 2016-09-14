@@ -14,7 +14,8 @@ def webhooks_github_post():
     if 'X-GitHub-Event' not in request.headers or 'X-GitHub-Delivery' not in request.headers:
         return '', 400
 
-    key = '%s.%s.%s' % (request.headers.get('X-GitHub-Event'), request.headers.get('X-GitHub-Delivery'), j.data.time.epoch)
+    key = '%s.%s.%s' % (request.headers.get('X-GitHub-Event'),
+                        request.headers.get('X-GitHub-Delivery'), j.data.time.epoch)
     j.core.db.hset('webhooks', key, j.data.serializer.json.dumps(request.json))
 
     # send event to notify reception of webhooks

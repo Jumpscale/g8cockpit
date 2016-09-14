@@ -39,13 +39,19 @@ def process_jwt_token():
         if type.lower() == 'bearer':
             try:
                 headers = jwt.get_unverified_header(token)
-                payload = jwt.decode(token, app.config['oauth'].get('jwt_key'), algorithm=headers['alg'], audience=app.config['oauth']['organization'], issuer='itsyouonline')
+                payload = jwt.decode(
+                    token,
+                    app.config['oauth'].get('jwt_key'),
+                    algorithm=headers['alg'],
+                    audience=app.config['oauth']['organization'],
+                    issuer='itsyouonline')
                 # case JWT is for an organization
                 if 'globalid' in payload and payload['globalid'] == app.config['oauth'].get('organization'):
                     return
 
                 # case JWT is for a user
-                if 'scope' in payload and 'user:memberof:%s' % app.config['oauth'].get('organization') in payload['scope'].split(','):
+                if 'scope' in payload and 'user:memberof:%s' % app.config[
+                        'oauth'].get('organization') in payload['scope'].split(','):
                     return
 
                 msg = 'Unauthorized'

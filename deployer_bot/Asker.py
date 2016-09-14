@@ -2,6 +2,7 @@ import telegram
 import queue
 from JumpScale import j
 
+
 class TelegramAsker(object):
     """Asker Interface with telegram"""
     # TODO implement retry on ask* Methods
@@ -30,41 +31,57 @@ class TelegramAsker(object):
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboar, resize_keyboard=True, one_time_keyboard=True)
 
         message = self.question_tmpl.format(message=message)
-        message = self.bot.sendMessage(chat_id=self.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
+        message = self.bot.sendMessage(
+            chat_id=self.chat_id,
+            text=message,
+            parse_mode=telegram.ParseMode.MARKDOWN,
+            reply_markup=reply_markup)
         value = self.queue.get()
         return value
 
     def askChoice(self, message, choices):
         custom_keyboar = []
         for i in range(0, len(choices), 2):
-            custom_keyboar.append(choices[i:i+2])
+            custom_keyboar.append(choices[i:i + 2])
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboar, resize_keyboard=True, one_time_keyboard=True)
         message = self.question_tmpl.format(message=message)
-        message = self.bot.sendMessage(chat_id=self.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
+        message = self.bot.sendMessage(
+            chat_id=self.chat_id,
+            text=message,
+            parse_mode=telegram.ParseMode.MARKDOWN,
+            reply_markup=reply_markup)
         value = self.queue.get()
         return value
 
     def askString(self, message, default=None):
         reply_markup = telegram.ForceReply()
         message = self.question_tmpl.format(message=message)
-        message = self.bot.sendMessage(chat_id=self.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
+        message = self.bot.sendMessage(
+            chat_id=self.chat_id,
+            text=message,
+            parse_mode=telegram.ParseMode.MARKDOWN,
+            reply_markup=reply_markup)
         value = self.queue.get()
         return value
 
     def ask_repo_url(self):
-        repo_url = self.askString("Please enter the url of the Github repository where to store the AYS repository of your G8 Cockpit. Please use the git version. The repo needs to exists.")
+        repo_url = self.askString(
+            "Please enter the url of the Github repository where to store the AYS repository of your G8 Cockpit. Please use the git version. The repo needs to exists.")
         return repo_url
 
     def ask_ovc_url(self):
         def validate(input):
             return j.sal.nettools.checkUrlReachable(input)
-        ovc_url = self.askChoice("Please enter the url of the G8 where to deploy your cockpit.", choices=self.g8_choices)
+        ovc_url = self.askChoice(
+            "Please enter the url of the G8 where to deploy your cockpit.",
+            choices=self.g8_choices)
         return ovc_url
 
     def ask_ovc_login(self):
         def validate(input):
             return True
-        login = self.askString("Please enter the username of your user account on the G8 where to deploy the G8 Cockpit")
+        login = self.askString(
+            "Please enter the username of your user account on the G8 where to deploy the G8 Cockpit")
         return login
 
     def ask_ovc_password(self):
@@ -76,7 +93,11 @@ class TelegramAsker(object):
     def ask_ovc_vdc(self):
         def validate(input):
             return True
-        name = self.askChoice("Please select the name of the virtual data center where to deploy the G8 Cockpit", choices=['default', 'cockpit'])
+        name = self.askChoice(
+            "Please select the name of the virtual data center where to deploy the G8 Cockpit",
+            choices=[
+                'default',
+                'cockpit'])
         return name
 
     def ask_ovc_account(self, ovc_client=None):

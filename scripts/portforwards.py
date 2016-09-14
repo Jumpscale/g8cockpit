@@ -27,7 +27,11 @@ def creates_portforwards(repo):
     if cockpit_cfg is None and count < 3:
         while cockpit_cfg is None:
             printErr("Can't find service cockpitconfig, are you in the cockpit ays repo ?")
-            repo = j.tools.console.askString("Please enter the path to the ays repo that contains cockpitconfig service", defaultparam='', regex=None, retry=2)
+            repo = j.tools.console.askString(
+                "Please enter the path to the ays repo that contains cockpitconfig service",
+                defaultparam='',
+                regex=None,
+                retry=2)
             if not j.sal.fs.exists(repo):
                 continue
             j.sal.fs.changeDir(repo)

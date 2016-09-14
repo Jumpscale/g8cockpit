@@ -1,0 +1,30 @@
+
+[bot]
+# token from telegram
+token='235932636:AAF1VVGHj2dFdIluqNzvZ3neOPbi6WNpVb4'
+
+[mail]
+# listen port of the SMTP server
+port=25
+host="0.0.0.0"
+[mail.outgoing]
+# this for out going mails
+login="foudaa"
+passwd="cockpit1"
+port="587"
+server="smtp.sendgrid.net"
+
+[api]
+[api.ays]
+# listen address and port of the REST API
+active=true
+host="0.0.0.0"
+port=5000
+
+[oauth]
+client_secret = 'MTF2p29Dh4mVoB9csRKJt5DqZN7uwwmrfzzD2bppK3EyUtyspCpq'
+client_id = 'cockpitorg1'
+redirect_uri = 'https://mycockpit.aydo.com/oauth/callback'
+organization = 'cockpitorg1'
+jwt_key = "-----BEGIN PUBLIC KEY-----\nMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2\n7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6\n6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv\n-----END PUBLIC KEY-----"
+itsyouonlinehost = 'https://itsyou.online'

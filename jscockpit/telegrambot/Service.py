@@ -3,6 +3,7 @@ import telegram
 from .utils import chunks
 # from JumpScale.baselib.atyourservice.robot.ActionRequest import *
 
+
 class ServiceMgmt(object):
 
     def __init__(self, bot):
@@ -10,7 +11,7 @@ class ServiceMgmt(object):
         self.rootpath = bot.rootpath
         self.callbacks = bot.question_callbacks
 
-    #helpers
+    # helpers
     def _blueprintsPath(self, repo):
         return '%s/%s/%s/blueprints' % (self.rootpath, repo)
 
@@ -51,7 +52,8 @@ class ServiceMgmt(object):
         repo = j.atyourservice.get(name=repo_name)
 
         if len(repo.services) <= 0:
-            self.bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains services for now.")
+            self.bot.sendMessage(chat_id=update.message.chat_id,
+                                 text="Sorry, this repository doesn't contains services for now.")
             return
 
         services_list = []
@@ -72,7 +74,11 @@ State:
  {state}
 ```
 """.format(role=service.role, instance=service.instance, hrd=str(service.hrd), state=str(service.state))
-            self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=telegram.ReplyKeyboardHide())
+            self.bot.sendMessage(
+                chat_id=update.message.chat_id,
+                text=msg,
+                parse_mode=telegram.ParseMode.MARKDOWN,
+                reply_markup=telegram.ReplyKeyboardHide())
 
     def delete(self, bot, update, repo, names):
         username = update.message.from_user.username
@@ -86,7 +92,8 @@ State:
         self.callbacks[update.message.from_user.username] = self.dispatch_choice
         choices = ['list', 'inspect', 'execute']
         reply_markup = telegram.ReplyKeyboardMarkup([choices], resize_keyboard=True, one_time_keyboard=True)
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text="What do you want to do ?", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="What do you want to do ?", reply_markup=reply_markup)
 
     def dispatch_choice(self, bot, update):
         message = update.message
@@ -114,37 +121,40 @@ State:
                 for action_name in list(s.action_methods.keys()):
                     actions.add(action_name)
 
-            actions = list(actions)
-            actions.sort()
+            actions = sorted(actions)
             keys = list(chunks(actions, 4))
             reply_markup = telegram.ReplyKeyboardMarkup(keys, resize_keyboard=True, one_time_keyboard=True)
             msg = 'Select the action you want to execute'
-            self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
+            self.bot.sendMessage(
+                chat_id=update.message.chat_id,
+                text=msg,
+                reply_markup=reply_markup,
+                parse_mode=telegram.ParseMode.MARKDOWN)
             self.callbacks[username] = execute
 
         self.callbacks[username] = select_action
         repo = j.atyourservice.get(name=self._currentRepo(username))
-        services = list(repo.services.keys())
-        services.sort()
+        services = sorted(repo.services.keys())
         if len(repo.services) <= 0:
             msg = "There is not service instance in this repo yet. Deploy a blueprint to create service instances"
             return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
 
-        reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(services, 4)), resize_keyboard=True, one_time_keyboard=True)
+        reply_markup = telegram.ReplyKeyboardMarkup(
+            list(chunks(services, 4)), resize_keyboard=True, one_time_keyboard=True)
         msg = """
         Choose a service to execution action on or type a key to match multiple service.
         example :
         `@node` to match all service with role node
         `node!bot` to match the service with role node and instance name bot.
         """
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg,
+                                    reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def inspect_prompt(self, bot, update):
         username = update.message.from_user.username
 
         repo = j.atyourservice.get(name=self._currentRepo(username))
-        services = list(repo.services.keys())
-        services.sort()
+        services = sorted(repo.services.keys())
         if len(repo.services) <= 0:
             msg = "There is not service instance in this repo yet. Deploy a blueprint to create service instances"
             return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
@@ -155,14 +165,16 @@ State:
             self.inspect(bot, update, services)
 
         self.callbacks[username] = select_service
-        reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(services, 4)), resize_keyboard=True, one_time_keyboard=True)
+        reply_markup = telegram.ReplyKeyboardMarkup(
+            list(chunks(services, 4)), resize_keyboard=True, one_time_keyboard=True)
         msg = """
         Choose a service to inspect or type a service key to match multiple service.
         example :
         `@node` to match all service with role node
         `node!bot` to match the service with role node and instance name bot.
         """
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
+        return self.bot.sendMessage(chat_id=update.message.chat_id, text=msg,
+                                    reply_markup=reply_markup, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def delete_prompt(self, bot, update, repo):
         username = update.message.from_user.username
@@ -175,7 +187,8 @@ State:
             bluelist.append(blueprint)
 
         if len(bluelist) == 0:
-            return self.bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
+            return self.bot.sendMessage(
+                chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
 
         def cb(bot, update):
             self.delete(bot, update, self._currentRepo(username), [update.message.text])
@@ -183,7 +196,8 @@ State:
 
         custom_keyboard = [bluelist]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, resize_keyboard=True, one_time_keyboard=True)
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text="Which blueprint do you want to delete ?", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="Which blueprint do you want to delete ?", reply_markup=reply_markup)
 
     # Handler for robot
     def handler(self, bot, update, args):
