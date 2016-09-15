@@ -2,6 +2,7 @@ from JumpScale import j
 import telegram
 from .utils import chunks
 
+
 class BlueprintMgmt(object):
 
     def __init__(self, bot):
@@ -9,7 +10,7 @@ class BlueprintMgmt(object):
         self.rootpath = bot.rootpath
         self.callbacks = bot.question_callbacks
 
-    #helpers
+    # helpers
     def _blueprintsPath(self, repo_name):
         repo = j.atyourservice.get(repo_name)
         return '%s/blueprints' % (repo.basepath)
@@ -104,7 +105,9 @@ class BlueprintMgmt(object):
             bluelist.append(blueprint)
 
         if len(bluelist) <= 0:
-            self.bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
+            self.bot.sendMessage(
+                chat_id=update.message.chat_id,
+                text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
             return
 
         def cb(bot, update):
@@ -112,13 +115,25 @@ class BlueprintMgmt(object):
             if message.text in bluelist:
                 content = j.sal.fs.fileGetContents(j.sal.fs.joinPaths(blueprint_path, message.text))
                 text = '```\n%s\n```' % content
-                self.bot.sendMessage(chat_id=update.message.chat_id, text=text, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=telegram.ReplyKeyboardHide())
+                self.bot.sendMessage(
+                    chat_id=update.message.chat_id,
+                    text=text,
+                    parse_mode=telegram.ParseMode.MARKDOWN,
+                    reply_markup=telegram.ReplyKeyboardHide())
             else:
-                self.bot.sendMessage(chat_id=update.message.chat_id, text="%s is not a valid Blueprint name" % message.text, reply_markup=telegram.ReplyKeyboardHide())
+                self.bot.sendMessage(
+                    chat_id=update.message.chat_id,
+                    text="%s is not a valid Blueprint name" %
+                    message.text,
+                    reply_markup=telegram.ReplyKeyboardHide())
         self.callbacks[username] = cb
 
-        reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(bluelist, 4)), resize_keyboard=True, one_time_keyboard=True)
-        self.bot.sendMessage(chat_id=update.message.chat_id, text="Click on the blueprint you want to inspect", reply_markup=reply_markup)
+        reply_markup = telegram.ReplyKeyboardMarkup(
+            list(chunks(bluelist, 4)), resize_keyboard=True, one_time_keyboard=True)
+        self.bot.sendMessage(
+            chat_id=update.message.chat_id,
+            text="Click on the blueprint you want to inspect",
+            reply_markup=reply_markup)
 
     def delete(self, bot, update, names):
         username = update.message.from_user.username
@@ -186,7 +201,8 @@ class BlueprintMgmt(object):
         self.callbacks[update.message.from_user.username] = self.dispatch_choice
         choices = ['add', 'list', 'delete']
         reply_markup = telegram.ReplyKeyboardMarkup([choices], resize_keyboard=True, one_time_keyboard=True)
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text="What do you want to do ?", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="What do you want to do ?", reply_markup=reply_markup)
 
     def dispatch_choice(self, bot, update):
         message = update.message
@@ -216,7 +232,8 @@ class BlueprintMgmt(object):
             bluelist.append(blueprint)
 
         if len(bluelist) == 0:
-            return self.bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
+            return self.bot.sendMessage(
+                chat_id=update.message.chat_id, text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
 
         def cb(bot, update):
             self.delete(bot, update, [update.message.text])
@@ -224,7 +241,8 @@ class BlueprintMgmt(object):
 
         custom_keyboard = [bluelist]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, resize_keyboard=True, one_time_keyboard=True)
-        return self.bot.sendMessage(chat_id=update.message.chat_id, text="Which blueprint do you want to delete ?", reply_markup=reply_markup)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="Which blueprint do you want to delete ?", reply_markup=reply_markup)
 
     # Handler for robot
     def handler(self, bot, update, args):
@@ -236,7 +254,8 @@ class BlueprintMgmt(object):
 
         if not self._currentRepo(username):
             message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
-            return self.bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+            return self.bot.sendMessage(chat_id=update.message.chat_id, text=message,
+                                        parse_mode=telegram.ParseMode.MARKDOWN)
 
         # no arguments
         if len(args) == 0:
@@ -267,7 +286,8 @@ class BlueprintMgmt(object):
 
         if not self._currentRepo(username):
             message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
-            return self.bot.sendMessage(chat_id=update.message.chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+            return self.bot.sendMessage(chat_id=update.message.chat_id, text=message,
+                                        parse_mode=telegram.ParseMode.MARKDOWN)
 
         if j.sal.fs.exists(local):
             j.sal.fs.remove(local)

@@ -5,9 +5,8 @@ from wtforms import TextField, FormField, IntegerField, FloatField, FileField, B
 from input_validators import multiple_of
 
 
-
 class AYSStep(Form):
-    
+
     action = TextField(validators=[DataRequired(message="")])
     number = IntegerField(validators=[DataRequired(message="")])
     services_keys = FieldList(TextField('services_keys', [required()]), DataRequired(message=""))

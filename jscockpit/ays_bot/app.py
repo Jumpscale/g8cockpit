@@ -91,9 +91,13 @@ class AYSBot(object):
 
             result = {}
             try:
-                repo = j.atyourservice.get(path=work['repo'])
-                run = repo.getRun(role=work['role'], instance=work['instance'], action=work['action'], producerRoles=work['producerroles'], force=work['force'])
-
+                repo = j.atyourservice.get(work['repo'])
+                run = repo.getRun(
+                    role=work['role'],
+                    instance=work['instance'],
+                    action=work['action'],
+                    producerRoles=work['producerroles'],
+                    force=work['force'])
                 self.logger.debug('worker %d execute action %s for %s!%s in %s' %
                                   (nbr, work['action'], work['role'], work['instance'], work['repo']))
 
@@ -134,7 +138,8 @@ class AYSBot(object):
                 resp_q.put(result)
                 self.tasks_queue2.task_done()
 
-    def schedule_action(self, action, repo, role="", instance="", producerroles='*', force=False, notify=False, chat_id=None):
+    def schedule_action(self, action, repo, role="", instance="",
+                        producerroles='*', force=False, notify=False, chat_id=None):
         """
         @action: str, name of the action to Execute
         @repo: str, name of the repo to use
@@ -200,10 +205,14 @@ class AYSBot(object):
         result = q.get()
         msg = None
         if 'error' in result:
-            self.logger.error('Error execution of action %s of service %s!%s from repo %s: %s' % (action, role, instance, repo, result['error']))
-            msg = "Error happened on action %s on service %s instance %s in repo %s:\n %s" % (action, role, instance, repo, result['error'])
+            self.logger.error(
+                'Error execution of action %s of service %s!%s from repo %s: %s' %
+                (action, role, instance, repo, result['error']))
+            msg = "Error happened on action %s on service %s instance %s in repo %s:\n %s" % (
+                action, role, instance, repo, result['error'])
         elif notify:
-            msg = "Action %s on service %s instance %s in repo %s executed without error" % (action, role, instance, repo)
+            msg = "Action %s on service %s instance %s in repo %s executed without error" % (
+                action, role, instance, repo)
 
         if msg:
             self.send_tg_msg(msg=msg, chat_id=chat_id)

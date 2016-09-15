@@ -128,9 +128,11 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         for aysrepo in repos:
             services = cl.listServices(repository=aysrepo)
             if role:
-                output_services.update({aysrepo: {service['key']: service for service in services if service['role'] == role}})
+                output_services.update(
+                    {aysrepo: {service['key']: service for service in services if service['role'] == role}})
             elif templatename:
-                output_services.update({aysrepo: {service['key']: service for service in services if service['name'] == templatename}})
+                output_services.update(
+                    {aysrepo: {service['key']: service for service in services if service['name'] == templatename}})
             else:
                 output_services.update({aysrepo: services})
         return output_services
@@ -149,7 +151,11 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         role = '' if not role else role
         instance = '' if not instance else instance
         if not blueprint:
-            blueprints = [bp['name'] for bp in self.listBlueprints(repository=repository, archived=False, **kwargs)[repository]]
+            blueprints = [
+                bp['name'] for bp in self.listBlueprints(
+                    repository=repository,
+                    archived=False,
+                    **kwargs)[repository]]
         else:
             blueprints = [blueprint]
         try:
@@ -274,7 +280,13 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         role = '' if not role else role
         instance = '' if not instance else instance
         try:
-            resp = cl.executeAction(repository=repository, action=action, role=role, instance=instance, force=force, async=async)
+            resp = cl.executeAction(
+                repository=repository,
+                action=action,
+                role=role,
+                instance=instance,
+                force=force,
+                async=async)
         except Exception as e:
             raise exceptions.BadRequest(str(e))
         return resp['msg']

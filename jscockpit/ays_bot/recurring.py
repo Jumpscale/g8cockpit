@@ -48,7 +48,8 @@ class AysRecurring:
                             service.state.changed = True
                             service.state.save()
 
-                            gevent.spawn(self.bot.handle_action_result, rq, action_name, service.aysrepo.name, service.role, service.instance)
+                            gevent.spawn(self.bot.handle_action_result, rq, action_name,
+                                         service.aysrepo.name, service.role, service.instance)
 
             gevent.sleep(1)
 
@@ -75,7 +76,9 @@ class AysRecurring:
                     job.update(period=state[0])
                     if action_name in keys:
                         keys.remove(action_name)
-                    self.bot.logger.debug("register service recurring from repo %s, service %s, action %s" % (repo.basepath, service.key, action_name))
+                    self.bot.logger.debug(
+                        "register service recurring from repo %s, service %s, action %s" %
+                        (repo.basepath, service.key, action_name))
 
                 for k in keys:
                     jobs.pop(k, None)

@@ -5,6 +5,7 @@ BASE_URI = "http://js8:5000"
 
 
 class Client:
+
     def __init__(self):
         self.url = BASE_URI
         self.session = requests.Session()
@@ -59,7 +60,7 @@ class Client:
         Get information of a repository
         It is method for GET /ays/repository/{repository}
         """
-        uri = self.url + "/ays/repository/"+repository
+        uri = self.url + "/ays/repository/" + repository
         uri = uri + build_query_string(query_params)
         return self.session.get(uri, headers=headers)
 
@@ -68,7 +69,7 @@ class Client:
         Delete a repository
         It is method for DELETE /ays/repository/{repository}
         """
-        uri = self.url + "/ays/repository/"+repository
+        uri = self.url + "/ays/repository/" + repository
         uri = uri + build_query_string(query_params)
         return self.session.delete(uri, headers=headers)
 
@@ -77,7 +78,7 @@ class Client:
         List all blueprint
         It is method for GET /ays/repository/{repository}/blueprint
         """
-        uri = self.url + "/ays/repository/"+repository+"/blueprint"
+        uri = self.url + "/ays/repository/" + repository + "/blueprint"
         uri = uri + build_query_string(query_params)
         return self.session.get(uri, headers=headers)
 
@@ -86,7 +87,7 @@ class Client:
         Create a new blueprint
         It is method for POST /ays/repository/{repository}/blueprint
         """
-        uri = self.url + "/ays/repository/"+repository+"/blueprint"
+        uri = self.url + "/ays/repository/" + repository + "/blueprint"
         uri = uri + build_query_string(query_params)
         return self.session.post(uri, data, headers=headers)
 
@@ -95,7 +96,7 @@ class Client:
         Get a blueprint
         It is method for GET /ays/repository/{repository}/blueprint/{blueprint}
         """
-        uri = self.url + "/ays/repository/"+repository+"/blueprint/"+blueprint
+        uri = self.url + "/ays/repository/" + repository + "/blueprint/" + blueprint
         uri = uri + build_query_string(query_params)
         return self.session.get(uri, headers=headers)
 
@@ -104,7 +105,7 @@ class Client:
         Execute the blueprint
         It is method for POST /ays/repository/{repository}/blueprint/{blueprint}
         """
-        uri = self.url + "/ays/repository/"+repository+"/blueprint/"+blueprint
+        uri = self.url + "/ays/repository/" + repository + "/blueprint/" + blueprint
         uri = uri + build_query_string(query_params)
         return self.session.post(uri, data, headers=headers)
 
@@ -113,7 +114,7 @@ class Client:
         Update existing blueprint
         It is method for PUT /ays/repository/{repository}/blueprint/{blueprint}
         """
-        uri = self.url + "/ays/repository/"+repository+"/blueprint/"+blueprint
+        uri = self.url + "/ays/repository/" + repository + "/blueprint/" + blueprint
         uri = uri + build_query_string(query_params)
         return self.session.put(uri, data, headers=headers)
 
@@ -122,7 +123,7 @@ class Client:
         delete blueprint
         It is method for DELETE /ays/repository/{repository}/blueprint/{blueprint}
         """
-        uri = self.url + "/ays/repository/"+repository+"/blueprint/"+blueprint
+        uri = self.url + "/ays/repository/" + repository + "/blueprint/" + blueprint
         uri = uri + build_query_string(query_params)
         return self.session.delete(uri, headers=headers)
 
@@ -131,7 +132,7 @@ class Client:
         archive the blueprint
         It is method for PUT /ays/repository/{repository}/blueprint/{blueprint}/archive
         """
-        uri = self.url + "/ays/repository/"+repository+"/blueprint/"+blueprint+"/archive"
+        uri = self.url + "/ays/repository/" + repository + "/blueprint/" + blueprint + "/archive"
         uri = uri + build_query_string(query_params)
         return self.session.put(uri, data, headers=headers)
 
@@ -140,7 +141,7 @@ class Client:
         restore the blueprint
         It is method for PUT /ays/repository/{repository}/blueprint/{blueprint}/restore
         """
-        uri = self.url + "/ays/repository/"+repository+"/blueprint/"+blueprint+"/restore"
+        uri = self.url + "/ays/repository/" + repository + "/blueprint/" + blueprint + "/restore"
         uri = uri + build_query_string(query_params)
         return self.session.put(uri, data, headers=headers)
 
@@ -149,7 +150,7 @@ class Client:
         List all services in the repository
         It is method for GET /ays/repository/{repository}/service
         """
-        uri = self.url + "/ays/repository/"+repository+"/service"
+        uri = self.url + "/ays/repository/" + repository + "/service"
         uri = uri + build_query_string(query_params)
         return self.session.get(uri, headers=headers)
 
@@ -158,7 +159,7 @@ class Client:
         List all services of role 'role' in the repository
         It is method for GET /ays/repository/{repository}/service/{role}
         """
-        uri = self.url + "/ays/repository/"+repository+"/service/"+role
+        uri = self.url + "/ays/repository/" + repository + "/service/" + role
         uri = uri + build_query_string(query_params)
         return self.session.get(uri, headers=headers)
 
@@ -167,7 +168,7 @@ class Client:
         Get a service instance
         It is method for GET /ays/repository/{repository}/service/{role}/{instance}
         """
-        uri = self.url + "/ays/repository/"+repository+"/service/"+role+"/"+instance
+        uri = self.url + "/ays/repository/" + repository + "/service/" + role + "/" + instance
         uri = uri + build_query_string(query_params)
         return self.session.get(uri, headers=headers)
 
@@ -176,7 +177,7 @@ class Client:
         uninstall and delete a service
         It is method for DELETE /ays/repository/{repository}/service/{role}/{instance}
         """
-        uri = self.url + "/ays/repository/"+repository+"/service/"+role+"/"+instance
+        uri = self.url + "/ays/repository/" + repository + "/service/" + role + "/" + instance
         uri = uri + build_query_string(query_params)
         return self.session.delete(uri, headers=headers)
 
@@ -185,7 +186,7 @@ class Client:
         Get list of action available on this service
         It is method for GET /ays/repository/{repository}/service/{role}/{instance}/action
         """
-        uri = self.url + "/ays/repository/"+repository+"/service/"+role+"/"+instance+"/action"
+        uri = self.url + "/ays/repository/" + repository + "/service/" + role + "/" + instance + "/action"
         uri = uri + build_query_string(query_params)
         return self.session.get(uri, headers=headers)
 
@@ -194,7 +195,7 @@ class Client:
         list all templates
         It is method for GET /ays/repository/{repository}/template
         """
-        uri = self.url + "/ays/repository/"+repository+"/template"
+        uri = self.url + "/ays/repository/" + repository + "/template"
         uri = uri + build_query_string(query_params)
         return self.session.get(uri, headers=headers)
 
@@ -203,7 +204,7 @@ class Client:
         Create new template
         It is method for POST /ays/repository/{repository}/template
         """
-        uri = self.url + "/ays/repository/"+repository+"/template"
+        uri = self.url + "/ays/repository/" + repository + "/template"
         uri = uri + build_query_string(query_params)
         return self.session.post(uri, data, headers=headers)
 
@@ -212,7 +213,7 @@ class Client:
         Get a template
         It is method for GET /ays/repository/{repository}/template/{template}
         """
-        uri = self.url + "/ays/repository/"+repository+"/template/"+template
+        uri = self.url + "/ays/repository/" + repository + "/template/" + template
         uri = uri + build_query_string(query_params)
         return self.session.get(uri, headers=headers)
 
@@ -221,7 +222,7 @@ class Client:
         init repository
         It is method for POST /ays/repository/{repository}/init
         """
-        uri = self.url + "/ays/repository/"+repository+"/init"
+        uri = self.url + "/ays/repository/" + repository + "/init"
         uri = uri + build_query_string(query_params)
         return self.session.post(uri, data, headers=headers)
 
@@ -230,7 +231,7 @@ class Client:
         simulate the execution of an action
         It is method for POST /ays/repository/{repository}/simulate
         """
-        uri = self.url + "/ays/repository/"+repository+"/simulate"
+        uri = self.url + "/ays/repository/" + repository + "/simulate"
         uri = uri + build_query_string(query_params)
         return self.session.post(uri, data, headers=headers)
 
@@ -239,6 +240,6 @@ class Client:
         Perform an action on the services matches by the query arguments
         It is method for POST /ays/repository/{repository}/execute
         """
-        uri = self.url + "/ays/repository/"+repository+"/execute"
+        uri = self.url + "/ays/repository/" + repository + "/execute"
         uri = uri + build_query_string(query_params)
         return self.session.post(uri, data, headers=headers)

@@ -4,6 +4,7 @@ from JumpScale import j
 import click
 import sys
 
+
 @click.group()
 @click.option('--debug', default=False, help='enable debug mode', is_flag=True)
 def cli(debug):
@@ -29,7 +30,7 @@ def update():
 
 @click.command()
 @click.option('--host', help='connection string to the host where to build the docker image', default='localhost')
-@click.option('--sshkey', help='Name of the ssh key to authorize on the G8Cockpit. key are fetch from ssh-agent.',  default='id_rsa')
+@click.option('--sshkey', help='Name of the ssh key to authorize on the G8Cockpit. key are fetch from ssh-agent.', default='id_rsa')
 @click.option('--nopush', default=False, help='Do not push the image', is_flag=True)
 def build(host, sshkey, nopush):
     """
@@ -42,7 +43,13 @@ def build(host, sshkey, nopush):
 
     printInfo("create builder container")
     key_pub = j.do.getSSHKeyFromAgentPub(sshkey)
-    container_conn_str = cuisine.docker.ubuntu(name=container_name, image='jumpscale/ubuntu1604', ports="18384:18384", volumes=None, pubkey=key_pub, aydofs=False)
+    container_conn_str = cuisine.docker.ubuntu(
+        name=container_name,
+        image='jumpscale/ubuntu1604',
+        ports="18384:18384",
+        volumes=None,
+        pubkey=key_pub,
+        aydofs=False)
 
     container = j.tools.cuisine.get(container_conn_str)
     container.package.mdupdate()
@@ -51,7 +58,8 @@ def build(host, sshkey, nopush):
     container.apps.mongodb.build(start=False)
     container.apps.influxdb.install(start=False)
     container.apps.grafana.build(start=False)
-    container.core.run("js 'j.actions.resetAll()'")  # FIXME find why if we don't reset action before installing controller, everything explode
+    # FIXME find why if we don't reset action before installing controller, everything explode
+    container.core.run("js 'j.actions.resetAll()'")
     container.apps.controller.build(start=False)
     container.apps.caddy.install(start=False)
     container.apps.cockpit.build(start=False)
@@ -85,7 +93,13 @@ def upgrade(host, sshkey, nopush):
 
     printInfo("create builder container")
     key_pub = j.do.getSSHKeyFromAgentPub(sshkey)
-    container_conn_str = cuisine.docker.ubuntu(name=container_name, image='jumpscale/g8cockpit', ports="18384:18384", volumes=None, pubkey=key_pub, aydofs=False)
+    container_conn_str = cuisine.docker.ubuntu(
+        name=container_name,
+        image='jumpscale/g8cockpit',
+        ports="18384:18384",
+        volumes=None,
+        pubkey=key_pub,
+        aydofs=False)
     container = j.tools.cuisine.get(container_conn_str)
     repos = [
         'https://github.com/Jumpscale/ays_jumpscale8.git',
@@ -99,20 +113,23 @@ def upgrade(host, sshkey, nopush):
     if not nopush:
         cuisine.core.run('jsdocker push -i %s' % image_name)
 
+
 def printErr(msg):
     msg = '[-]: %s' % msg
     click.echo(click.style(msg, fg='red'))
 
+
 def printInfo(msg):
     msg = '[+]: %s' % msg
     click.echo(click.style(msg, fg='blue'))
+
 
 def exit(err, code=1):
     if j.application.debug:
         if isinstance(err, BaseException):
             raise(err)
         else:
-            raise(RuntimeError(err))
+            raise RuntimeError
     else:
         sys.exit(code)
 

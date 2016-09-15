@@ -209,11 +209,13 @@ class SMTPChannel(object):
 
 
 class LMTPChannel(SMTPChannel):
+
     def smtp_LHLO(self, arg):
         self.smtp_HELO(arg)
 
 
 class SMTPServer(object):
+
     def __init__(self, localaddr):
         self._localaddr = localaddr
         self.server = StreamServer(localaddr, self._get_channel())
@@ -261,6 +263,7 @@ class SMTPServer(object):
 
 
 class LMTPServer(SMTPServer):
+
     def _get_channel(self):
         return functools.partial(LMTPChannel, self)
 
@@ -277,6 +280,7 @@ class LMTPServer(SMTPServer):
 
 if __name__ == "__main__":
     class TestServer(LMTPServer):
+
         def process_message(self, peer, mailfrom, rcpttos, data):
             for rcpt in rcpttos:
                 print(peer, mailfrom, rcpt, len(data))

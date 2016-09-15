@@ -5,7 +5,6 @@ from wtforms import TextField, FormField, IntegerField, FloatField, FileField, B
 from .input_validators import multiple_of
 
 
-
 class TemplateRepo(Form):
 
     branch = TextField(validators=[DataRequired(message="")])

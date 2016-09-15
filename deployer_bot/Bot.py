@@ -39,6 +39,7 @@ import time
 
 class CockpitArgs:
     """Argument required to deploy a G8Cockpit"""
+
     def __init__(self, asker):
         super(CockpitArgs, self).__init__()
         self.logger = j.logger.get("j.client.cockpitbot")
@@ -65,7 +66,6 @@ class CockpitArgs:
         self._bot_token = None
         self._gid = None
         self._organization = None
-
 
     @property
     def ovc_client(self):
@@ -117,7 +117,8 @@ class CockpitArgs:
     @property
     def ovc_location(self):
         if self._ovc_location is None:
-            self._ovc_location = self.asker.ask_ovc_location(ovc_client=self.ovc_client, account_name=self.ovc_account, vdc_name=self.ovc_vdc)
+            self._ovc_location = self.asker.ask_ovc_location(
+                ovc_client=self.ovc_client, account_name=self.ovc_account, vdc_name=self.ovc_vdc)
         return self._ovc_location
 
     @property
@@ -165,6 +166,7 @@ class CockpitArgs:
 
 class CockpitDeployerBot:
     """docstring for """
+
     def __init__(self):
         self.logger = j.logger.get("j.client.cockpitbot")
         self.config = None
@@ -213,7 +215,6 @@ class CockpitDeployerBot:
         dispatcher.add_handler(MessageHandler([Filters.text], self.answer_questions))
         unknown_handler = RegexHandler(r'/.*', self.unknown)
         dispatcher.add_handler(unknown_handler)
-
 
     def _attache_logger(self, deployer, chat_id):
         """
@@ -317,14 +318,15 @@ class CockpitDeployerBot:
         del self.in_progess_args[username]
         self.logger.info('Deployment of cockpit for user %s done.' % username)
 
-
     def oauth(self, chat_id, args):
-        url = "http://%s:%s/oauthurl?organization=%s" % (self.config['oauth']['host'], self.config['oauth']['port'], args.organization)
+        url = "http://%s:%s/oauthurl?organization=%s" % (self.config['oauth']['host'], self.config[
+                                                         'oauth']['port'], args.organization)
         resp = requests.get(url)
         resp.raise_for_status()
 
         info = resp.json()
-        msg = "Please click on the following link and authorize us to verify you are part of the organization '%s'\n%s" % (args.organization, info['url'])
+        msg = "Please click on the following link and authorize us to verify you are part of the organization '%s'\n%s" % (
+            args.organization, info['url'])
         self.bot.sendMessage(chat_id=chat_id, text=msg)
 
         # wait for user to login on itsyou.online
@@ -343,14 +345,16 @@ class CockpitDeployerBot:
     def run(self):
         # start polling for telegram bot
         if self.updater is None:
-            self.logger.error("connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
+            self.logger.error(
+                "connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
             return
         self.updater.start_polling()
         self.logger.info("Bot started")
 
     def join(self):
         if self.updater is None:
-            self.logger.error("connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
+            self.logger.error(
+                "connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
             return
         self.updater.idle()
         self.logger.info('stopping bot')
@@ -377,7 +381,9 @@ class CockpitDeployerBot:
                     states.append('%s:%s:%s' % (service, key, state[key]))
             message_text = ("\n".join(states))
             if message_text:
-                self.bot.sendMessage(chat_id=chat_id, text=message_text.replace("_", "-"), parse_mode=telegram.ParseMode.MARKDOWN)
+                self.bot.sendMessage(
+                    chat_id=chat_id, text=message_text.replace(
+                        "_", "-"), parse_mode=telegram.ParseMode.MARKDOWN)
         except Exception as e:
             self.logger.error(e)
             self.bot.sendMessage(chat_id=chat_id, text="Error happened %s" % e)
@@ -393,7 +399,10 @@ class CockpitDeployerBot:
                     repo = j.atyourservice.get(username)
                     ip = repo.getService("node", "cockpitvm").hrd.get("publicip")
                     domain = repo.getService("os", "default").hrd.get("dns.domain")
-                    self.bot.sendMessage(chat_id=chat_id, text="You cockpit deploying is finished you can visit it via %s" % domain)
+                    self.bot.sendMessage(
+                        chat_id=chat_id,
+                        text="You cockpit deploying is finished you can visit it via %s" %
+                        domain)
                     self.bot.sendMessage(chat_id=chat_id, text="Machine ip address is %s" % ip)
                     stop = True
                     break

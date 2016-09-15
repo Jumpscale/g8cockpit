@@ -21,11 +21,12 @@ def get_user_token(code, state):
         'client_secret': app.config['client_secret'],
         'state': state,
     }
-    url = '%s/v1/oauth/access_token?%s' % (app.config['itsyouonlinehost'],urllib.parse.urlencode(params))
+    url = '%s/v1/oauth/access_token?%s' % (app.config['itsyouonlinehost'], urllib.parse.urlencode(params))
     resp = requests.post(url, verify=False)
     resp.raise_for_status()
     # token = resp.json()['access_token']
     return resp.json()
+
 
 def get_org_token():
     params = {
@@ -33,11 +34,12 @@ def get_org_token():
         'client_id': app.config['client_id'],
         'client_secret': app.config['client_secret']
     }
-    url = '%s/v1/oauth/access_token?%s' % (app.config['itsyouonlinehost'],urllib.parse.urlencode(params))
+    url = '%s/v1/oauth/access_token?%s' % (app.config['itsyouonlinehost'], urllib.parse.urlencode(params))
     resp = requests.post(url, verify=False)
     resp.raise_for_status()
     token = resp.json()['access_token']
     return token
+
 
 def create_api_key(organization):
     organization_token = get_org_token()
@@ -59,6 +61,7 @@ def create_api_key(organization):
 
     print(resp.json())
     return resp.json()['secret']
+
 
 @oauth_api.route('/callback', methods=['GET'])
 def callback():
@@ -109,9 +112,8 @@ def oauthurl():
     return jsonify({'url': url, 'state': state})
 
 
-
-
 app = Flask(__name__, static_folder='templates')
+
 
 @app.route('/static/<path:path>')
 def static_file(path):

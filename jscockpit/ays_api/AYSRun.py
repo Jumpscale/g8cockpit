@@ -8,6 +8,6 @@ from AYSStep import AYSStep
 
 
 class AYSRun(Form):
-    
+
     aysrepo = TextField(validators=[DataRequired(message="")])
     steps = FieldList(FormField(AYSStep))

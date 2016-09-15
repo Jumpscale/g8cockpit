@@ -1,17 +1,18 @@
 from JumpScale import j
 
+
 class cockpit_atyourservice(j.tools.code.classGetBase()):
     """
     gateway to atyourservice
     """
+
     def __init__(self):
         pass
-        
-        self._te={}
-        self.actorname="atyourservice"
-        self.appname="cockpit"
-        #cockpit_atyourservice_osis.__init__(self)
 
+        self._te = {}
+        self.actorname = "atyourservice"
+        self.appname = "cockpit"
+        # cockpit_atyourservice_osis.__init__(self)
 
     def addTemplateRepo(self, url, branch, **kwargs):
         """
@@ -20,8 +21,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:branch Branch of the repo to use default:master
         result str
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method addTemplateRepo")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method addTemplateRepo")
 
     def archiveBlueprint(self, repository, blueprint, **kwargs):
         """
@@ -30,15 +31,15 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:blueprint blueprint name
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method archiveBlueprint")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method archiveBlueprint")
 
     def cockpitUpdate(self, **kwargs):
         """
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method cockpitUpdate")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method cockpitUpdate")
 
     def commit(self, branch, push, message, **kwargs):
         """
@@ -48,8 +49,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:message name of the repository
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method commit")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method commit")
 
     def createRepo(self, name, **kwargs):
         """
@@ -57,8 +58,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:name name of the repository
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method createRepo")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method createRepo")
 
     def deleteRepo(self, repository, **kwargs):
         """
@@ -66,8 +67,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:repository name of the repository
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method deleteRepo")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method deleteRepo")
 
     def deleteService(self, repository, role, instance, force, uninstall, **kwargs):
         """
@@ -79,8 +80,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:uninstall default:True
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method deleteService")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method deleteService")
 
     def executeAction(self, repository, action, role, instance, force, async, **kwargs):
         """
@@ -93,8 +94,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:async execution action asynchronously
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method executeAction")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method executeAction")
 
     def executeBlueprint(self, repository, blueprint, role, **kwargs):
         """
@@ -104,8 +105,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:role role
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method executeBlueprint")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method executeBlueprint")
 
     def getService(self, repository, role, instance, **kwargs):
         """
@@ -115,8 +116,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:instance service instance
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getService")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method getService")
 
     def getTemplate(self, repository, template, **kwargs):
         """
@@ -125,8 +126,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:template template name
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getTemplate")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method getTemplate")
 
     def init(self, repository, role, instance, force, **kwargs):
         """
@@ -136,8 +137,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:instance instance name of the service to simulate action on
         param:force force init
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method init")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method init")
 
     def install(self, repository, role, instance, force, async, **kwargs):
         """
@@ -149,8 +150,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:async execution action asynchronously
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method install")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method install")
 
     def listBlueprints(self, repository, archived, **kwargs):
         """
@@ -159,16 +160,16 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:archived include archived blueprints or not
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method listBlueprints")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method listBlueprints")
 
     def listRepos(self, **kwargs):
         """
         list all repository
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method listRepos")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method listRepos")
 
     def listServices(self, repository, templatename, role, **kwargs):
         """
@@ -178,8 +179,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:role only services with this role else all service names
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method listServices")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method listServices")
 
     def listTemplates(self, repository, **kwargs):
         """
@@ -187,16 +188,16 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:repository services in that base path will only be returned otherwise all paths
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method listTemplates")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method listTemplates")
 
     def reload(self, **kwargs):
         """
         Unload all services from memory and force reload.
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method reload")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method reload")
 
     def restoreBlueprint(self, repository, blueprint, **kwargs):
         """
@@ -205,8 +206,8 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:blueprint blueprint name
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method restoreBlueprint")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method restoreBlueprint")
 
     def simulate(self, repository, action, role, instance, **kwargs):
         """
@@ -217,5 +218,5 @@ class cockpit_atyourservice(j.tools.code.classGetBase()):
         param:instance instance name of the service to simulate action on
         result json
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method simulate")
+        # put your code here to implement this method
+        raise NotImplementedError("not implemented method simulate")
