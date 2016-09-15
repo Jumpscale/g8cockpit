@@ -112,6 +112,7 @@ def handle_bad_request(e):
 def handle_bad_request(e):
     return jsonify(error=e.msg), 500
 
+
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def handle_bad_request(e):
     return jsonify(error=e.msg), e.code
