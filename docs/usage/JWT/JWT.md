@@ -25,4 +25,4 @@ As a result you'll get the JWT token:
 
 To copy the token double-click it (twice) in order to make sure you have fully selected the string.
 
-You can quickly test the JWT token using the **API Console**, as documented [here](../API-Console/API-Console.md).
+You can quickly test the JWT token using the **API Console**, as documented [here](../API_Console/API_Console.md).

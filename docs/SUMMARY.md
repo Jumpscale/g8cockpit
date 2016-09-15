@@ -15,7 +15,7 @@
   * [Telegram Chatbot](usage/telegram_bot.md)
   * [Getting Started with Blueprints](usage/getting_started_with_blueprints.md)
   * [Commit Repositories](usage/commit-repositories.md)
-  * [API Console](usage/API-Console/API-Console.md)
+  * [API Console](usage/API_Console/API-Console.md)
   * [Generate JWT Tokens](usage/JWT/JWT.md)
   * [REST API](usage/API/API.md)
 * [Configuration](configuration.md)  
