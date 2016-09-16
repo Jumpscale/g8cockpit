@@ -48,19 +48,35 @@ You can quickly test the JWT token using the **API Console**, as documented [her
 <a id="itsyouonline"></a>
 ### Generate a JWT by interacting directly with ItsYou.online
 
-In case of interacting (using code) with the Cockpit on behalf of an organization:
+This is what you will need in case of programmatically interacting with the Cockpit.
+
+Two cases are discussed here:
+- [Interacting on behalf of an organization](#organization)
+- [Interacting on behalf of a user](#user)
+
+<a id="organization"></a>
+####In case of interacting with the Cockpit on behalf of an organization:
 
 - First get an OAuth access token for the organization using the **Client Credentials Flow**, e.g. in the below example for the organization with client_id = Moehaha:
+
 `https://itsyou.online/v1/oauth/access_token?grant_type=client_credentials&client_id=Moehaha&client_secret=xyz`
 
 - Then get a JWT to talk to the Cockpit on behalf of this organization, using the OAuth token in de header prefixed with "token" as a value if Authorization:
+
 `Authorization token <OAuth token received from previous call> https://itsyou.online/v1/oauth/jwt?aud=moehaha`
 
-In case of interacting with the Cockpit on behalf of a user, you can also use the **Client Credentials Flow**, but that is really a bad practice, you rather want to use the **Authorization Code Flow**, which one extra steps:
+
+<a id="user"></a>
+####In case of interacting with the Cockpit on behalf of a user, you can also use the **Client Credentials Flow**, but that is really a bad practice, you rather want to use the **Authorization Code Flow**, which requires one extra step:
 
 - First redirect the user to ItsYou.online to approve that your code can access the user's ItsYou.online profile:
+
   `https://itsyou.online/v1/oauth/authorize?response_type=code&client_id=CLIENT_ID&redirect_uri=CALLBACK_URL&scope=user:name&state=STATE`
+
 - Then request the actual OAuth access token:
+
   `POST https://itsyou.online/v1/oauth/access_token?client_id=CLIENT_ID&client_secret=CLIENT_SECRET&code=AUTHORIZATION_CODE&redirect_uri=CALLBACK_URL&state=STATE`
+
 - Then get a JWT to talk to the Cockpit on behalf of this user, using the OAuth token in de header prefixed with "token" as a value if Authorization:
+
   `Authorization token <OAuth token received from previous call> https://itsyou.online/v1/oauth/jwt?user:ismemberof:moehaha`
