@@ -55,7 +55,8 @@ Two cases are discussed here:
 - [Interacting on behalf of a user](#user)
 
 <a id="organization"></a>
-####In case of interacting with the Cockpit on behalf of an organization:
+#### On behalf of an organization
+In case of interacting with the Cockpit on behalf of an organization:
 
 - First get an OAuth access token for the organization using the **Client Credentials Flow**, e.g. in the below example for the organization with client_id = Moehaha:
 
@@ -67,7 +68,8 @@ Two cases are discussed here:
 
 
 <a id="user"></a>
-####In case of interacting with the Cockpit on behalf of a user, you can also use the **Client Credentials Flow**, but that is really a bad practice, you rather want to use the **Authorization Code Flow**, which requires one extra step:
+#### On behalf of a user
+In case of interacting with the Cockpit on behalf of a user, you can also use the **Client Credentials Flow**, but that is really a bad practice, you rather want to use the **Authorization Code Flow**, which requires one extra step:
 
 - First redirect the user to ItsYou.online to approve that your code can access the user's ItsYou.online profile:
 
