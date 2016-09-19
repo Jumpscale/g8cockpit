@@ -4,19 +4,20 @@ This example will guide you through all the steps required to deploy a blueprint
 
 This will happen in 7 steps:
 
-- Step 1: Create a new AYS repository
-- Step 2: Create a blueprint for deploying a virtual datacenter
-- Step 3: Load the blueprint in memory of the Cockpit Core module
-- Step 4: Execute the blueprint, which will create the required service instances
-- Step 5: Make sure the service instances are created, and ready to install (step 6)
-- Step 6: Simulate the installation of the service instances as created from the blueprint
-- Step 7: Install the service instances as created by executing the blueprint (step 3)
+- [Step 1: Create a new AYS repository](#create-repo)
+- [Step 2: Create a blueprint for deploying a virtual datacenter](#create-blueprint)
+- [Step 3: Load the blueprint in memory of the Cockpit Core module](#load-blueprint)
+- [Step 4: Execute the blueprint, which will create the required service instances](#execute-blueprint)
+- [Step 5: Make sure the service instances are created, and ready to install (step 6)](#check-instances)
+- [Step 6: Simulate the installation of the service instances as created from the blueprint](#simulate)
+- [Step 7: Install the service instances as created by executing the blueprint (step 3)](#install-services)
 
 
+<a id="create-repo"></a>
 ### Step 1: Creation of the AYS repository
-  
+
 Before you can execute a blueprint you need to create an AYS repository. This repository will contain your blueprints and the service instances once the blueprint got executed.
-  
+
 To create a new repository click **AYS Repos** in the left navigation menu:
 
 ![](AYS-Repos.png)
@@ -36,8 +37,9 @@ You can now see your new repository in the list of repos. Click your newly creat
 ![](AYS-repo-demo1.png)
 
 
+<a id="create-blueprint"></a>
 ### Step 2: Create the blueprint
- 
+
 Now that you have your repository ready, the next step is to create the blueprint for creating your virtual datacenter (VDC). Here is the blueprint we are going to use:  
 
 ```yaml
@@ -59,7 +61,7 @@ vdc__demo1:
   maxNumPublicIP: 1
 ```
 
-To create this new blueprint click on the **Explorer** link on the **Repisitory Details** page. This will open the **Explorer** page where you then navigate to the directory of your new repository.
+To create this new blueprint click on the **Explorer** link on the **Repository Details** page. This will open the **Explorer** page where you then navigate to the directory of your new repository.
 
 ![](explorer.png)
 
@@ -82,16 +84,19 @@ To create this new blueprint click on the **Explorer** link on the **Repisitory 
 ![](renamed-blueprint.png)
 
 
+<a id="load-blueprint"></a>
 ### Step 3: Load the blueprint in memory of the Cockpit Core module
 
 The Cockpit Core module keeps all blueprints and service in memory once started. When creating a new blueprint using the **Explorer** however, the Core module is not aware of your new blueprint.
 
+![](reload-all-services.png)
 
 In order to make the **Cockpit Core** module aware of your new blueprint, you need to execute of the **Reload Cockpit** action on the **Repository's** page, it basically empties the memory of the **Cockpit Core** and reloads everything:
 
 
+<a id="execute-blueprint"></a>
 ### Step 4: Execute the blueprint
- 
+
 Now that the blueprint is load in the memory of the **Cockpit Core** moldule, it is ready to get executed. This step will create (not install) all the necessary service instances required by the blueprint. The actual installation of these service instances happens in step 7.
 
 On the **AYS Repo Details** page of your newly created repository select **Execute Blueprint** from the drop-down list
@@ -107,6 +112,7 @@ A message will tell you that your blueprint is executed
 ![](blueprint-executed.png)
 
 
+<a id="check-instances"></a>
 ### Step 5: Make sure the service instances are created
 
 To be sure that the blueprint executed properly you can go back to **AYS Repos** and click the **Instances** link under your new repository.
@@ -120,6 +126,7 @@ From here you can either
 - Or immediately actually install the service instances, seet step 7
 
 
+<a id="simulate"></a>
 ### Step 6: Simulate installation
 
 Before installing the services, we want to simulate the installation in order to make sure the services will behave as we want without having to actually install the services.
@@ -135,6 +142,7 @@ Here we want to simulate the `install` action and we don't want to specify a spe
 We see that the installation will be executed in two steps. First the `vdcfarm!main` and `g8client!dubai` services will be installed, then the `vdc!demo1`. These two steps are due to the fact that the `vdc!demo1` depends on the `g8client!dubai` and `vdcfarm!main`.
 
 
+<a id="install-services"></a>
 ### Step 7: Installing the services
 
 Now that we are confident with the installation steps, we can actually do the installation.
