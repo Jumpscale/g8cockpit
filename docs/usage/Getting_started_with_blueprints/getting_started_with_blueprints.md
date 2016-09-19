@@ -171,11 +171,11 @@ A message will tell you that the installation was scheduled:
 
 You can verify the installation by clicking **Runs** on the **Repository Details** page:
 
-![](runs,png)
+![](demo1-runs.png)
 
 Clicking the last entry brings you to the **Run Details** page:
 
-![](run,png)
+![](demo1-run.png)
 
 In this case **demo1** will have been installed as you will also see in the **Cloud Broker Portal**:
 
