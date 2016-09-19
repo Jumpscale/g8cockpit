@@ -179,7 +179,7 @@ Clicking the last entry brings you to the **Run Details** page:
 
 In this case **demo1** will have been installed as you will also see in the **Cloud Broker Portal**:
 
-![](demo-created.png)
+![](demo1-created.png)
 
 
 ## Congratulations
