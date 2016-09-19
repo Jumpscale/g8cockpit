@@ -14,19 +14,17 @@ This will happen in 7 steps:
 
 
 <a id="create-repo"></a>
-### Step 1: Creation of the AYS repository
+### Step 1: Create a new AYS repository
 
-Before you can execute a blueprint you need to create an AYS repository. This repository will contain your blueprints and the service instances once the blueprint got executed.
+Before you can execute a blueprint you need an existing or new AYS repository. This repository will contain your blueprints and the service instances once the blueprint got executed.
 
-To create a new repository click **AYS Repos** in the left navigation menu:
+To create a new repository click **Repositories** in the left navigation menu:
 
-![](AYS-Repos.png)
+![](repositories.png)
 
 This page displays all your repositories.
 
-On the right side of the page there is an drop-down menu. Choose **Create AYS repository**:
-
-![](create-new-AYS-repo.png)
+Here click the **+ Create Repository** link.
 
 A popup form will appear. Provide a name for your new repository and click **Confirm**:
 
