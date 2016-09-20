@@ -88,13 +88,13 @@ To create this new blueprint click the **Explorer** link on the **Repository Det
 
 The Cockpit keeps all blueprints and service instances in memory once started. When creating a new blueprint using the **Explorer** however, the Cockpit is not aware yet of your new blueprint.
 
-In order to make the **Cockpit** aware of your new blueprint, you need to execute of the **Reload all Services** action on the **Repository Details** page. It basically empties the memory of the Cockpit and reloads everything:
+In order to make the **Cockpit** aware of your new blueprint, you need to execute of the **Reload Cockpit** action on the **Repository Details** page. It basically empties the memory of the Cockpit and reloads everything:
 
 ![](reload-all-services.png)
 
 ![](confirm-reload.png)
 
-![](services.reloaded.png)
+![](cockpit-reloaded.png)
 
 You can verify that the blueprint got loaded by clicking **Blueprints** which will bring you to the **Blueprints** page, click it an you'll see the content:
 
@@ -117,6 +117,19 @@ In the popup that appears leave the form empty and click **Confirm**:
 A message will tell you that your blueprint is executed:
 
 ![](blueprint-executed.png)
+
+As a result you will see that services instances specified in the blueprint are now visible on the **Instances** page of your repository:
+
+![](service-instances.png)
+
+Next to the **g8client** and **vdc** service instances, also a service instance of **vdcfarm** was created, though not explicitly specified in the blueprint. A **vdcfarm** service instance is used for grouping **vdc** service instances. If you do not create one explicitly a default one will be created for you, and will always be named **main**.
+
+Clicking any of the service instances will op the **Instance Details** page for that instance:
+
+![](instance-details1.png)
+![](instance-details2.png)
+
+As you see in the **Service State** section the **vdc** instance **demo1** is currently in the **init** state, so actually not got really installed yet.
 
 
 <a id="check-instances"></a>
