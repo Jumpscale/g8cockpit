@@ -18,7 +18,8 @@ Error : ${error}
               ${bp.content}
           label_content: ${bp.label_content}
           code: True
-      {% endfor %}
+          
+        {% endfor %}
     }}
 {% endfor %}
 {% endif %}
