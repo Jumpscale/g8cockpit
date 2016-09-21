@@ -91,7 +91,7 @@ class AYSBot(object):
 
             result = {}
             try:
-                repo = j.atyourservice.get(work['repo'])
+                repo = j.atyourservice.get(path=work['repo'])
                 run = repo.getRun(
                     role=work['role'],
                     instance=work['instance'],
