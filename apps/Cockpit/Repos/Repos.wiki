@@ -7,7 +7,7 @@ h2. Repositories
 {{datatables_use}}
 {{action id:'action-Createrepository' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Create Repository'}}
 {{action id:'action-Commitrepositories' class:'glyphicon glyphicon-save margin-bottom-medium margin-left-medium' label:'Commit Repositories'}}
-{{action id:'action-ReloadCockpit' class:'glyphicon glyphicon-refresh margin-bottom-medium margin-left-medium' label:'Reload cockpit'}}
+{{action id:'action-ReloadCockpit' class:'glyphicon glyphicon-refresh margin-bottom-medium margin-left-medium' label:'Reload Cockpit'}}
 
 {{actions:
 - display: Create repository
