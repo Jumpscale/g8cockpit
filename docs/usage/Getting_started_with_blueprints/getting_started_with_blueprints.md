@@ -73,6 +73,10 @@ To create this new blueprint click the **Explorer** link on the **Repository Det
 
   ![](edit-file.png)
 
+- Before copy/pasting your blueprint you might want to check the YAML validity, for instance by using http://www.yamllint.com:
+
+  ![](yamllint.png)
+
 - An editor opens, paste the content of the blueprint, then **save**:
 
   ![](edit-blueprint.png)
