@@ -12,7 +12,7 @@ Here's how to request the list:
 ![](list-repositories.png)
 
 Select list:
-![](repositories_list.png)
+![](repositories-list.png)
 
 
 <a id="portal"></a>
