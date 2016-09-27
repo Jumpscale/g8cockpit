@@ -34,6 +34,15 @@ curl -H "Authorization: bearer JWT"  /
      https://BASE_URL/api/ays/repository/REPOSITORY-NAME/execute
 ```
 
+So for instance to install the user as described in the blueprint documented in the sections [How to create a blueprint](../Create_blueprint/Create_blueprint.md) and [How to execute a blueprint](../Execute_blueprint/Execute_blueprint.md):
+
+```
+curl -H "Authorization: bearer JWT"  /
+     -d "action=install&async=true&force=false&instance=user1&role=ovc_user"
+     https://BASE_URL/api/ays/repository/REPOSITORY-NAME/execute
+```
+
+> In order to uninstall the user, check the section about [How to uninstall a service](../Uninstall_service/Uninstall_service.md).
 
 Also see the section about the [API Console](../../API_Console/API_Console.md)
 

@@ -36,6 +36,14 @@ curl -H "Authorization: bearer JWT"  /
      https://BASE_URL/api/ays/repository/REPOSITORY-NAME/execute
 ```
 
+So for instance to uninstall the user as described in the blueprint used in the sections [How to create a blueprint](../Create_blueprint/Create_blueprint.md), [How to execute a blueprint](../Execute_blueprint/Execute_blueprint.md) and [How to install a service](../Install_service/Install_service.md):
+
+```
+curl -H "Authorization: bearer JWT"  /
+     -d "action=uninstall&async=true&force=false%instance=user1&role=ovc_user"
+     https://BASE_URL/api/ays/repository/REPOSITORY-NAME/execute
+```
+
 Or when using the **API Console**:
 
 ![](execute-action-API.png)
