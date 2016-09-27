@@ -1,6 +1,6 @@
 ## How to create a new repository
 
-You can create a repository in three ways:
+You can create a repository in multiple ways:
 
 - [Using the Telegram Chatbot](#telegram)
 - [In the Cockpit Portal](#portal)
@@ -10,7 +10,13 @@ You can create a repository in three ways:
 <a id="telegram"></a>
 ### Using the Telegram Chatbot
 
-@todo
+Here using the @moehaha-chatbot:
+
+![](moehaha-chatbot.png)
+
+After selecting **Create** specify a name for the new repository, and see the result:
+
+![](repository-created.png)
 
 
 <a id="portal"></a>
@@ -33,7 +39,12 @@ curl -H "Authorization: bearer JWT"  /
      https://BASE_URL/api/ays/repository
 ```
 
-Also see the section about the [API Console](../../API_Console/API_Console.md)
+In the **API Console**:
+
+![](create-repository.png)
+
+For more information about the **API Console** go to the section about the [API Console](../../API_Console/API_Console.md).
+
 
 <a id="cli"></a>
 ### At the CLI
