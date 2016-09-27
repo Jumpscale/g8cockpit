@@ -34,20 +34,12 @@ See the [Getting started with blueprints](../../Getting_started_with_blueprints/
 
 In order to use the Cockpit API you first need to obtain an JWT, as documented in the section about [how to get a JWT](../Get_JWT/Get_JWT.md).
 
-Once you got the JWT, you can list all service instance using:
+Once you got the JWT, you can list all service instances for a specific repository using:
 
 ```
 curl -H "Authorization: bearer JWT"  /
      -d "action=install&async=true&force=false&instance=INSTANCE-NAME&role=ROLE"
      https://BASE_URL/api/ays/repository/REPOSITORY-NAME/execute
-```
-
-So for instance to install the user as described in the blueprint documented in the sections [How to create a blueprint](../Create_blueprint/Create_blueprint.md) and [How to execute a blueprint](../Execute_blueprint/Execute_blueprint.md):
-
-```
-curl -X GET
-     -H "Authorization: bearer JWT"  /
-     https://BASE_URL/api/ays/repository/REPOSITORY-NAME/service
 ```
 
 In the **API Console**:
