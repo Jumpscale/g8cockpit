@@ -1,8 +1,6 @@
-## How to install a service
+## How to list all service instances in a repository
 
-Before installing a service instance, make sure it is initialized, typically accomplished by executing the blueprint describing the blueprint, see the section about [how to execute a blueprint](../Execute_blueprint/Execute_blueprint.md).
-
-You can install a service instance in multiple ways:
+You can list all service instance in multiple ways ways:
 
 - [Using the Telegram Chatbot](#telegram)
 - [In the Cockpit Portal](#portal)
@@ -12,7 +10,17 @@ You can install a service instance in multiple ways:
 <a id="telegram"></a>
 ### Using the Telegram Chatbot
 
-@todo
+Start the conversation with the chatbot with **/start**, type **/repo** and then click **select**:
+
+![](select-repository.png)
+
+After having selected one of the repositories from the list you'll got following reply:
+
+![](repository-selected.png)
+
+Then type **/service** and click **list**, which will show you all the service instances:
+
+![](instances-list.png)
 
 
 <a id="portal"></a>
@@ -26,7 +34,7 @@ See the [Getting started with blueprints](../../Getting_started_with_blueprints/
 
 In order to use the Cockpit API you first need to obtain an JWT, as documented in the section about [how to get a JWT](../Get_JWT/Get_JWT.md).
 
-Once you got the JWT, you can install a service instance:
+Once you got the JWT, you can list all service instance using:
 
 ```
 curl -H "Authorization: bearer JWT"  /
@@ -37,14 +45,17 @@ curl -H "Authorization: bearer JWT"  /
 So for instance to install the user as described in the blueprint documented in the sections [How to create a blueprint](../Create_blueprint/Create_blueprint.md) and [How to execute a blueprint](../Execute_blueprint/Execute_blueprint.md):
 
 ```
-curl -H "Authorization: bearer JWT"  /
-     -d "action=install&async=true&force=false&instance=user1&role=ovc_user"
-     https://BASE_URL/api/ays/repository/REPOSITORY-NAME/execute
+curl -X GET
+     -H "Authorization: bearer JWT"  /
+     https://BASE_URL/api/ays/repository/REPOSITORY-NAME/service
 ```
 
-> In order to uninstall the user, check the section about [How to uninstall a service](../Uninstall_service/Uninstall_service.md).
+In the **API Console**:
 
-Also see the section about the [API Console](../../API_Console/API_Console.md)
+![](API-console.png)
+
+For more information about the **API Console** go to the section about the [API Console](../../API_Console/API_Console.md).
+
 
 <a id="cli"></a>
 ### At the CLI

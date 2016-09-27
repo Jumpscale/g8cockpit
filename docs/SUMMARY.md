@@ -26,6 +26,7 @@
     * [List all repositories](usage/Howto/List_repositories/List_repositories.md)
     * [Create a blueprint](usage/Howto/Create_blueprint/Create_blueprint.md)
     * [Execute a blueprint](usage/Howto/Execute_blueprint/Execute_blueprint.md)
+    * [List all service instances](usage/Howto/List_instances/List_instances.md)
     * [List available actions of a service](usage/Howto/List_actions/List_actions.md)
     * [Install a service instance](usage/Howto/Install_service/Install_service.md)
     * [Uninstall a service instance](usage/Howto/Uninstall_service/Uninstall_service.md)

@@ -7,6 +7,7 @@
 * [List all repositories](List_repositories/List_repositories.md)
 * [Create a blueprint](Create_blueprint/Create_blueprint.md)
 * [Execute a blueprint](Execute_blueprint/Execute_blueprint.md)
+* [List all service instances](List_instances/List_instances.md)
 * [List available actions of a service](List_actions/List_actions.md)
 * [Install a service instance](Install_service/Install_service.md)
 * [Uninstall a service instance](Uninstall_service/Uninstall_service.md)

@@ -14,7 +14,7 @@ Here using the @moehaha-chatbot:
 
 ![](moehaha-chatbot.png)
 
-After selecting **Create** specify a name for the new repository, and see the result:
+After clicking **create** specify a name for the new repository, and see the result:
 
 ![](repository-created.png)
 
