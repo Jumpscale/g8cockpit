@@ -1,6 +1,6 @@
 ## How to delete a service instance
 
-You can create a repository in multiple ways:
+You can delete a repository in multiple ways:
 
 - [In the Cockpit Portal](#portal)
 - [Using the Cockpit API](#api)
