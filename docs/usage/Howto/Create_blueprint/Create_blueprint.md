@@ -40,4 +40,4 @@ Also see the section about the [API Console](../../API_Console/API_Console.md)
 
 @todo
 
-Also see [How to add a user](../Add_user/add_user.md).
+Also see [How to add a user](../Add_user/Add_user.md).
