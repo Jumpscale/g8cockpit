@@ -6,11 +6,11 @@ The application requests an OAuth access token by either using:
 
 - the **Client Credentials Flow**, in which case your application will send just an API Key:
 
-  - In case of interacting with the Cockpit on behalf of the organization for which the Cockpit was setup: the **Client id** of the organization + one of the **client secrets** managed under **API Access keys** on the **Settings** tab of the organization profile page on ItsYou.online:
+  - In case of interacting with the Cockpit on behalf of the organization for which the Cockpit was setup: the **Client id** of the organization + one of the **client secrets** managed under **API Access keys** on the **SETTINGS** tab of the profile page for the organization on ItsYou.online:
 
     ![](organization_settings.png)
 
-  - In case of interacting with the Cockpit on behalf of a user (not recommended, rather go for the **Authorization Code Flow** instead, discussed here below): one of the API keys (**application_id** + **client secrets**), that you manage on the **Settings** tab of the user profile page on ItsYou.online user:
+  - In case of interacting with the Cockpit on behalf of a user (not recommended, rather go for the **Authorization Code Flow** instead, discussed here below): one of the API keys (**application_id** + **client secrets**), that you manage on the **SETTINGS** tab of the user profile page on ItsYou.online:
 
     ![](user_settings.png)
 
@@ -21,9 +21,9 @@ The application requests an OAuth access token by either using:
        https://itsyou.online/v1/oauth/access_token
   ```
 
-- or the **Authorization Code Flow**, in which case your application will first obtain an OAuth authorization code, and send this to ItsYou.online along with one of its own **Client id** (global_id) of the organization + one of the **client secrets** managed under **API Access keys** on the **Settings** tab of the organization profile page on ItsYou.online (see first screenshot here above)
+- or the **Authorization Code Flow**, in which case your application will first obtain an OAuth authorization code, and send this to ItsYou.online along with its own **Client id** (global_id of the organization) + one of the **client secrets** managed under **API Access keys** on the **SETTINGS** tab of the profile page for the organization on ItsYou.online (see first screenshot here above)
 
-  See the section about [how to get an OAuth authorization code](../Get_oauth_authorization_code/Get_oauth_authorization_code.md).
+  See the section about [How to get an OAuth authorization code](../Get_oauth_authorization_code/Get_oauth_authorization_code.md).
 
   This is what you will actually send:
 
@@ -32,4 +32,4 @@ The application requests an OAuth access token by either using:
        https://itsyou.online/v1/oauth/access_token?
   ```
 
-With the the received a OAuth access token, you can request a JWT needed for all Cockpit API, see the section about [how to get a JWT](../Get_JWT/Get_JWT.md).
+With the received a OAuth access token, you can request the JWT needed for all Cockpit API calls, see the section about [How to get a JWT](../Get_JWT/Get_JWT.md) for more details.

@@ -23,7 +23,7 @@ Your server application can then use this OAuth authorization code to request an
 
 Alternatively you can also request a JWT from ItsYou.online in order to interact with the Cockpit API on behalf of the organization, this is done by first request the **OAuth Access Code** through the **Client Credentials Flow**.
 
-Both cases are discussed in the sections about [how to get an OAuth access code](../Get_oauth_access_token/Get_oauth_access_token) and [how to get a JWT](../Get_JWT/Get_JWT.md).
+Both cases are discussed in the sections about [How to get an OAuth access code](../Get_oauth_access_token/Get_oauth_access_token) and [How to get a JWT](../Get_JWT/Get_JWT.md).
 
 Also see the [ItsYou.online documentation](https://www.gitbook.com/book/gig/itsyouonline/details) and the [ItsYou.online API Console](
 https://itsyou.online/apidocumentation) for more information.

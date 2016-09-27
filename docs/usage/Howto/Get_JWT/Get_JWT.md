@@ -1,8 +1,8 @@
-## How to Get a JWT
+## How to get a JWT
 
 In order to use the Cockpit API a Jason Web Token (JWT) is needed. The Cockpit will use this JWT in order check if your application (code) was granted the right to interact with the Cockpit on behalf of the user of organization for which the Cockpit was setup.
 
-A JWT is requested from ItsYou.online, and requires an OAuth access token, which you first also need to request from ItsYou.online, as documented in the section about [how to get an OAuth access token](../Get_oauth_access_token/Get_oauth_access_token.md).
+A JWT is requested from ItsYou.online, and requires an OAuth access token, which you first also need to request from ItsYou.online, as documented in the section about [How to get an OAuth access token](../Get_oauth_access_token/Get_oauth_access_token.md).
 
 Once you've got the OAuth access token, the JWT is requested as follows.
 
