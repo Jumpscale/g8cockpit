@@ -44,6 +44,10 @@ curl -H "Authorization: bearer JWT"  /
      https://BASE_URL/api/ays/repository/REPOSITORY-NAME/execute
 ```
 
-Or when using the **API Console**:
+> Note that uninstalling a services does not delete the service instance from the Cockpit. In order to delete a service from the Cockpit go to the section about [How to delete a service](../Delete_service/Delete_service.md).
+
+In the **API Console**:
 
 ![](execute-action-API.png)
+
+For more information about the **API Console** go to the section about the [API Console](../../API_Console/API_Console.md).
