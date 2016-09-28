@@ -1,11 +1,16 @@
 ## How to create a blueprint
 
-You can create a blueprint in three ways:
+You can create a blueprint in multiple ways:
 
 - [Using the Telegram Chatbot](#telegram)
 - [In the Cockpit Portal](#portal)
 - [Using the Cockpit API](#api)
 - [At the CLI](#cli)
+
+All are discussed here below.
+
+Make sure to validate your blueprint first to have valid YAML format using a tool like [YAML Lint](http://www.yamllint.com/).
+
 
 <a id="telegram"></a>
 ### Using the Telegram Chatbot

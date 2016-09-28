@@ -17,7 +17,7 @@ The application requests an OAuth access token by either using:
   This is what you will actually send - in both case:
 
   ```
-  curl -d "grant_type=client_credentials&client_id=CLIENT_ID/APPLICATION_ID&client_secret=CLIENT_SECRET" /
+       curl -d "grant_type=client_credentials&client_id=CLIENT_ID/APPLICATION_ID&client_secret=CLIENT_SECRET" /
        https://itsyou.online/v1/oauth/access_token
   ```
 
