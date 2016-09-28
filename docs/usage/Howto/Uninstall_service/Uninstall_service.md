@@ -6,14 +6,30 @@ Once a user got created through the Cockpit, as documented [here](../Add_user/Ad
 
 > Note: Deleting an instance will not first call uninstall the action, see [how to delete a service instance](../Delete_service/Delete_service.md)
 
-You have following options to call the **Uninstall** action:
+You have several options to uninstall a service:
 
-- [Through the Cockpit portal](#portal)
-- [Through the Cockpit APi](#api)
+- [Through the Cockpit Portal](#portal)
+- [Through the Cockpit API](#api)
 
 <a id="portal"></a>
-## Execute the Uninstall action through the Cockpit Portal
+## Uninstalling using the Cockpit Portal
 
+This can be done either via:
+- [the service **Instance Details** page](#instance-details)
+- [or the **Repository Details** page](#repository-details)
+
+<a id="instance-details"></a>
+### Uninstall the service via the Service Details page
+Go to the **Instance Details** page of the service instance, and select **Uninstall** from the **Actions** dropdown:
+
+![](uninstall-service.png)
+
+The **Confirm Action Uninstall** will popup:
+
+![](force.png)
+
+<a id="repository-details"></a>
+### Execute the Uninstall action from the Repository Details page
 Go to the **Repository Details** page of your repository, and select **Execute action** from the **Actions** dropdown:
 
 [](!execute-action.png)

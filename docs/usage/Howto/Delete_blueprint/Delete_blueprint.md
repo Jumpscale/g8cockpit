@@ -19,7 +19,9 @@ All are discussed here below.
 <a id="portal"></a>
 ### Using the Cockpit Portal
 
-@todo
+Go to the **Instance Details** page of the service instance, and select **Delete service** from the **Actions** dropdown:
+
+![](delete-service-from-portal.png)
 
 
 <a id="api"></a>
