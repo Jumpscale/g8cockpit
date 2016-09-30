@@ -48,5 +48,3 @@ For more information about the **API Console** go to the section about the [API 
 ### At the CLI
 
 @todo
-
-Also see [How to add a user](../Add_user/Add_user.md).
