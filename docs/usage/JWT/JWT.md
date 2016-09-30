@@ -82,3 +82,5 @@ In case of interacting with the Cockpit on behalf of a user, you can also use th
 - Then get a JWT to talk to the Cockpit on behalf of this user, using the OAuth token in de header prefixed with "token" as a value if Authorization:
 
   `Authorization token <OAuth token received from previous call> https://itsyou.online/v1/oauth/jwt?user:ismemberof:moehaha`
+
+Also see [How to get a JWT](../Howto/Get_JWT/Get_JWT.md).

@@ -1,4 +1,4 @@
-## Using of the API Console
+## Using the API Console
 
 The **Cockpit Portal** also exposes the REST API through the [API Console](https://github.com/mulesoft/api-console/).
 
@@ -6,7 +6,7 @@ You can access the **API Console** by clicking the **API** link in the left navi
 
 ![API Console](API-Console.png)
 
-In order to call the API, you always need an JWT token. See the section about [generating JWT tokens](../JWT/JWT.md) how to do this.
+In order to call the API, you always need a JWT token. See the sections [Generating JWT tokens](../JWT/JWT.md) and [How to get a JWT](../Howto/Get_JWT/Get_JWT.md).
 
 Once you have your JWT token, you can easily test the API through the **API Console**.
 

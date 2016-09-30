@@ -24,5 +24,6 @@ In the above:
 - **scope=user:memberof:client_id** claims that the user is member of the organization identified with **client_id**
 - **aud=client_id** claims that the JWT was issued for the organization identified with **client_id**
 
-See the [ItsYou.online documentation](https://www.gitbook.com/book/gig/itsyouonline/details), specifically the section about [JWT Support](https://gig.gitbooks.io/itsyouonline/content/oauth2/jwt.html) and the [ItsYou.online API Console](
-https://itsyou.online/apidocumentation) for more information.
+Also see:
+- The [ItsYou.online documentation](https://www.gitbook.com/book/gig/itsyouonline/details), specifically the sections about [JWT Support](https://gig.gitbooks.io/itsyouonline/content/oauth2/jwt.html) and [ItsYou.online API Console](https://itsyou.online/apidocumentation)
+-[Generating JWT tokens](../JWT/JWT.md)
