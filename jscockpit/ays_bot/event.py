@@ -138,8 +138,7 @@ class EventDispatcher:
                 }
 
             if repos == []:
-                for path in j.atyourservice.findAYSRepos(AYS_REPO_DIR):
-                    repos.append(j.atyourservice.get(path=path))
+                j.atyourservice.reposList()
 
             for repo in repos:
                 for service in repo.findServices():

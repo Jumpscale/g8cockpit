@@ -64,8 +64,7 @@ class AysRecurring:
         walk over all the service in repos and look for service that define recurring actions.
         """
         if repos == []:
-            for path in j.atyourservice.findAYSRepos(AYS_REPO_DIR):
-                repos.append(j.atyourservice.get(path=path))
+            j.atyourservice.reposList()
 
         for repo in repos:
             for service in repo.findServices():
