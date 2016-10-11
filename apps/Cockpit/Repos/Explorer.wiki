@@ -1,0 +1,8 @@
+@usedefaults
+
+{{timestamp}}
+
+
+h2. Explorer
+{{aysrepo repo:$$repo}}
+{{explorer: ppath:${repo['path']}}}

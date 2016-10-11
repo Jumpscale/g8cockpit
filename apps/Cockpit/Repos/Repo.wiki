@@ -1,0 +1,159 @@
+@usedefaults
+
+{{timestamp}}
+@block
+@row
+h2. Repository: [$$repo|/cockpit/Repo?repo=$$repo]
+
+@col 6
+h2. Links:
+* [Templates|cockpit/Templates?ayspath=$$repo]
+* [Instances|cockpit/Instances?ayspath=$$repo]
+* [Blueprints|cockpit/Blueprints?ayspath=$$repo]
+* [Explorer|cockpit/Repo/Explorer?repo=$$repo]
+* [Simulator|cockpit/Repo/simulate?repo=$$repo]
+* [Runs|cockpit/Runs?repo=$$repo]
+@colend
+
+
+@col6
+h3. Actions:
+
+{{actions:
+- display: Delete this repository
+  action: /restmachine/cockpit/atyourservice/deleteRepo
+  navigateback: True
+  input:
+  - name: repository
+    type: hidden
+    value: $$repo
+
+- display: Execute blueprint
+  action: /restmachine/cockpit/atyourservice/executeBlueprint
+  showresponse: True
+  input:
+  - name: repository
+    type: hidden
+    value: $$repo
+  - name: role
+    label: Role
+    type: text
+  - name: instance
+    label: Instance
+    type: text
+
+- display: Init
+  action: /restmachine/cockpit/atyourservice/init
+  showresponse: True
+  input:
+  - name: repository
+    type: hidden
+    value: $$repo
+  - name: force
+    label: Force init
+    type: dropdown
+    values:
+    - label: False
+      value: False
+    - label: True
+      value: True
+  - name: role
+    label: Role
+    type: text
+  - name: instance
+    label: Instance
+    type: text
+
+- display: Install
+  action: /restmachine/cockpit/atyourservice/install
+  showresponse: True
+  input:
+  - name: repository
+    type: hidden
+    value: $$repo
+  - name: force
+    label: Force install
+    type: dropdown
+    values:
+    - label: False
+      value: False
+    - label: True
+      value: True
+  - name: async
+    label: Async
+    type: dropdown
+    values:
+    - label: True
+      value: True
+    - label: False
+      value: False
+  - name: role
+    label: Role
+    type: text
+  - name: instance
+    label: Instance
+    type: text
+
+- display: Execute action
+  action: /restmachine/cockpit/atyourservice/executeAction
+  input:
+  - name: repository
+    type: hidden
+    value: $$repo
+  - name: action
+    type: text
+    label: Action name
+    placeholder: 'install'
+    required: True
+  - name: force
+    label: Force
+    type: dropdown
+    values:
+    - label: False
+      value: False
+    - label: True
+      value: True
+  - name: async
+    label: Async
+    type: dropdown
+    values:
+    - label: True
+      value: True
+    - label: False
+      value: False
+  - name: role
+    label: Role
+    type: text
+  - name: instance
+    label: Instance
+    type: text
+
+- display: Delete service
+  action: /restmachine/cockpit/atyourservice/deleteService
+  showresponse: True
+  input:
+    - name: repository
+      type: hidden
+      value: $$repo
+    - name: force
+      type: hidden
+      value: True
+    - name: role
+      type: text
+      label: Role
+      required: True
+    - name: instance
+      type: text
+      label: Instance
+      required: True
+    - name: uninstall
+      label: Uninstall service before deletion
+      type: dropdown
+      values:
+      - label: True
+        value: True
+      - label: False
+        value: False
+
+}}
+@colend

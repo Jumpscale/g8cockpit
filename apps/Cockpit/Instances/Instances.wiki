@@ -1,0 +1,31 @@
+@usedefaults
+h3. AYS Instances
+
+
+{{datatables_use}}
+{{aysinstances ayspath:$$ayspath}}
+
+{{actions:
+- display: Delete Service
+  action: /restmachine/cockpit/atyourservice/deleteService
+  showresponse: True
+  hide: True
+  input:
+    - name: force
+      type: hidden
+      value: True
+    - name: uninstall
+      type: hidden
+      value: False
+}}
+
+{% if error is defined %}
+    Error : ${error}
+{%else%}
+    ||Role||Instance||Repository||Actions||
+    {% for service in services -%}
+    | ${service['role']} | [${service['instance']}|cockpit/Instance?shortkey=${service['key']}&ayspath=${service['repository']}] | [${service['repository']} | /cockpit/repo?repo=${service['repository']}] | {{action label:'Delete' deleterow:true id:'action-DeleteService' class:'glyphicon glyphicon-trash' data-repository:'${service['repository']}' data-role:'${service['role']}' data-instance:'${service['instance']}'}} |
+    {% else %}
+    This repository doesn't contain any service instance yet.
+    {% endfor %}
+{%endif%}

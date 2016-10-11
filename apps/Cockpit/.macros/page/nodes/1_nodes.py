@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
 
     namelink = '[%(name)s|/grid/Grid Node?id=%(id)s&gid=%(gid)s&nid=%(nid)s]'
 
-    fieldvalues = ['gid', namelink, 'ipaddr', 'roles']
+    fieldvalues = ['gid', namelink,'ipaddr', 'roles']
     fieldids = ['gid', 'name', 'ipaddr', 'roles']
     tableid = modifier.addTableForModel('system', 'node', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
