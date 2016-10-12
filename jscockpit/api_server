@@ -1,0 +1,4 @@
+#!/usr/local/bin/jspython
+from ays_api import app
+
+app.run(debug=True, host='0.0.0.0')
