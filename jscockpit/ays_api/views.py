@@ -25,6 +25,14 @@ def service_view(s):
     return service
 
 
+def run_view(run):
+    """
+    generate a dict that represent a service from a repo object
+    """
+    # TODO
+    return run_view.__repr__()
+
+
 def template_view(t):
     """
     generate a dict that represent a service from a service object

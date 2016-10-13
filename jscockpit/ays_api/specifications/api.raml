@@ -67,7 +67,7 @@ types:
         name:
            type: string
            required: true
-        instance:
+        name:
            type: string
            required: true
         role:
@@ -92,7 +92,7 @@ types:
     example:
         key: "github_repo!main"
         name: "github_repo"
-        instance: "main"
+        name: "main"
         role: "github_repo"
         actions_py: |
                 class Actions(ActionsBaseMgmt):
@@ -293,7 +293,7 @@ types:
                           role:
                               type: string
                               default: ''
-                          instance:
+                          name:
                               type: string
                               default: ''
                       responses:
@@ -315,7 +315,7 @@ types:
                         role:
                             type: string
                             default: ''
-                        instance:
+                        name:
                             type: string
                             default: ''
                     responses:
@@ -340,7 +340,7 @@ types:
                         role:
                             type: string
                             default: ''
-                        instance:
+                        name:
                             type: string
                             default: ''
                         force:
@@ -422,7 +422,7 @@ types:
                             role:
                                 type: string
                                 default: ''
-                            instance:
+                            name:
                                 type: string
                                 default: ''
                         responses:
@@ -506,25 +506,25 @@ types:
                                 body:
                                     application/json:
                                       type: Service[]
-                    /{instance}:
+                    /{name}:
                         uriParameters:
-                            instance:
+                            name:
                               type: string
                         get:
-                            displayName: getServiceByInstance
-                            description: Get a service instance
+                            displayName: getServiceByName
+                            description: Get a service name
                             responses:
                                 200:
                                     body:
                                         application/json:
                                           type: Service
                                 404:
-                                    description: Service instance not found
+                                    description: Service name not found
                                     body:
                                         application/json:
                                           type: Error
                         delete:
-                            displayName: deleteServiceByInstance
+                            displayName: deleteServiceByName
                             description: uninstall and delete a service
                             queryParameters:
                                 scope:
@@ -536,7 +536,7 @@ types:
                                 204:
                                     description: service deleted
                                 404:
-                                    description: Service instance not found
+                                    description: Service name not found
                                     body:
                                         application/json:
                                           type: Error
@@ -550,7 +550,7 @@ types:
                                             application/json:
                                               type: string[]
                                     404:
-                                        description: Service instance not found
+                                        description: Service name not found
                                         body:
                                             application/json:
                                               type: Error
