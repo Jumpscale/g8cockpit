@@ -189,12 +189,11 @@ def executeAction(repository):
     try:
         rq.execute()
     except Exception as error:
-        error_msg = 'Error execution of action %s of service %s!%s from repo `%s`: %s' % (
-            action, role, instance, repo.name, error)
+        error_msg = 'Error during execution of action %s: %s' % (action, error)
         logger.error(error_msg)
         return jsonify(error=error_msg), 500
 
-    msg = "Action %s on service %s instance %s in repo %s executed without error" % (action, role, instance, repo.name)
+    msg = "Action %s executed successfully" % (action, role, instance, repo.name)
     return jsonify(msg=msg), 200
 
 
@@ -245,7 +244,7 @@ def createNewBlueprint(repository):
 
     names = [bp.name for bp in repo._blueprints.values()]
     if new_name in names:
-        return jsonify(error="Blueprint with the name %s' already exsits" % new_name), 409
+        return jsonify(error="Blueprint with the name %s' already exists" % new_name), 409
 
     bp_path = j.sal.fs.joinPaths(repo.path, 'blueprints', new_name)
     try:
@@ -415,7 +414,7 @@ def executeBlueprint(blueprint, repository):
         logger.error(error_msg)
         return jsonify(error=error_msg), 500
 
-    return jsonify(msg="Blueprint %s initialized" % repo.name)
+    return jsonify(msg="Blueprint %s initialized" % blueprint)
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>', methods=['DELETE'])
