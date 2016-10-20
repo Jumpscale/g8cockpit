@@ -456,7 +456,6 @@ def listServices(repository):
     '''
     j.atyourservice.reposList()
     repo = j.atyourservice._repos.get(repository, None)
-
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
 
@@ -539,7 +538,7 @@ def deleteServiceByName(name, role, repository):
     uninstall and delete service
     It is handler for DELETE /ays/repository/<repository>/service/<role>/<instance>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -550,15 +549,15 @@ def deleteServiceByName(name, role, repository):
         return jsonify(error='Service role:%s name:%s not found in the repo %s' % (role, name, repository)), 404
 
     try:
-        scope = request.args.getlist('scope')
         uninstall = j.data.types.bool.fromString(request.args.get('uninstall', True))
 
         if uninstall:
-            producerRoles = ','.join(scope) if scope else '*'
-            repo.uninstall(role=role, instance=name, producerRoles=producerRoles, force=True)
-
-        del repo.services[service.key]
-        j.sal.fs.removeDirTree(service.path)
+            executor = service.executor
+            cmd = "cd {path} && ays do uninstall --ask -r {role} -i {instance}".format(path=repo.path, role=service.model.role, instance=service.name)
+            rc, out, err = executor.cuisine.core.run(cmd, die=False)
+        service.delete()
+        if rc > 0 and err != "":
+            return jsonify(error="Service is deleted successfully, but uninstallation failed"), 500
     except Exception as e:
         return jsonify(error='unexpected error happened: %s' % str(e)), 500
 
