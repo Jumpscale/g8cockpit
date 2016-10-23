@@ -627,12 +627,12 @@ def addTemplateRepo():
 
 
 @ays_api.route('/ays/repository/<repository>/template', methods=['POST'])
-def createNewTemplate(repository):
+def createNewActor(repository):
     '''
     Create new template
     It is handler for POST /ays/repository/<repository>/template
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -641,7 +641,6 @@ def createNewTemplate(repository):
     inputs = Template.from_json(request.args)
     if not inputs.validate():
         return jsonify(errors=inputs.errors), 400
-
     name = inputs.name.data
     actions_py = inputs.actions_py.data
     schema_hrd = inputs.schema_hrd.data
@@ -650,9 +649,9 @@ def createNewTemplate(repository):
     if name in template_names:
         return jsonify(error="template with name '%s' already exists" % name), 409
 
-    templates_dir = j.sal.fs.joinPaths(repo.path, 'servicetemplates')
+    templates_dir = j.sal.fs.joinPaths(repo.path, 'actortemplates')
     if not j.sal.fs.exists(templates_dir):
-        j.sal.createDir(templates_dir)
+        j.sal.fs.createDir(templates_dir)
 
     j.sal.fs.createDir(j.sal.fs.joinPaths(templates_dir, name))
     dir_path = j.sal.fs.joinPaths(templates_dir, name)
