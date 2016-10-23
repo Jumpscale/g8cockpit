@@ -594,9 +594,8 @@ def addTemplateRepo():
     inputs = TemplateRepo.from_json(request.args)
     if not inputs.validate():
         return jsonify(errors=inputs.errors), 400
-
     url = inputs.url.data
-    branch = inputs.branch.data
+    branch = inputs.branch.data or "master"
 
     if url == '':
         return jsonify(error="URL can't be empty"), 400
