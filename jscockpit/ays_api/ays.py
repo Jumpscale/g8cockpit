@@ -681,7 +681,6 @@ def getTemplate(template, repository):
 
     tmpl = repo.templates[template]
     template = template_view(tmpl)
-
     return json.dumps(template), 200, {'Content-Type': 'application/json'}
 
 

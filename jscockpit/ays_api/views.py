@@ -39,9 +39,8 @@ def template_view(t):
     """
     template = {
         'name': t.name,
-        'service_hrd': t.hrd.getHRDAsDict() if t.hrd else None,
-        'schema_hrd': j.sal.fs.fileGetContents(t.path_hrd_schema) if j.sal.fs.exists(t.path_hrd_schema) else None,
-        'actions_py': j.sal.fs.fileGetContents(t.path_actions) if j.sal.fs.exists(t.path_actions) else None,
+        'schema_hrd': j.sal.fs.fileGetContents("{path}/schema.hrd".format(path=t.path)) if j.sal.fs.exists("{path}/schema.hrd".format(path=t.path)) else None,
+        'actions_py': j.sal.fs.fileGetContents("{path}/actions.py".format(path=t.path)) if j.sal.fs.exists("{path}/actions.py".format(path=t.path)) else None,
     }
     return template
 
