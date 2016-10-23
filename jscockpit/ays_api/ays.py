@@ -732,33 +732,3 @@ def getRun(aysrun, repository):
 
     data = {'model': aysrun.model, 'repr': aysrun.__repr__()}
     return json.dumps(data), 200, {'Content-Type': 'application/json'}
-
-
-@ays_api.route('/ays/repository/<repository>/source/<source>', methods=['GET'])
-def getSource(source, repository):
-    """
-    Get source
-    It is method for GET /ays/repository/{repository}/source/{source}
-    """
-    j.atyourservice.reposList()
-    repo = j.atyourservice._repos.get(repository, None)
-
-    if repo is None:
-        return jsonify(error='Repository %s not found' % repository), 404
-
-    return json.dumps(repo.getSource(source)), 200, {'Content-Type': 'application/json'}
-
-
-@ays_api.route('/ays/repository/<repository>/hrd/<hrd>', methods=['GET'])
-def getHRD(hrd, repository):
-    """
-    Get HRD
-    It is method for GET /ays/repository/{repository}/hrd/{hrd}
-    """
-    j.atyourservice.reposList()
-    repo = j.atyourservice._repos.get(repository, None)
-
-    if repo is None:
-        return jsonify(error='Repository %s not found' % repository), 404
-
-    return json.dumps(repo.getHRD(hrd)), 200, {'Content-Type': 'application/json'}

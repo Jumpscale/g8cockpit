@@ -617,40 +617,6 @@ types:
                                 body:
                                     application/json:
                                       type: Error
-            /source:
-                /{source}:
-                    uriParameters:
-                        source:
-                          type: string
-                    get:
-                        displayName: getSource
-                        description: gets source of hash in a repo
-                        responses:
-                            200:
-                                body:
-                                    application/json:
-                                      type: AYSFile
-                            404:
-                                body:
-                                    application/json:
-                                      type: Error
-            /hrd:
-                /{hrd}:
-                    uriParameters:
-                        hrd:
-                          type: string
-                    get:
-                        displayName: getHRD
-                        description: gets hrd of hash in a repo
-                        responses:
-                            200:
-                                body:
-                                    application/json:
-                                      type: AYSFile
-                            404:
-                                body:
-                                    application/json:
-                                      type: Error
 
 
 /webhooks:
