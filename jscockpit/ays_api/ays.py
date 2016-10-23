@@ -575,12 +575,11 @@ def listTemplates(repository):
 
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
-
     templates = []
     for name, tmpl in repo.templates.items():
-        templates.append(template_view(tmpl))
+        templates.append(tmpl.name)
 
-    templates = sorted(templates, key=lambda template: template['name'])
+    templates = sorted(templates, key=lambda template: template)
 
     return json.dumps(templates), 200, {'Content-Type': 'application/json'}
 
