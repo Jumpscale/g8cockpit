@@ -74,14 +74,13 @@ def deleteRepository(repository):
     Delete a repository
     It is handler for DELETE /ays/repository/<repository>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, False)
 
     if not repo:
         return jsonify(error='Repository %s not found' % repository), 404
 
-    repo.db.destroy()
-    del j.atyourservice._repos[repository]
+    repo.destroy()
     if j.sal.fs.exists(repo.path):
         j.sal.fs.removeDirTree(repo.path)
 
