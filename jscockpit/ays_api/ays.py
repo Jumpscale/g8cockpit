@@ -40,7 +40,8 @@ def createNewRepository():
     It is handler for POST /ays/repository
     '''
     j.atyourservice.reposList()
-    inputs = Repository.from_json(request.args)
+    data = json.loads(request.data)
+    inputs = Repository.from_json(data)
     if not inputs.validate():
         return jsonify(errors=inputs.errors), 400
 
