@@ -564,24 +564,24 @@ def deleteServiceByName(name, role, repository):
     return jsonify(), 204
 
 
-@ays_api.route('/ays/repository/<repository>/template', methods=['GET'])
-def listTemplates(repository):
+@ays_api.route('/ays/repository/<repository>/actor', methods=['GET'])
+def listActors(repository):
     '''
     list all templates
-    It is handler for GET /ays/repository/<repository>/template
+    It is handler for GET /ays/repository/<repository>/actor
     '''
     j.atyourservice.reposList()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
-    templates = []
-    for name, tmpl in repo.templates.items():
-        templates.append(tmpl.name)
+    actors = []
+    for name, actor in repo.actors.items():
+        actors.append(name)
 
-    templates = sorted(templates, key=lambda template: template)
+    actors = sorted(actors, key=lambda template: template)
 
-    return json.dumps(templates), 200, {'Content-Type': 'application/json'}
+    return json.dumps(actors), 200, {'Content-Type': 'application/json'}
 
 
 @ays_api.route('/ays/template', methods=['POST'])
@@ -719,7 +719,6 @@ def getRun(aysrun, repository):
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
 
-    import ipdb; ipdb.set_trace()
     try:
         aysrun = repo.runGet(aysrun)
     except j.exceptions.Input as e:
@@ -727,6 +726,5 @@ def getRun(aysrun, repository):
     except Exception as e:
         return jsonify(error=e.msg), 500
 
-    #import ipdb; ipdb.set_trace()
     data = {'model': str(aysrun.model), 'repr': str(aysrun)}
     return json.dumps(data), 200, {'Content-Type': 'application/json'}
