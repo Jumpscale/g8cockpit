@@ -663,11 +663,11 @@ def createNewActor(repository):
     return jsonify(name=name, action_py=actions_py, schema_hrd=schema_hrd), 201
 
 
-@ays_api.route('/ays/repository/<repository>/template/<template>', methods=['GET'])
-def getTemplate(template, repository):
+@ays_api.route('/ays/repository/<repository>/actor/<actor>', methods=['GET'])
+def getTemplate(actor, repository):
     '''
     Get a template
-    It is handler for GET /ays/repository/<repository>/template/<template>
+    It is handler for GET /ays/repository/<repository>/actor/<actor>
     '''
     j.atyourservice.reposList()
     repo = j.atyourservice._repos.get(repository, None)
@@ -675,13 +675,13 @@ def getTemplate(template, repository):
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
 
-    template_names = list(repo.templates.keys())
-    if template not in template_names:
+    actorsnames = list(repo.actors.keys())
+    if actor not in actorsnames:
         return jsonify(error="template not found"), 404
 
-    tmpl = repo.templates[template]
-    template = template_view(tmpl)
-    return json.dumps(template), 200, {'Content-Type': 'application/json'}
+    actor = repo.actors[actor]
+    actor = template_view(actor)
+    return json.dumps(actor), 200, {'Content-Type': 'application/json'}
 
 
 @ays_api.route('/ays/repository/<repository>/aysrun', methods=['GET'])
