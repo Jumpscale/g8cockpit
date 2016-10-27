@@ -719,12 +719,14 @@ def getRun(aysrun, repository):
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
 
+    import ipdb; ipdb.set_trace()
     try:
-        aysrun = repo.getRun(id=aysrun)
+        aysrun = repo.runGet(aysrun)
     except j.exceptions.Input as e:
         return jsonify(error=e.msg), 404
     except Exception as e:
         return jsonify(error=e.msg), 500
 
-    data = {'model': aysrun.model, 'repr': aysrun.__repr__()}
+    #import ipdb; ipdb.set_trace()
+    data = {'model': str(aysrun.model), 'repr': str(aysrun)}
     return json.dumps(data), 200, {'Content-Type': 'application/json'}
