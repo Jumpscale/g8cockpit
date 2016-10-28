@@ -606,9 +606,8 @@ def addTemplateRepo():
     if url.endswith('.git'):
         url = url[:-len('.git')]
 
-    hrd = j.data.hrd.get(j.sal.fs.joinPaths(j.dirs.hrd, 'atyourservice.hrd'))
-    metadata = hrd.getDictFromPrefix('metadata')
-    urls = [m['url'] for m in metadata.values()]
+    metadata = j.atyourservice.config['metadata']
+    urls = [m['url'] for m in metadata]
     if url in urls:
         return "Repository already exists."
 
@@ -617,11 +616,8 @@ def addTemplateRepo():
         'branch': branch,
         'url': url
     }
-    hrd.set('metadata.%s' % name, template)
-    hrd.save()
-
-    # reload config
-    j.application._config = j.data.hrd.get(j.dirs.hrd)
+    j.atyourservice.config['metadata'].append({name, template})
+    j.data.serializer.toml.dump('%s/ays/ays.conf' % j.dirs.cfgDir, j.atyourservice.config)
 
     return jsonify(url=url, branch=branch), 201
 
