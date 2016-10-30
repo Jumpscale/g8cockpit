@@ -6,7 +6,7 @@ from .views import service_view, actor_view, blueprint_view, repository_view, ru
 
 from .Repository import Repository
 from .Blueprint import Blueprint
-from .Template import Template
+from .Actor import Actor
 from .TemplateRepo import TemplateRepo
 
 
@@ -624,11 +624,11 @@ def addTemplateRepo():
     return jsonify(url=url, branch=branch), 201
 
 
-@ays_api.route('/ays/repository/<repository>/template', methods=['POST'])
+@ays_api.route('/ays/repository/<repository>/actor', methods=['POST'])
 def createNewActor(repository):
     '''
-    Create new template
-    It is handler for POST /ays/repository/<repository>/template
+    Create new actor
+    It is handler for POST /ays/repository/<repository>/actor
     '''
     j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
@@ -636,23 +636,23 @@ def createNewActor(repository):
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
 
-    inputs = Template.from_json(request.args)
+    inputs = Actor.from_json(json.loads(request.data))
     if not inputs.validate():
         return jsonify(errors=inputs.errors), 400
     name = inputs.name.data
     actions_py = inputs.actions_py.data
     schema_hrd = inputs.schema_hrd.data
 
-    template_names = list(repo.templates.keys())
-    if name in template_names:
+    actor_names = list(repo.actors.keys())
+    if name in actor_names:
         return jsonify(error="template with name '%s' already exists" % name), 409
 
-    templates_dir = j.sal.fs.joinPaths(repo.path, 'actortemplates')
-    if not j.sal.fs.exists(templates_dir):
-        j.sal.fs.createDir(templates_dir)
+    actors_dir = j.sal.fs.joinPaths(repo.path, 'actortemplates')
+    if not j.sal.fs.exists(actors_dir):
+        j.sal.fs.createDir(actors_dir)
 
-    j.sal.fs.createDir(j.sal.fs.joinPaths(templates_dir, name))
-    dir_path = j.sal.fs.joinPaths(templates_dir, name)
+    j.sal.fs.createDir(j.sal.fs.joinPaths(actors_dir, name))
+    dir_path = j.sal.fs.joinPaths(actors_dir, name)
     if schema_hrd != '' and schema_hrd is not None:
         j.sal.fs.writeFile(j.sal.fs.joinPaths(dir_path, 'schema.hrd'), schema_hrd)
     if actions_py != '' and actions_py is not None:
