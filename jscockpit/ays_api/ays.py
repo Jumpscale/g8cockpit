@@ -416,38 +416,38 @@ def executeBlueprint(blueprint, repository):
     return jsonify(msg="Blueprint %s initialized" % blueprint)
 
 
-@ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>', methods=['DELETE'])
-def deleteBlueprint(blueprint, repository):
-    '''
-    delete blueprint
-    It is handler for DELETE /ays/repository/<repository>/blueprint/<blueprint>
-    '''
-    j.atyourservice.reposDiscover()
-    repo = j.atyourservice._repos.get(repository, None)
-
-    if repo is None:
-        return jsonify(error='Repository %s not found' % repository), 404
-
-    bp = None
-    repo._load_blueprints()
-    for item in repo.blueprints:
-        if item.name == blueprint:
-            bp = item
-            break
-
-    if bp is None:
-        return jsonify(error="No blueprint found with this name '%s'" % blueprint), 404
-
-    for service in bp.services:
-        j.sal.fs.removeDirTree(service.path)
-
-    bps = repo.blueprints
-    for i, item in enumerate(bps):
-        if bp.name == item.name:
-            del repo.blueprints[i]
-            break
-
-    return '', 204
+# @ays_api.route('/ays/repository/<repository>/blueprint/<blueprint>', methods=['DELETE'])
+# def deleteBlueprint(blueprint, repository):
+#     '''
+#     delete blueprint
+#     It is handler for DELETE /ays/repository/<repository>/blueprint/<blueprint>
+#     '''
+#     j.atyourservice.reposDiscover()
+#     repo = j.atyourservice._repos.get(repository, None)
+#
+#     if repo is None:
+#         return jsonify(error='Repository %s not found' % repository), 404
+#
+#     bp = None
+#     repo._load_blueprints()
+#     for item in repo.blueprints:
+#         if item.name == blueprint:
+#             bp = item
+#             break
+#
+#     if bp is None:
+#         return jsonify(error="No blueprint found with this name '%s'" % blueprint), 404
+#
+#     for service in bp.services:
+#         j.sal.fs.removeDirTree(service.path)
+#
+#     bps = repo.blueprints
+#     for i, item in enumerate(bps):
+#         if bp.name == item.name:
+#             del repo.blueprints[i]
+#             break
+#
+#     return '', 204
 
 
 @ays_api.route('/ays/repository/<repository>/service', methods=['GET'])
