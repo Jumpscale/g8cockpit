@@ -441,10 +441,13 @@ def deleteBlueprint(blueprint, repository):
     for service in bp.services:
         j.sal.fs.removeDirTree(service.path)
 
-    j.sal.fs.remove(bp.path)
-    del repo._blueprints[bp.path]
+    bps = repo.blueprints
+    for i, item in enumerate(bps):
+        if bp.name == item.name:
+            del repo.blueprints[i]
+            break
 
-    return jsonify(), 204
+    return '', 204
 
 
 @ays_api.route('/ays/repository/<repository>/service', methods=['GET'])
@@ -560,7 +563,7 @@ def deleteServiceByName(name, role, repository):
     except Exception as e:
         return jsonify(error='unexpected error happened: %s' % str(e)), 500
 
-    return jsonify(), 204
+    return '', 204
 
 
 @ays_api.route('/ays/repository/<repository>/actor', methods=['GET'])
