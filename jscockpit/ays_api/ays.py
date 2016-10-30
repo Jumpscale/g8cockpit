@@ -720,7 +720,7 @@ def getRun(aysrun, repository):
         return jsonify(error='Repository %s not found' % repository), 404
 
     try:
-        aysrun = repo.runsList()[int(aysrun)]
+        aysrun = repo.runGet(aysrun)
 
     except j.exceptions.Input as e:
         return jsonify(error=e.msg), 404
