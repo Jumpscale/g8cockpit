@@ -270,7 +270,7 @@ def updateBlueprint(blueprint, repository):
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
 
-    inputs = Blueprint.from_json(request.args)
+    inputs = Blueprint.from_json(json.loads(request.data))
     if not inputs.validate():
         return jsonify(errors=inputs.errors), 400
 
