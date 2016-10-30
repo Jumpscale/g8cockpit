@@ -680,6 +680,7 @@ def getTemplate(actor, repository):
     return json.dumps(actorv), 200, {'Content-Type': 'application/json'}
 
 
+
 @ays_api.route('/ays/repository/<repository>/aysrun', methods=['GET'])
 def listRuns(repository):
     '''
@@ -720,11 +721,13 @@ def getRun(aysrun, repository):
         return jsonify(error='Repository %s not found' % repository), 404
 
     try:
-        aysrun = repo.runsList()[int(aysrun)] 
+        aysrun = repo.runsList()[int(aysrun)]
+
     except j.exceptions.Input as e:
         return jsonify(error=e.msg), 404
     except Exception as e:
         return jsonify(error=e.msg), 500
 
     data = {'model': str(aysrun), 'repr': str(aysrun)}
+
     return json.dumps(data), 200, {'Content-Type': 'application/json'}
