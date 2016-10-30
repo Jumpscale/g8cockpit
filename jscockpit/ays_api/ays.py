@@ -28,7 +28,7 @@ def listRepositories():
     list all repositorys
     It is handler for GET /ays/repository
     '''
-    repos = j.atyourservice.reposList()
+    repos = j.atyourservice.reposDiscover()
     repos = [repo.__str__() for repo in repos]
     return json.dumps(repos), 200, {'Content-Type': 'application/json'}
 
@@ -39,7 +39,7 @@ def createNewRepository():
     create a new repository
     It is handler for POST /ays/repository
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     data = json.loads(request.data)
     inputs = Repository.from_json(data)
     if not inputs.validate():
@@ -60,7 +60,7 @@ def getRepository(repository):
     Get information of a repository
     It is handler for GET /ays/repository/<repository>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, False)
     if not repo:
         return jsonify(error='Repository %s not found' % repository), 404
@@ -93,7 +93,7 @@ def initRepository(repository):
     Init a repository
     It is handler for POST /ays/repository/<repository>/init
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -121,7 +121,7 @@ def simulateAction(repository):  # TODO runs are empty
     if 'action' not in request.args:
         return jsonify(error='No action specified'), 400
 
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -162,7 +162,7 @@ def executeAction(repository):
     if 'action' not in request.args:
         return jsonify(error='No action specified'), 400
 
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -203,7 +203,7 @@ def listBlueprints(repository):
     List all blueprint
     It is handler for GET /ays/repository/<repository>/blueprint
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -228,7 +228,7 @@ def createNewBlueprint(repository):
     Create a new blueprint
     It is handler for POST /ays/repository/<repository>/blueprint
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -264,7 +264,7 @@ def updateBlueprint(blueprint, repository):
     Update existing blueprint
     It is handler for PUT /ays/repository/<repository>/blueprint/<blueprint>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -297,7 +297,7 @@ def archiveBlueprint(blueprint, repository):
     Archive existing blueprint
     It is handler for PUT /ays/repository/<repository>/blueprint/<blueprint>/archive
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -323,7 +323,7 @@ def restoreBlueprint(blueprint, repository):
     Restore archived blueprint
     It is handler for PUT /ays/repository/<repository>/blueprint/<blueprint>/restore
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -350,7 +350,7 @@ def getBlueprint(blueprint, repository):
     Get a blueprint
     It is handler for GET /ays/repository/<repository>/blueprint/<blueprint>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -375,7 +375,7 @@ def executeBlueprint(blueprint, repository):
     Execute the blueprint
     It is handler for POST /ays/repository/<repository>/blueprint/<blueprint>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -422,7 +422,7 @@ def deleteBlueprint(blueprint, repository):
     delete blueprint
     It is handler for DELETE /ays/repository/<repository>/blueprint/<blueprint>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -453,7 +453,7 @@ def listServices(repository):
     List all services in the repository
     It is handler for GET /ays/repository/<repository>/service
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
@@ -474,7 +474,7 @@ def listServicesByRole(role, repository):
     List all services of role 'role' in the repository
     It is handler for GET /ays/repository/<repository>/service/<role>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -495,7 +495,7 @@ def serviceGetByName(name, role, repository):
     Get a service instance
     It is handler for GET /ays/repository/<repository>/service/<role>/<instance>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -517,7 +517,7 @@ def listServiceActions(name, role, repository):
     Get list of action available on this service
     It is handler for GET /ays/repository/<repository>/service/<role>/<instance>/action
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -569,7 +569,7 @@ def listActors(repository):
     list all templates
     It is handler for GET /ays/repository/<repository>/actor
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -664,7 +664,7 @@ def getActor(actor, repository):
     Get a template
     It is handler for GET /ays/repository/<repository>/actor/<actor>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -685,7 +685,7 @@ def listRuns(repository):
     list all runs of the repository
     It is handler for GET /ays/repository/<repository>/aysrun
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -712,7 +712,7 @@ def getRun(aysrun, repository):
     Get an aysrun
     It is handler for GET /ays/repository/<repository>/aysrun/<aysrun>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
