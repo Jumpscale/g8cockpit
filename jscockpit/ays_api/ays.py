@@ -234,23 +234,22 @@ def createNewBlueprint(repository):
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
 
-    inputs = Blueprint.from_json(request.json)
+    inputs = Blueprint.from_json(json.loads(request.data))
     if not inputs.validate():
         return jsonify(errors=inputs.errors), 400
 
     repo._load_blueprints()
     new_name = inputs.name.data
     content = inputs.content.data
-
-    names = [bp.name for bp in repo._blueprints.values()]
+    names = [bp.name for bp in repo.blueprints]
     if new_name in names:
         return jsonify(error="Blueprint with the name %s' already exists" % new_name), 409
 
     bp_path = j.sal.fs.joinPaths(repo.path, 'blueprints', new_name)
     try:
         j.sal.fs.writeFile(bp_path, content)
-        if bp_path not in repo._blueprints:
-            repo._blueprints[bp_path] = JSBlueprint(repo, path=bp_path)
+        if new_name not in repo.blueprints:
+            repo.blueprints.append(JSBlueprint(repo, path=bp_path))
     except:
         if j.sal.fs.exists(bp_path):
             j.sal.fs.remove(bp_path)
