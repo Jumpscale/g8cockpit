@@ -660,7 +660,7 @@ def createNewActor(repository):
 
 
 @ays_api.route('/ays/repository/<repository>/actor/<actor>', methods=['GET'])
-def getTemplate(actor, repository):
+def getActor(actor, repository):
     '''
     Get a template
     It is handler for GET /ays/repository/<repository>/actor/<actor>
@@ -678,7 +678,6 @@ def getTemplate(actor, repository):
     actor = repo.actors[actor]
     actorv = actor_view(actor)
     return json.dumps(actorv), 200, {'Content-Type': 'application/json'}
-
 
 
 @ays_api.route('/ays/repository/<repository>/aysrun', methods=['GET'])
