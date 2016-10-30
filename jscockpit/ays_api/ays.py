@@ -154,7 +154,7 @@ def simulateAction(repository):  # TODO runs are empty
 
 
 @ays_api.route('/ays/repository/<repository>/execute', methods=['POST'])
-def executeAction(repository):
+def install(repository):
     '''
     Perform an action on a services
     It is handler for POST /ays/repository/<repository>/service/<role>/<instance>/<action>
@@ -176,6 +176,31 @@ def executeAction(repository):
         return jsonify(error=error_msg), 500
     else:
         msg = "Execution is scheduled successfully."
+        return jsonify(msg=msg), 200
+
+
+@ays_api.route('/ays/repository/<repository>/uninstall', methods=['POST'])
+def uninstall(repository):
+    '''
+    Perform an action on a services
+    It is handler for POST /ays/repository/<repository>/uninstall
+    '''
+    j.atyourservice.reposDiscover()
+    repo = j.atyourservice._repos.get(repository, None)
+
+    if repo is None:
+        return jsonify(error='Repository %s not found' % repository), 404
+    try:
+        for service in repo.services:
+            executor = service.executor
+            cmd = "cd {path} && ays do uninstall".format(path=repo.path)
+            rc, out, err = executor.cuisine.core.run(cmd)
+    except Exception as error:
+        error_msg = 'Error during execution: %s' % (error)
+        logger.error(error_msg)
+        return jsonify(error=error_msg), 500
+    else:
+        msg = "Uninstallation ran successfully."
         return jsonify(msg=msg), 200
 
 
@@ -483,7 +508,6 @@ def serviceGetByName(name, role, repository):
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
 
-    svs = repo.services
     s = repo.serviceGet(role=role, instance=name, die=False)
     if s is None:
         return jsonify(error='Service not found'), 404
