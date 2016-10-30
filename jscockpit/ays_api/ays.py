@@ -2,7 +2,7 @@ from flask import Blueprint as fBlueprint, jsonify, request, json, Response, cur
 from JumpScale import j
 from JumpScale.baselib.atyourservice81.Blueprint import Blueprint as JSBlueprint
 from JumpScale.core.errorhandling.JSExceptions import BaseJSException
-from .views import service_view, template_view, blueprint_view, repository_view, run_view
+from .views import service_view, actor_view, blueprint_view, repository_view, run_view
 
 from .Repository import Repository
 from .Blueprint import Blueprint
@@ -676,8 +676,8 @@ def getTemplate(actor, repository):
         return jsonify(error="template not found"), 404
 
     actor = repo.actors[actor]
-    actor = template_view(actor)
-    return json.dumps(actor), 200, {'Content-Type': 'application/json'}
+    actorv = actor_view(actor)
+    return json.dumps(actorv), 200, {'Content-Type': 'application/json'}
 
 
 @ays_api.route('/ays/repository/<repository>/aysrun', methods=['GET'])
@@ -720,11 +720,11 @@ def getRun(aysrun, repository):
         return jsonify(error='Repository %s not found' % repository), 404
 
     try:
-        aysrun = repo.runGet(aysrun)
+        aysrun = repo.runsList()[int(aysrun)] 
     except j.exceptions.Input as e:
         return jsonify(error=e.msg), 404
     except Exception as e:
         return jsonify(error=e.msg), 500
 
-    data = {'model': str(aysrun.model), 'repr': str(aysrun)}
+    data = {'model': str(aysrun), 'repr': str(aysrun)}
     return json.dumps(data), 200, {'Content-Type': 'application/json'}

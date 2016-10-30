@@ -1,5 +1,5 @@
 from JumpScale import j
-
+import os
 
 def service_view(s):
     """
@@ -33,12 +33,12 @@ def run_view(run):
     return run_view.__repr__()
 
 
-def template_view(t):
+def actor_view(t):
     """
     generate a dict that represent a service from a service object
     """
     template = {
-        'name': t.name,
+        'name': os.path.split(t.path)[-1],
         'schema_hrd': j.sal.fs.fileGetContents("{path}/schema.hrd".format(path=t.path)) if j.sal.fs.exists("{path}/schema.hrd".format(path=t.path)) else None,
         'actions_py': j.sal.fs.fileGetContents("{path}/actions.py".format(path=t.path)) if j.sal.fs.exists("{path}/actions.py".format(path=t.path)) else None,
     }
