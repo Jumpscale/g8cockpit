@@ -28,7 +28,7 @@ def listRepositories():
     list all repositorys
     It is handler for GET /ays/repository
     '''
-    repos = j.atyourservice.reposDiscover()
+    repos = j.atyourservice.reposList()
     repos = [repo.__str__() for repo in repos]
     return json.dumps(repos), 200, {'Content-Type': 'application/json'}
 
