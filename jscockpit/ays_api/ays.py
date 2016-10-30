@@ -185,7 +185,7 @@ def listBlueprints(repository):
     List all blueprint
     It is handler for GET /ays/repository/<repository>/blueprint
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
@@ -358,12 +358,11 @@ def executeBlueprint(blueprint, repository):
     Execute the blueprint
     It is handler for POST /ays/repository/<repository>/blueprint/<blueprint>
     '''
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
-
     bp = None
     repo._load_blueprints()
     for item in repo.blueprints:
