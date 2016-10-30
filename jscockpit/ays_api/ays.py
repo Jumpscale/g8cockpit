@@ -162,39 +162,21 @@ def executeAction(repository):
     if 'action' not in request.args:
         return jsonify(error='No action specified'), 400
 
-    j.atyourservice.reposList()
+    j.atyourservice.reposDiscover()
     repo = j.atyourservice._repos.get(repository, None)
 
     if repo is None:
         return jsonify(error='Repository %s not found' % repository), 404
-
-    action = request.args['action']
-    role = request.args.get('role', '')
-    instance = request.args.get('instance', '')
-    force = j.data.types.bool.fromString(request.args.get('force', 'False'))
-    producer_roles = request.args.get('producerroles', '*')
-    async = j.data.types.bool.fromString(request.args.get('async', 'False'))
-
-    rq = repo.runGet(
-        action=action,
-        instance=instance,
-        role=role,
-        producerRoles=producer_roles,
-        force=force)
-
-    if async:
-        msg = "Action %s scheduled" % (action)
-        return jsonify(msg=msg), 200
-
     try:
-        rq.execute()
+        run = repo.runCreate()
+        run.execute()
     except Exception as error:
-        error_msg = 'Error during execution of action %s: %s' % (action, error)
+        error_msg = 'Error during execution: %s' % (error)
         logger.error(error_msg)
         return jsonify(error=error_msg), 500
-
-    msg = "Action %s executed successfully" % (action, role, instance, repo.name)
-    return jsonify(msg=msg), 200
+    else:
+        msg = "Execution is scheduled successfully."
+        return jsonify(msg=msg), 200
 
 
 @ays_api.route('/ays/repository/<repository>/blueprint', methods=['GET'])
