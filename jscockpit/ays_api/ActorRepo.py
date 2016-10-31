@@ -5,7 +5,7 @@ from wtforms import TextField, FormField, IntegerField, FloatField, FileField, B
 from .input_validators import multiple_of
 
 
-class TemplateRepo(Form):
+class ActorRepo(Form):
 
     branch = TextField(validators=[DataRequired(message="")])
     url = TextField(validators=[DataRequired(message="")])

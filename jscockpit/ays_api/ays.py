@@ -7,7 +7,7 @@ from .views import service_view, actor_view, blueprint_view, repository_view, ru
 from .Repository import Repository
 from .Blueprint import Blueprint
 from .Actor import Actor
-from .TemplateRepo import TemplateRepo
+from .ActorRepo import ActorRepo
 
 
 ays_api = fBlueprint('ays_api', __name__)
@@ -586,14 +586,14 @@ def listActors(repository):
     return json.dumps(actors), 200, {'Content-Type': 'application/json'}
 
 
-@ays_api.route('/ays/template', methods=['POST'])
-def addTemplateRepo():
+@ays_api.route('/ays/actor', methods=['POST'])
+def addActorRepo():
     '''
     add a new service template repository
     It is handler for POST /ays/template
     '''
 
-    inputs = TemplateRepo.from_json(request.args)
+    inputs = ActorRepo.from_json(json.loads(request.data))
     if not inputs.validate():
         return jsonify(errors=inputs.errors), 400
     url = inputs.url.data
@@ -609,16 +609,16 @@ def addTemplateRepo():
         url = url[:-len('.git')]
 
     metadata = j.atyourservice.config['metadata']
-    urls = [m['url'] for m in metadata]
+    urls = [d[k]['url'] for d in metadata for k in d.keys()]
     if url in urls:
         return "Repository already exists."
 
     name = url.split('/')[-1]
-    template = {
+    actor = {
         'branch': branch,
         'url': url
     }
-    j.atyourservice.config['metadata'].append({name, template})
+    j.atyourservice.config['metadata'].append({name: actor})
     j.data.serializer.toml.dump('%s/ays/ays.conf' % j.dirs.cfgDir, j.atyourservice.config)
 
     return jsonify(url=url, branch=branch), 201
