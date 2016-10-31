@@ -38,7 +38,7 @@ def actor_view(t):
     generate a dict that represent a service from a service object
     """
     template = {
-        'name': os.path.split(t.path)[-1],
+        'name': t.model.name,
         'schema_hrd': j.sal.fs.fileGetContents("{path}/schema.hrd".format(path=t.path)) if j.sal.fs.exists("{path}/schema.hrd".format(path=t.path)) else None,
         'actions_py': j.sal.fs.fileGetContents("{path}/actions.py".format(path=t.path)) if j.sal.fs.exists("{path}/actions.py".format(path=t.path)) else None,
     }
