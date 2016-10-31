@@ -193,7 +193,7 @@ def uninstall(repository):
     try:
         for service in repo.services:
             executor = service.executor
-            cmd = "cd {path} && ays do uninstall".format(path=repo.path)
+            cmd = "cd {path} && ays do uninstall --ask -r {role} -i {instance}".format(path=repo.path, role=service.model.role, instance=service.name)
             rc, out, err = executor.cuisine.core.run(cmd)
     except Exception as error:
         error_msg = 'Error during execution: %s' % (error)
