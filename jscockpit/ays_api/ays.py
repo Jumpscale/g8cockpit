@@ -179,31 +179,6 @@ def install(repository):
         return jsonify(msg=msg), 200
 
 
-@ays_api.route('/ays/repository/<repository>/uninstall', methods=['POST'])
-def uninstall(repository):
-    '''
-    Perform an action on a services
-    It is handler for POST /ays/repository/<repository>/uninstall
-    '''
-    j.atyourservice.reposDiscover()
-    repo = j.atyourservice._repos.get(repository, None)
-
-    if repo is None:
-        return jsonify(error='Repository %s not found' % repository), 404
-    try:
-        for service in repo.services:
-            executor = service.executor
-            cmd = "cd {path} && ays do uninstall --ask -r {role} -i {instance}".format(path=repo.path, role=service.model.role, instance=service.name)
-            rc, out, err = executor.cuisine.core.run(cmd)
-    except Exception as error:
-        error_msg = 'Error during execution: %s' % (error)
-        logger.error(error_msg)
-        return jsonify(error=error_msg), 500
-    else:
-        msg = "Uninstallation ran successfully."
-        return jsonify(msg=msg), 200
-
-
 @ays_api.route('/ays/repository/<repository>/blueprint', methods=['GET'])
 def listBlueprints(repository):
     '''
