@@ -2,7 +2,7 @@
 from ays_api import app
 from JumpScale import j
 
-cfg = j.data.serializer.toml.load('/optvar/cfg/cockpit_api/config.toml')
+cfg = j.data.serializer.toml.load('%s/cockpit_api/config.toml' % j.dirs.cfgDir)
 app.config['oauth'] = cfg['oauth']
 
 app.run(**cfg['api']['ays'])
