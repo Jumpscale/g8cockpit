@@ -3,6 +3,6 @@ from ays_api import app
 from JumpScale import j
 
 cfg = j.data.serializer.toml.load('/optvar/cfg/cockpit_api/config.toml')
-app.config.update(cfg['oauth'])
+app.config['oauth'] = cfg['oauth']
 
 app.run(**cfg['api']['ays'])
