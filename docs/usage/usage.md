@@ -6,3 +6,4 @@
 * [Generate JWT Tokens](JWT/JWT.md)
 * [API Console](API_Console/API_Console.md)
 * [REST API](API/API.md)
+* [How to](Howto/Howto.md)

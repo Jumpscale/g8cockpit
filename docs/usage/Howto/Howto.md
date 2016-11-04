@@ -13,3 +13,4 @@
 * [Install a service instance](Install_service/Install_service.md)
 * [Uninstall a service instance](Uninstall_service/Uninstall_service.md)
 * [Delete a service](Delete_service/Delete_service.md)
+* [How to create a VDC using curl](Create_VDC_using_curl/Create_VDC_using_curl.md)

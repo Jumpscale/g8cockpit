@@ -43,6 +43,7 @@
     * [Install a service instance](usage/Howto/Install_service/Install_service.md)
     * [Uninstall a service instance](usage/Howto/Uninstall_service/Uninstall_service.md)
     * [Delete a service](usage/Howto/Delete_service/Delete_service.md)
+    * [How to create a VDC using curl](usage/Howto/Create_VDC_using_curl/Create_VDC_using_curl.md)
 * [Configuration](configuration.md)  
 * [Build](build.md)
 * [Client](client.md)
