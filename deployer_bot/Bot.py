@@ -1,3 +1,8 @@
+import time
+import logging
+import queue
+import _thread
+
 from JumpScale import j
 
 from Asker import TelegramAsker
@@ -6,35 +11,6 @@ import requests
 import telegram
 from telegram.ext.dispatcher import run_async
 from telegram.ext import Updater, CommandHandler, RegexHandler, MessageHandler, Filters
-
-import threading
-import queue
-import logging
-import yaml
-import glob
-import _thread
-import time
-
-# class TelegramHandler(logging.Handler):
-#     """A Logging handler that send log message to telegram"""
-#     def __init__(self, bot, chat_id):
-#         super(TelegramHandler, self).__init__()
-#         self.bot = bot
-#         self.chat_id = chat_id
-#         self.msg_tmpl = """
-# **{level} :**
-# {message}
-# """
-#
-#     def emit(self, record):
-#         """
-#         Send record to telegram user
-#         """
-#         try:
-#             msg = self.msg_tmpl.format(message=record.getMessage(), level=record.levelname)
-#             self.bot.sendMessage(chat_id=self.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
-#         except Exception as e:
-#             pass  # need to always keep running
 
 
 class CockpitArgs:
@@ -184,29 +160,6 @@ class CockpitDeployerBot:
         self.updater = Updater(token=config['bot']['token'])
         self.bot = self.updater.bot
         self._register_handlers()
-        if 'git' in self.config:
-            cuisine = j.tools.cuisine.local
-            rc, out, err = cuisine.core.run('git config --global user.name', die=False)
-            if rc > 0:
-                cuisine.core.run('git config --global user.name %s' % self.config['git']['username'])
-            rc, out, err = cuisine.core.run('git config --global user.email', die=False)
-            if rc > 0:
-                cuisine.core.run('git config --global user.email %s' % self.config['git']['email'])
-
-    def generate_config(self, path):
-        """
-        generate a default configuration file for the bot
-        path: destination file
-        """
-        cfg = {
-            'bot': {'token': 'CHANGEME'},
-            'dns': {'sshkey_path': 'CHANGEME'},
-            'g8': {
-                'be-conv-2': {'address': 'be-conv-2.demo.greenitglobe.com'},
-                'be-conv-3': {'address': 'be-conv-3.demo.greenitglobe.com'}
-            }
-        }
-        j.data.serializer.toml.dump(path, cfg)
 
     def _register_handlers(self):
         dispatcher = self.updater.dispatcher
@@ -215,22 +168,6 @@ class CockpitDeployerBot:
         dispatcher.add_handler(MessageHandler([Filters.text], self.answer_questions))
         unknown_handler = RegexHandler(r'/.*', self.unknown)
         dispatcher.add_handler(unknown_handler)
-
-    def _attache_logger(self, deployer, chat_id):
-        """
-        Add a telegram handler to the logger of the deployer objects
-        To forward the output of the deployment execution to telegram
-        """
-        q = queue.Queue()
-        qh = logging.handlers.QueueHandler(q)
-        qh.setLevel(logging.INFO)
-        deployer.logger = j.logger.get('j.clients.cockpit.installer.%s' % chat_id)
-        deployer.logger.addHandler(qh)
-
-        th = TelegramHandler(self.bot, chat_id)
-        # ql = logging.handlers.QueueListener(q, th)
-        # ql.start()
-        # return ql
 
     @run_async
     def answer_questions(self, bot, update, **kwargs):
@@ -258,7 +195,7 @@ class CockpitDeployerBot:
 
         try:
             # TODO user multitherading lib
-            _thread.start_new_thread(self._check_services_error, (chat_id, username))
+            # _thread.start_new_thread(self._check_services_error, (chat_id, username))
             self.deploy(username, chat_id, args)
         except Exception as e:
             self.logger.error(e)
@@ -270,10 +207,9 @@ class CockpitDeployerBot:
             self.bot.sendMessage(chat_id=chat_id, text=oauth_data['error'])
             return
 
-        path = j.sal.fs.getTmpDirPath()
-        repo = j.atyourservice.createAYSRepo(path)
+        path = j.sal.fs.getTmpDirPath(create=False)
+        repo = j.atyourservice.repoCreate(path)
         self.repos[username] = repo
-
         cockpit_blueprint = self.templates['blueprint']
         jwt_key = self.config['oauth'].get('jwt_key', None)
         if jwt_key:
@@ -319,8 +255,7 @@ class CockpitDeployerBot:
         self.logger.info('Deployment of cockpit for user %s done.' % username)
 
     def oauth(self, chat_id, args):
-        url = "http://%s:%s/oauthurl?organization=%s" % (self.config['oauth']['host'], self.config[
-                                                         'oauth']['port'], args.organization)
+        url = "http://%s:%s/oauthurl?organization=%s" % (self.config['oauth']['host'], self.config['oauth']['port'], args.organization)
         resp = requests.get(url)
         resp.raise_for_status()
 
@@ -345,16 +280,14 @@ class CockpitDeployerBot:
     def run(self):
         # start polling for telegram bot
         if self.updater is None:
-            self.logger.error(
-                "connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
+            self.logger.error("connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
             return
         self.updater.start_polling()
         self.logger.info("Bot started")
 
     def join(self):
         if self.updater is None:
-            self.logger.error(
-                "connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
+            self.logger.error( "connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
             return
         self.updater.idle()
         self.logger.info('stopping bot')
