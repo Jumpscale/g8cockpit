@@ -153,7 +153,7 @@ class TelegramAsker(object):
     def ask_domain(self):
         def validate(input):
             return True
-        domain = self.askChoice("Please choose the domain you want to use for your cockpit", choices=[self.username])
+        domain = self.askString("Please enter the domain you want to use for your cockpit, it has to end in '.aydo2.com' or '.barcelona.aydo.com'")
         return domain
 
     def ask_ssh_key(self):
@@ -196,3 +196,15 @@ come back to this conversation when you received the API token, and paste it her
             return True
         organization = self.askString("Please enter the name of organization you are deploying the cockpit for")
         return organization
+
+    def ask_admin(self):
+        def validate(input):
+            return True
+        admin = self.askString("Please enter the email of cockpit administrator")
+        return admin
+
+    def ask_git_url(self):
+        def validate(input):
+            return True
+        git_url = self.askString("Please enter git repo url of the cockpit.")
+        return git_url

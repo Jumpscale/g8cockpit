@@ -42,6 +42,8 @@ class CockpitArgs:
         self._bot_token = None
         self._gid = None
         self._organization = None
+        self._admin = None
+        self._git_url = None
 
     @property
     def ovc_client(self):
@@ -65,6 +67,18 @@ class CockpitArgs:
         if self._ovc_url is None:
             self._ovc_url = self.asker.ask_ovc_url()
         return self._ovc_url
+
+    @property
+    def git_url(self):
+        if self._git_url is None:
+            self._git_url = self.asker.ask_git_url()
+        return self._git_url
+
+    @property
+    def admin(self):
+        if self._admin is None:
+            self._admin = self.asker.ask_admin()
+        return self._admin
 
     @property
     def ovc_login(self):
@@ -207,9 +221,7 @@ class CockpitDeployerBot:
             self.bot.sendMessage(chat_id=chat_id, text=oauth_data['error'])
             return
 
-        path = j.sal.fs.getTmpDirPath(create=False)
-        repo = j.atyourservice.repoCreate(path)
-        self.repos[username] = repo
+
         cockpit_blueprint = self.templates['blueprint']
         jwt_key = self.config['oauth'].get('jwt_key', None)
         if jwt_key:
@@ -217,30 +229,35 @@ class CockpitDeployerBot:
             jwt_key = jwt_key.replace('\n', '\\n')
 
         content = cockpit_blueprint.format(g8_url=args.ovc_url,
-                                           g8_account=args.ovc_account,
-                                           g8_login=args.ovc_login,
+                                           g8_user=args.ovc_login,
                                            g8_password=args.ovc_password,
-                                           telegram_token=args.bot_token,
                                            cockpit_name=args.ovc_vdc,
-                                           dns_domain=args.domain,
+                                           g8_location=args.ovc_location,
                                            dns_sshkey_path=self.config['dns'].get('sshkey', None),
+                                           full_domain=args.domain,
                                            oauth_organization=args.organization,
+                                           cockpit_admin=args.admin,
                                            oauth_secret=oauth_data['client_secret'],
                                            oauth_id=oauth_data['client_id'],
-                                           oauth_jwtkey=jwt_key,
-                                           repo_url=args.repo_url,
+                                           oauth_jwtkey=jwt_key
                                            )
+
+        path = j.sal.fs.getTmpDirPath(create=False)
+        git_url = args.git_url
+        repo = j.atyourservice.repoCreate(path, git_url=git_url)
+        self.repos[username] = repo
+        j.sal.fs.writeFile("%s/blueprints/cockpit.yaml" % path, content)
 
         msg = "Deployment of you cockpit in progress, please be patient.\nYou can follow progress using the /status command"
         self.bot.sendMessage(chat_id=chat_id, text=msg, reply_markup=telegram.ReplyKeyboardHide())
         self.bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
         self.logger.info('Deployment of cockpit for user %s in progress' % username)
-        j.sal.fs.writeFile("%s/blueprints/cockpit" % path, content)
         repo.init()
-        repo.execute_blueprint(path="%s/blueprints/cockpit" % path)
-        repo.install(force=False)
-
+        repo.blueprintExecute()
+        run = repo.runCreate()
+        ays_client = j.clients.atyourservice.get()
+        ays_client.execute_run(run)
         msg = "Cockpit deployed.\nAddress : https://{url}\nSSH access: `ssh root@{url} -p {port}`".format(
             url=cockpit.hrd.getStr('dns.domain'), port=cockpit.hrd.getInt('ssh.port'))
         self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)

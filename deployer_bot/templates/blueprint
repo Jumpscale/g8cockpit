@@ -1,18 +1,50 @@
+# connection to the g8 where to deploy the cockpit
 g8client__main:
-  g8.url: '{g8_url}'
-  g8.login: '{g8_login}'
-  g8.password: '{g8_password}'
-  g8.account: '{g8_account}'
+    url: '{g8_url}'
+    login: '{g8_user}'
+    password: '{g8_password}'
 
-cockpit.g8__pilot:
-  g8.client: 'main'
-  telegram.token: '{telegram_token}'
-  cockpit.name: '{cockpit_name}'
-  dns.domain: '{dns_domain}'
-  dns.sshkey: '{dns_sshkey_path}'
-  oauth.client_secret: '{oauth_secret}'
-  oauth.client_id: '{oauth_id}'
-  oauth.organization: '{oauth_organization}'
-  oauth.jwt_key: '{oauth_jwtkey}'
-  ays.repo.url: '{repo_url}'
-  staging: true # put to false or remove when in production
+# give user access to the vdc
+uservdc__{g8_user}:
+
+
+# create the vdc that will contains the vm of the cockpit
+vdc__{cockpit_name}:
+    description: 'cockpit vdc'
+    g8client: 'main'
+    account: '{g8_user}'
+    location: '{g8_location}'
+    uservdc:
+        - {g8_user}
+
+sshkey__main:
+
+sshkey__dns:
+    key.path: '{dns_sshkey_path}'
+
+# create the host vm
+node.ovc__cockpit:
+    bootdisk.size: 50
+    memory: 2
+    os.image: 'Ubuntu 16.04 x64'
+    ports:
+        - '22'
+        - '82:80'
+        - '443:443'
+    vdc: '{cockpit_name}'
+    sshkey: 'main'
+
+# actually install the cockpit
+cockpit__main:
+   'host_node': 'cockpit'
+   'dns.sshkey': 'dns'
+   'domain': '{full_domain}'
+   'caddy.email': '{cockpit_admin}'
+
+   'oauth.organization': '{oauth_organization}'
+   'oauth.client_id': '{oauth_id}'
+   'oauth.client_secret': '{oauth_secret}'
+   'oauth.jwt_key': '{oauth_jwtkey}'
+
+actions:
+    - action: 'install'
