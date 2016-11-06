@@ -1,0 +1,33 @@
+# This blueprint deploy a cockpit on top of a packet.net server
+
+packetnet_client__main:
+    token: 'replace_me'
+
+sshkey__main:
+    key.path: /root/.ssh/id_rsa
+
+node.packet.net__cockpit:
+    sshkey: 'main'
+    client: 'main'
+    project.name: 'my_cockpit'
+    plan.type: 'Type 0'
+    device.os: 'Ubuntu 16.04 LTS'
+    location: 'amsterdam'
+
+sshkey__dns:
+    key.path: '/root/.ssh/dns_rsa' # this needs to point to the a sshkey authorize on server of our dns infrastructure
+
+# actually install the cockpit
+cockpit__main:
+   host_node: 'cockpit'
+   dns.sshkey: 'dns'
+   domain: 'mycockpit.aydo2.com'
+   caddy.email: 'me@mail.com'
+
+   oauth.organization: 'myOrg'
+   oauth.client_id: 'myOrg'
+   oauth.client_secret: 'replace_me'
+   oauth.jwt_key: '-----BEGIN PUBLIC KEY-----\nMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2\n7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6\n6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv\n-----END PUBLIC KEY-----'
+
+actions:
+    - action: 'install'
