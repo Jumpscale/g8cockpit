@@ -1,4 +1,0 @@
-@usedefaults
-h3. Actions
-
-{{jsactions state:$$state}}

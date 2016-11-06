@@ -1,6 +1,0 @@
-@usedefaults
-
-{{timestamp}}
-
-{{dockers}}
-# list installed/inited docker
