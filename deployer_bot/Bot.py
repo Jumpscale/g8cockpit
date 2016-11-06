@@ -168,6 +168,7 @@ class CockpitDeployerBot:
             'blueprint': j.sal.fs.fileGetContents('templates/blueprint')
         }
         self.repos = {}
+        self.run_key = None  # Holds ays deamon run's key
 
     def init(self, config):
         self.config = config
@@ -178,7 +179,6 @@ class CockpitDeployerBot:
     def _register_handlers(self):
         dispatcher = self.updater.dispatcher
         dispatcher.add_handler(CommandHandler('start', self.start))
-        dispatcher.add_handler(CommandHandler('status', self.status))
         dispatcher.add_handler(MessageHandler([Filters.text], self.answer_questions))
         unknown_handler = RegexHandler(r'/.*', self.unknown)
         dispatcher.add_handler(unknown_handler)
@@ -208,8 +208,6 @@ class CockpitDeployerBot:
         self.bot.sendMessage(chat_id=chat_id, text=self.templates['welcome'].format(username=username))
 
         try:
-            # TODO user multitherading lib
-            # _thread.start_new_thread(self._check_services_error, (chat_id, username))
             self.deploy(username, chat_id, args)
         except Exception as e:
             self.logger.error(e)
@@ -220,7 +218,6 @@ class CockpitDeployerBot:
         if 'error' in oauth_data:
             self.bot.sendMessage(chat_id=chat_id, text=oauth_data['error'])
             return
-
 
         cockpit_blueprint = self.templates['blueprint']
         jwt_key = self.config['oauth'].get('jwt_key', None)
@@ -248,28 +245,19 @@ class CockpitDeployerBot:
         self.repos[username] = repo
         j.sal.fs.writeFile("%s/blueprints/cockpit.yaml" % path, content)
 
-        msg = "Deployment of you cockpit in progress, please be patient.\nYou can follow progress using the /status command"
-        self.bot.sendMessage(chat_id=chat_id, text=msg, reply_markup=telegram.ReplyKeyboardHide())
-        self.bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-
         self.logger.info('Deployment of cockpit for user %s in progress' % username)
         repo.init()
         repo.blueprintExecute()
         run = repo.runCreate()
+        self.run_key = run.model.key
         ays_client = j.clients.atyourservice.getFromConfig('/optvar/cfg/ays/ays.conf')
         ays_client.execute_run(run)
-        msg = "Cockpit deployed.\nAddress : https://{url}\nSSH access: `ssh root@{url} -p {port}`".format(
-            url=cockpit.hrd.getStr('dns.domain'), port=cockpit.hrd.getInt('ssh.port'))
-        self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
-        sshkey = repo.findServices(role='sshkey')[0]
-        msg = 'Here is the sshkey you need to use to connect to your cockpit server using SSH.'
-        self.bot.sendMessage(chat_id=chat_id, text=msg)
-        self.bot.sendMessage(chat_id=chat_id, text=sshkey.hrd.getStr('key.priv'))
+        # TODO user multitherading lib
+        _thread.start_new_thread(self._check_job, (chat_id, username, args))
 
-        # deplyement done, remove user fromc cahce
-        del self.in_progess_args[username]
-        self.logger.info('Deployment of cockpit for user %s done.' % username)
+        msg = "Deployment of you cockpit in progress, please be patient."
+        self.bot.sendMessage(chat_id=chat_id, text=msg, reply_markup=telegram.ReplyKeyboardHide())
 
     def oauth(self, chat_id, args):
         url = "http://%s:%s/oauthurl?organization=%s" % (self.config['oauth']['host'], self.config['oauth']['port'], args.organization)
@@ -309,59 +297,30 @@ class CockpitDeployerBot:
         self.updater.idle()
         self.logger.info('stopping bot')
 
-    @run_async
-    def status(self, bot, update, **kwargs):
-        chat_id = update.message.chat_id
-        username = update.message.from_user.username
-        if username in self.repos:
-            repo = self.repos[username]
-        else:
-            msg = "Not deployment in progress. start one with the `/start` command"
-            self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
-            return
-
-        try:
-            states = []
-            for service in repo.services.keys():
-                role, instance = service.split("!")
-                state = repo.getService(role, instance).state.methods
-                for key in state:
-                    if state[key] == "ERROR":
-                        state[key] = "`ERROR`"
-                    states.append('%s:%s:%s' % (service, key, state[key]))
-            message_text = ("\n".join(states))
-            if message_text:
-                self.bot.sendMessage(
-                    chat_id=chat_id, text=message_text.replace(
-                        "_", "-"), parse_mode=telegram.ParseMode.MARKDOWN)
-        except Exception as e:
-            self.logger.error(e)
-            self.bot.sendMessage(chat_id=chat_id, text="Error happened %s" % e)
-
-    def _check_services_error(self, chat_id, username):
+    def _check_job(self, chat_id, username, args):
         stop = False
         while not stop:
-            repo = j.atyourservice.get(username)
-            for service in repo.services.keys():
-                role, instance = service.split("!")
-                state = repo.getService(role, instance).state.methods
-                if service == "os!default" and state.get("install", "") == "OK":
-                    repo = j.atyourservice.get(username)
-                    ip = repo.getService("node", "cockpitvm").hrd.get("publicip")
-                    domain = repo.getService("os", "default").hrd.get("dns.domain")
-                    self.bot.sendMessage(
-                        chat_id=chat_id,
-                        text="You cockpit deploying is finished you can visit it via %s" %
-                        domain)
-                    self.bot.sendMessage(chat_id=chat_id, text="Machine ip address is %s" % ip)
-                    stop = True
-                    break
-                else:
-                    for key in state:
-                        if state[key] == "ERROR":
-                            self.bot.sendMessage(chat_id=chat_id, text="An error occurred try run `/start` again")
-                            stop = True
-                            break
-            if stop:
-                break
+            state = j.core.jobcontroller.db.runs.get(self.run_key).objectGet().state
+            if state == "error":
+                self.bot.sendMessage(chat_id=chat_id, text="An error occurred try run `/start` again")
+                stop = True
+            elif state == "ok":
+                self.bot.sendMessage(chat_id=chat_id,
+                                     text="You cockpit deploying is finished you can visit it via {domain}" % args.domain)
+                repo = self.repos[username]
+                machine = repo.serviceGet('node', 'cockpit')
+                self.bot.sendMessage(chat_id=chat_id, text="Machine ip address is {ip}".format(ip=machine.model.data.ipPublic))
+                stop = True
             time.sleep(5)
+
+# msg = "Cockpit deployed.\nAddress : https://{url}\nSSH access: `ssh root@{url} -p {port}`"
+# self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+
+# sshkey = repo.findServices(role='sshkey')[0]
+# msg = 'Here is the sshkey you need to use to connect to your cockpit server using SSH.'
+# self.bot.sendMessage(chat_id=chat_id, text=msg)
+# self.bot.sendMessage(chat_id=chat_id, text=sshkey.hrd.getStr('key.priv'))
+
+# # deplyement done, remove user fromc cahce
+# del self.in_progess_args[username]
+# self.logger.info('Deployment of cockpit for user %s done.' % username)
