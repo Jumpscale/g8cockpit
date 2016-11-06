@@ -256,7 +256,7 @@ class CockpitDeployerBot:
         repo.init()
         repo.blueprintExecute()
         run = repo.runCreate()
-        ays_client = j.clients.atyourservice.get()
+        ays_client = j.clients.atyourservice.getFromConfig('/optvar/cfg/ays/ays.conf')
         ays_client.execute_run(run)
         msg = "Cockpit deployed.\nAddress : https://{url}\nSSH access: `ssh root@{url} -p {port}`".format(
             url=cockpit.hrd.getStr('dns.domain'), port=cockpit.hrd.getInt('ssh.port'))
