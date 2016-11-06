@@ -7,5 +7,6 @@ from .input_validators import multiple_of
 
 class Repository(Form):
 
-    name = TextField(validators=[DataRequired(message="Name should be specified")])
+    name = TextField(validators=[DataRequired(message="Name must be specified")])
     path = TextField()
+    git_url = TextField(validators=[DataRequired(message="Git URL must be specified")])

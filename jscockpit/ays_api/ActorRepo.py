@@ -1,11 +1,16 @@
 
 from flask_wtf import Form
-from wtforms.validators import DataRequired, Length, Regexp, NumberRange, required
-from wtforms import TextField, FormField, IntegerField, FloatField, FileField, BooleanField, DateField, FieldList
-from .input_validators import multiple_of
+from wtforms.validators import DataRequired, ValidationError
+from wtforms import TextField
 
 
 class ActorRepo(Form):
 
-    branch = TextField(validators=[DataRequired(message="")])
-    url = TextField(validators=[DataRequired(message="")])
+    branch = TextField(validators=[DataRequired(message="branch can't be empty'")])
+    url = TextField(validators=[DataRequired(message="url can't be empty")])
+
+    def validate_url(form, field):
+        if not field.data.startswith('http'):
+            raise ValidationError("URL Format not valid. It should starts with http")
+
+

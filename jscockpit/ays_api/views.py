@@ -5,16 +5,14 @@ def service_view(s):
     """
     generate a dict that represent a service from a service object
     """
-    producers = {}
-    for key, value in s.producers.items():
-        producers[key] = [v.__str__() for v in value]
+    producers = [v.key for v in s.model.producers]
     service = {
         'key': s.model.key,
         'role': s.model.role,
         'name': s.name,
-        'instance_hrd': s.model.dataJSON,
+        'data': j.data.serializer.json.loads(s.model.dataJSON),
         'producers': producers,
-        'parent': s.parent.__str__(),
+        'parent': s.parent.model.key if s.parent else None,
         'path': s.path,
         'repository': s.aysrepo.name,
         'state': s.model.dbobj.state.__str__(),
@@ -29,8 +27,28 @@ def run_view(run):
     """
     generate a dict that represent a service from a repo object
     """
-    # TODO
-    return run_view.__repr__()
+    obj = {
+        'key': run.key,
+        'state': str(run.dbobj.state),
+        'steps': []
+    }
+    for step in run.dbobj.steps:
+        aystep = {
+            'number': step.number,
+            'jobs': []
+        }
+        for job in step.jobs:
+            aystep['jobs'].append({
+                'key': job.key,
+                'action_name': job.actionName,
+                'actor_name': job.actorName,
+                'service_key': job.serviceKey,
+                'service_name': job.serviceName,
+                'state': str(job.state),
+            })
+        obj['steps'].append(aystep)
+
+    return obj
 
 
 def actor_view(t):
@@ -54,6 +72,20 @@ def blueprint_view(bp):
         'archived': not bp.active,
     }
 
+def template_view(template):
+    actions_path = j.sal.fs.joinPaths(template.path, 'actions.py')
+    actions_file = None
+    if j.sal.fs.exists(actions_path):
+        actions_file = j.sal.fs.fileGetContents()
+
+    str_hrd = str(template._hrd)
+    actor_hrd = str_hrd if str_hrd != '' else None
+    return {
+        'name': template.name,
+        'actions_py': actions_file,
+        'schema_hrd': str(template.schemaHrd),
+        'actor_hrd': actor_hrd
+    }
 
 def repository_view(repo):
     return {
