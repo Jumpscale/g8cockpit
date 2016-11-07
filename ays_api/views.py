@@ -91,4 +91,5 @@ def repository_view(repo):
     return {
         'name': repo.name,
         'path': repo.path,
+        'git_url': repo.git.remoteUrl
     }
