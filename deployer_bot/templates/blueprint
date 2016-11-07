@@ -29,7 +29,7 @@ node.ovc__cockpit:
     os.image: 'Ubuntu 16.04 x64'
     ports:
         - '22'
-        - '82:80'
+        - '80:82'
         - '443:443'
     vdc: '{cockpit_name}'
     sshkey: 'main'

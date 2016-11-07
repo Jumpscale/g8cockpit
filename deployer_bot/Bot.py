@@ -302,25 +302,25 @@ class CockpitDeployerBot:
         while not stop:
             state = j.core.jobcontroller.db.runs.get(self.run_key).objectGet().state
             if state == "error":
-                self.bot.sendMessage(chat_id=chat_id, text="An error occurred try run `/start` again")
+                self.bot.sendMessage(chat_id=chat_id, text="An error occurred try run /start again")
                 stop = True
             elif state == "ok":
                 self.bot.sendMessage(chat_id=chat_id,
-                                     text="You cockpit deploying is finished you can visit it via {domain}" % args.domain)
+                                     text="You cockpit deploying is finished you can visit it via {domain}".format(domain=args.domain))
                 repo = self.repos[username]
                 machine = repo.serviceGet('node', 'cockpit')
-                self.bot.sendMessage(chat_id=chat_id, text="Machine ip address is {ip}".format(ip=machine.model.data.ipPublic))
+                msg = "SSH access: `ssh root@{ipPublic} -p {port}`".format(ipPublic=machine.model.data.ipPublic,
+                                                                           port=machine.model.data.sshPort)
+                self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+
+                sshkey = machine.producers['sshkey'][0]
+                msg = 'Here is the sshkey you need to use to connect to your cockpit server using SSH.'
+                self.bot.sendMessage(chat_id=chat_id, text=msg)
+                self.bot.sendMessage(chat_id=chat_id, text=sshkey.model.data.keyPriv)
                 stop = True
             time.sleep(5)
+        # deplyement done, remove user fromc cahce
+        del self.in_progess_args[username]
+        self.logger.info('Deployment of cockpit for user %s done.' % username)
 
-# msg = "Cockpit deployed.\nAddress : https://{url}\nSSH access: `ssh root@{url} -p {port}`"
-# self.bot.sendMessage(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
-# sshkey = repo.findServices(role='sshkey')[0]
-# msg = 'Here is the sshkey you need to use to connect to your cockpit server using SSH.'
-# self.bot.sendMessage(chat_id=chat_id, text=msg)
-# self.bot.sendMessage(chat_id=chat_id, text=sshkey.hrd.getStr('key.priv'))
-
-# # deplyement done, remove user fromc cahce
-# del self.in_progess_args[username]
-# self.logger.info('Deployment of cockpit for user %s done.' % username)
