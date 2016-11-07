@@ -156,12 +156,13 @@ class CockpitArgs:
 
 class CockpitDeployerBot:
     """docstring for """
+    ays_client = j.clients.atyourservice.getFromConfig('/optvar/cfg/ays/ays.conf')
 
-    def __init__(self):
+    def __init__(self, config):
         self.logger = j.logger.get("j.client.cockpitbot")
-        self.config = None
-        self.updater = None
-        self.bot = None
+        self.config = config
+        self.updater = Updater(token=config['bot']['token'])
+        self.bot = self.updater.bot
         self.in_progess_args = {}
         self.templates = {
             'welcome': j.sal.fs.fileGetContents('templates/welcome.md'),
@@ -169,11 +170,6 @@ class CockpitDeployerBot:
         }
         self.repos = {}
         self.run_key = None  # Holds ays deamon run's key
-
-    def init(self, config):
-        self.config = config
-        self.updater = Updater(token=config['bot']['token'])
-        self.bot = self.updater.bot
         self._register_handlers()
 
     def _register_handlers(self):
@@ -250,13 +246,11 @@ class CockpitDeployerBot:
         repo.blueprintExecute()
         run = repo.runCreate()
         self.run_key = run.model.key
-        ays_client = j.clients.atyourservice.getFromConfig('/optvar/cfg/ays/ays.conf')
-        ays_client.execute_run(run)
+        self.ays_client.execute_run(run)
 
-        # TODO user multitherading lib
         _thread.start_new_thread(self._check_job, (chat_id, username, args))
 
-        msg = "Deployment of you cockpit in progress, please be patient."
+        msg = "Deployment of your cockpit in progress, please be patient."
         self.bot.sendMessage(chat_id=chat_id, text=msg, reply_markup=telegram.ReplyKeyboardHide())
 
     def oauth(self, chat_id, args):

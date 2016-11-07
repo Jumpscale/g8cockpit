@@ -21,8 +21,7 @@ def cli(config):
     p.start()
 
     # start bot
-    bot = CockpitDeployerBot()
-    bot.init(cfg)
+    bot = CockpitDeployerBot(cfg)
     bot.run()
 
     bot.join()
