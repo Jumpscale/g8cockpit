@@ -5,7 +5,7 @@ This Telegram chatbot is used to allow people to easily deploy a Cockpit.
 This chatbot is composed of two components:
 
 - the chatbot itself
-- a small [Flask](https://en.wikipedia.org/wiki/Flask_(web_framework) app that is used to receive callbacks from ItsYou.online for OAuth 2.0 workflow
+- a small [Flask](http://flask.pocoo.org/) app that is used to receive callbacks from ItsYou.online for OAuth 2.0 workflow
 
 Both need to be started for the chatbot to work properly.
 
@@ -57,10 +57,10 @@ oauth:
     # CLient secret from your on in itsyou.online
     client_secret: 'IuDUBE--6NMQS1OH-UmcOijhT7Uq2lPdWnJ74hMSMqgKjjQhtZDC'
     itsyouonlinehost: "https://itsyou.online"
-    jwt_key: '''
+    jwt_key: """
     itsyou.online public key for jwt signing : see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md
-    '''
-    ```
+    """
+```
 
 Make sure the `May be used in client credentials gran type` is enable when creating the client secret for this chatbot.
 
