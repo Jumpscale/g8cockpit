@@ -1,11 +1,14 @@
 #!/usr/local/bin/jspython
 
+import os
 import click
 from JumpScale import j
 from Bot import CockpitDeployerBot
 from Oauth import app
 from multiprocessing import Process
 
+os.environ["LC_ALL"] = "C.UTF-8"
+os.environ["LANG"] = "C.UTF-8"
 
 @click.command()
 @click.option('--config', '-c', help='path to the config file', default='config.toml')
