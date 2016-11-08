@@ -17,7 +17,7 @@ Steps:
 ### Get an OAuth token with Client Credentials Flow
 
 ```
-curl -d "grant_type=client_credentials&client_id=CLIENT_ID/APPLICATION_ID&client_secret=CLIENT_SECRET" /
+curl -d "grant_type=client_credentials&client_id=CLIENT_ID&client_secret=CLIENT_SECRET" /
      https://itsyou.online/v1/oauth/access_token
 ```
 
