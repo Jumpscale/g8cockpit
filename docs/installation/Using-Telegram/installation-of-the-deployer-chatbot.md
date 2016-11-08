@@ -21,43 +21,46 @@ Options:
   -c, --config TEXT  path to the config file
   --help             Show this message and exit.
 
-```  
+```
 
-By default the chatbot looks for a `config.toml` file in the current directory, but you can specify a path using the `--config` argument.
+By default the chatbot looks for a `config.yaml` file in the current directory, but you can specify a path using the `--config` argument.
 
 Here a example of the required configuration:
 
-```toml
-[bot]
-# bot token from @botfather
-token = "205766488:AAEizHUvxZddhL-G21oOM5JL1lmOf9slh4s"
+```yaml
+bot:
+    # bot token from @botfather
+    token: "205766488:AAEizHUvxZddhL-G21oOM5JL1lmOf9slh4s"
 
 # address of the G8 you want to propose to the users
 # during deployment.
-[g8.be-scale-1]
-address = "be-scale-1.demo.greenitglobe.com"
+g8:
+    - gig-demo-greenitglobe:
+        address: "gig.demo.greenitglobe.com"
+    - g8.be-g8-1:
+        address: "be-g8-1.demo.greenitglobe.com"
 
 # credentials for the dns cluster.
 # if you don't specify the credentials, they will be ask to the user during deployment
-[dns]
-login = "login"
-password = "password"
-sshkey = "path of private key"
+dns:
+    login: "login"
+    password: "password"
+    sshkey: "path of private key"
 
-[oauth]
-host = '0.0.0.0'
-port = 5000
-# adress of you oauth server where itsyouonline should send callback. Make sure the same URL is used in itsyou.online.
-redirect_uri = "https://deployerbot.com/callback"
-# CLient ID from your app on itsyou.online
-client_id = 'myId'
-# CLient secret from your on in itsyou.online
-client_secret = 'IuDUBE--6NMQS1OH-UmcOijhT7Uq2lPdWnJ74hMSMqgKjjQhtZDC'
-itsyouonlinehost = "https://itsyou.online"
-jwt_key = '''
-itsyou.online public key for jwt signing : see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md
-'''
-```
+oauth:
+    host: '0.0.0.0'
+    port: 5000
+    # adress of you oauth server where itsyouonline should send callback. Make sure the same URL is used in itsyou.online.
+    redirect_uri: "https://deployerbot.com/callback"
+    # CLient ID from your app on itsyou.online
+    client_id: 'myId'
+    # CLient secret from your on in itsyou.online
+    client_secret: 'IuDUBE--6NMQS1OH-UmcOijhT7Uq2lPdWnJ74hMSMqgKjjQhtZDC'
+    itsyouonlinehost: "https://itsyou.online"
+    jwt_key: '''
+    itsyou.online public key for jwt signing : see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md
+    '''
+    ```
 
 Make sure the `May be used in client credentials gran type` is enable when creating the client secret for this chatbot.
 

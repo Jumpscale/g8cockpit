@@ -11,10 +11,9 @@ os.environ["LC_ALL"] = "C.UTF-8"
 os.environ["LANG"] = "C.UTF-8"
 
 @click.command()
-@click.option('--config', '-c', help='path to the config file', default='config.toml')
+@click.option('--config', '-c', help='path to the config file', default='config.yaml')
 def cli(config):
-    cfg = j.data.serializer.toml.load(config)
-
+    cfg = j.data.serializer.yaml.load(config)
     # start flask server for aouth workflow
     app.config.update(cfg['oauth'])
     p = Process(target=app.run, kwargs={
