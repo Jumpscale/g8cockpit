@@ -1,0 +1,103 @@
+## CURL Examples
+
+### Get an access token
+
+curl -d "grant_type=client_credentials&client_id=centrilogic-gig-dev&client_secret=s9lTJqjcCHJHzkceQd-7iVFfGuNwDbyumXkpmXX012FUGGgMNERv" https://itsyou.online/v1/oauth/access_token
+
+### Get a JWT
+
+curl -H "Authorization: token KcZMu1EjgV2NgYwEyRNomGoo4KQf" https://itsyou.online/v1/oauth/jwt?aud=centrilogic-gig-dev
+
+
+### List all repositories
+
+curl -X GET -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository
+
+
+### Create a repository
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" -H "Content-Type: application/json" -d '{"name":"yves2", "git_url":"git@github.com:yveskerwyn/cockpit_repo_yves2.git"}' https://cl.aydo2.com/api/ays/repository
+
+
+### Get repository details
+
+curl -X GET -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves2
+
+
+### Delete a repository
+
+curl -X DELETE -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4NjEzNDU5LCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.mc-P33QmEyosZFrCtKiHRbUXI3pY8KK-Ax8Gow-vDnwh-B-kUYhWQ0hinx66Q6IBeLCMhjJ3DX2wmLPRjdrawEjFH57_dGvqnSd9uYtonG8Zs7TzZc5_DLnaW1kC4XDq" https://cl.aydo2.com/api/ays/repository/yves
+
+
+### List all blueprints
+
+curl -X GET -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4NjMyNjY5LCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.JicdA__v_71cSz0K8XeyhbSIXgcRvVUCg4RF0c7G6AzShkfZAmygwL1zfDKpoff0R9nMtJ5uhvAwSmk7uam7MOwUO3bUPoudH_AzTUU9IGwSkrGJGDfSQzwTkNy2jvn0" https://cl.aydo2.com/api/ays/repository/yves/blueprint
+
+
+### Delete a blueprint
+
+curl -X DELETE -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4NjMyNjY5LCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.JicdA__v_71cSz0K8XeyhbSIXgcRvVUCg4RF0c7G6AzShkfZAmygwL1zfDKpoff0R9nMtJ5uhvAwSmk7uam7MOwUO3bUPoudH_AzTUU9IGwSkrGJGDfSQzwTkNy2jvn0" https://cl.aydo2.com/api/ays/repository/yves/blueprint/vdc4yves2.yaml
+
+
+### Create blueprint for a g8client service
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" -H "Content-Type: application/json" -d '{"name":"uk.yaml","content":"g8client__uk:\n  url: uk-g8-1.demo.greenitglobe.com\n  login: yves\n  password: IAM4greenIT\n  account: Account of Yves"}' https://cl.aydo2.com/api/ays/repository/yves2/blueprint
+
+
+### Delete g8client blueprint
+
+curl -X DELETE -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves2/blueprint/uk.yaml
+
+
+### Execute g8client blueprint
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves2/blueprint/uk.yaml
+
+
+### Delete g8client service (undoes above execution)
+
+curl -X DELETE -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves2/service/g8client/uk
+
+### Blueprint for creating a VDC (excluding the actions block)
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" -H "Content-Type: application/json" -d '{"name":"vdc4yves.yaml","content":"vdc__vdc4yves:\n  g8client: uk\n  location: uk-g8-1"}' https://cl.aydo2.com/api/ays/repository/yves2/blueprint
+
+### Execute VDC blueprint (excluding actions)
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves2/blueprint/vdc4yves.yaml
+
+### Blueprint only defining actions
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4NjMyNjY5LCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.JicdA__v_71cSz0K8XeyhbSIXgcRvVUCg4RF0c7G6AzShkfZAmygwL1zfDKpoff0R9nMtJ5uhvAwSmk7uam7MOwUO3bUPoudH_AzTUU9IGwSkrGJGDfSQzwTkNy2jvn0" -H "Content-Type: application/json" -d '{"name":"actions.yaml","content":"actions:\n  - action: install"}' https://cl.aydo2.com/api/ays/repository/yves2/blueprint
+
+
+### Execute actions blueprint
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves2/blueprint/actions.yaml
+
+### Blueprint for creating a VDC (including the actions block)
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4NjMyNjY5LCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.JicdA__v_71cSz0K8XeyhbSIXgcRvVUCg4RF0c7G6AzShkfZAmygwL1zfDKpoff0R9nMtJ5uhvAwSmk7uam7MOwUO3bUPoudH_AzTUU9IGwSkrGJGDfSQzwTkNy2jvn0" -H "Content-Type: application/json" -d '{"name":"vdc4yves.yaml","content":"vdc__vdc4yves:\n  g8client: uk\n  location: uk-g8-1\nactions:\n  - action: install"}' https://cl.aydo2.com/api/ays/repository/yves/blueprint
+
+### Delete a blueprint
+
+curl -X DELETE -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4NjMyNjY5LCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.JicdA__v_71cSz0K8XeyhbSIXgcRvVUCg4RF0c7G6AzShkfZAmygwL1zfDKpoff0R9nMtJ5uhvAwSmk7uam7MOwUO3bUPoudH_AzTUU9IGwSkrGJGDfSQzwTkNy2jvn0" https://cl.aydo2.com/api/ays/repository/yves/blueprint/vdc4yves.yaml
+
+
+### Execute a blueprint
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves2/blueprint/vdc4yves.yaml
+
+### Delete service (undoes the execution)
+
+curl -X DELETE -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves/service/vdc/vdc4yves
+
+
+### Create a run
+
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves2/aysrun
+
+
+### List all runs
+
+curl -X GET -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2VudHJpbG9naWMtZ2lnLWRldiIsImNlbnRyaWxvZ2ljLWdpZy1kZXYiXSwiZXhwIjoxNDc4Njk0NjgxLCJnbG9iYWxpZCI6ImNlbnRyaWxvZ2ljLWdpZy1kZXYiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.lSiWBt1dXNa3dCt8NlfQfoR2idC6DVCkYe-jiJld9nVITgagxWGBlsD2nfGrfWDayXmYp6M1H6x_a43XCjYhHUhGxwi5AtKYOADoHbOuGKk3Z1wLZBVyinR-UN-wcn8G" https://cl.aydo2.com/api/ays/repository/yves2/aysrun
