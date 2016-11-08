@@ -1,5 +1,0 @@
-@usedefaults
-
-{{monitoringissues}}
-list issues
-detailed page per monitoring issue (is special type of eco)

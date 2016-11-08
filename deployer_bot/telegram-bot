@@ -1,17 +1,19 @@
 #!/usr/local/bin/jspython
 
+import os
 import click
 from JumpScale import j
 from Bot import CockpitDeployerBot
 from Oauth import app
 from multiprocessing import Process
 
+os.environ["LC_ALL"] = "C.UTF-8"
+os.environ["LANG"] = "C.UTF-8"
 
 @click.command()
-@click.option('--config', '-c', help='path to the config file', default='config.toml')
+@click.option('--config', '-c', help='path to the config file', default='config.yaml')
 def cli(config):
-    cfg = j.data.serializer.toml.load(config)
-
+    cfg = j.data.serializer.yaml.load(config)
     # start flask server for aouth workflow
     app.config.update(cfg['oauth'])
     p = Process(target=app.run, kwargs={
@@ -21,8 +23,7 @@ def cli(config):
     p.start()
 
     # start bot
-    bot = CockpitDeployerBot()
-    bot.init(cfg)
+    bot = CockpitDeployerBot(cfg)
     bot.run()
 
     bot.join()

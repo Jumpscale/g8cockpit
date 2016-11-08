@@ -1,0 +1,51 @@
+# This blueprint deploy a cockpit on top of a packet.net server
+
+# connection to the g8 where to deploy the cockpit
+g8client__uk:
+    url: 'du-conv-3.demo.greenitglobe.com'
+    login: 'myLogin'
+    password: 'myPassword'
+
+# give user access to the vdc
+uservdc__myLogin:
+
+# create the vdc that will contain the vm of the cockpit
+vdc__cockpit:
+    description: 'cockpit vdc'
+    g8client: 'uk'
+    account: 'MyAccount'
+    location: 'du-conv-3'
+    uservdc:
+        - 'myLogin'
+
+sshkey__main:
+
+# create the host vm
+node.ovc__cockpit:
+    bootdisk.size: 50
+    memory: 2
+    os.image: 'Ubuntu 16.04 x64'
+    ports:
+        - '22'
+        - '80:80'
+        - '443:443'
+    vdc: 'cockpit'
+    sshkey: 'main'
+
+sshkey__dns:
+    key.path: '/root/.ssh/dns_rsa' # this needs to point to the a sshkey authorize on server of our dns infrastructure
+
+# actually install the cockpit
+cockpit__main:
+   host_node: 'cockpit'
+   dns.sshkey: 'dns'
+   domain: 'mycockpit.aydo2.com'
+   caddy.email: 'me@mail.com'
+
+   oauth.organization: 'myOrg'
+   oauth.client_id: 'myOrg'
+   oauth.client_secret: 'replace_me'
+   oauth.jwt_key: '-----BEGIN PUBLIC KEY-----\nMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2\n7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6\n6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv\n-----END PUBLIC KEY-----'
+
+actions:
+    - action: 'install'

@@ -1,6 +1,0 @@
-@usedefaults
-
-{{timestamp}}
-
-{{dockerhosts}}
-
