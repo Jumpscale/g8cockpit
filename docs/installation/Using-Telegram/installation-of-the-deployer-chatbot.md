@@ -57,9 +57,6 @@ oauth:
     # CLient secret from your on in itsyou.online
     client_secret: 'IuDUBE--6NMQS1OH-UmcOijhT7Uq2lPdWnJ74hMSMqgKjjQhtZDC'
     itsyouonlinehost: "https://itsyou.online"
-    jwt_key: """
-    itsyou.online public key for jwt signing : see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md
-    """
 ```
 
 Make sure the `May be used in client credentials gran type` is enable when creating the client secret for this chatbot.

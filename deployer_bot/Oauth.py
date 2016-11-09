@@ -28,6 +28,26 @@ def get_user_token(code, state):
     return resp.json()
 
 
+def get_jwt():
+    params = {
+        'grant_type': 'client_credentials',
+        'client_id': app.config['client_id'],
+        'client_secret': app.config['client_secret'],
+    }
+    url = 'https://itsyou.online/v1/oauth/access_token?%s' % (urllib.parse.urlencode(params))
+    resp = requests.post(url, verify=False)
+    resp.raise_for_status()
+    access_token = resp.json()['access_token']
+
+    url = 'https://itsyou.online/v1/oauth/jwt'
+    headers = {'Authorization': 'token %s' % access_token}
+    data = {
+        'scope': 'user:memberOf:%s' % ('personal_cockpit')
+    }
+    resp = requests.post(url, data=json.dumps(data), headers=headers, verify=False)
+    return resp.text
+
+
 def get_org_token():
     params = {
         'grant_type': 'client_credentials',

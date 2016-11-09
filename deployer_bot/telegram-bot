@@ -4,7 +4,7 @@ import os
 import click
 from JumpScale import j
 from Bot import CockpitDeployerBot
-from Oauth import app
+from Oauth import app, get_jwt
 from multiprocessing import Process
 
 os.environ["LC_ALL"] = "C.UTF-8"
@@ -16,6 +16,7 @@ def cli(config):
     cfg = j.data.serializer.yaml.load(config)
     # start flask server for aouth workflow
     app.config.update(cfg['oauth'])
+    cfg['jwt_key'] = get_jwt()
     p = Process(target=app.run, kwargs={
         'host': cfg['oauth'].get('host', '127.0.0.1'),
         'port': cfg['oauth'].get('port', 5000)
