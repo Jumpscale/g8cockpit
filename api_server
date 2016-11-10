@@ -1,15 +1,11 @@
 #!/usr/local/bin/jspython
-from ays_api import app
-from ays_api.app import process_jwt_token
-from ays_api.ays import ays_api
-from ays_api.cockpit import cockpit_api
+from ays_api.app import app, init_blueprints
 from JumpScale import j
 
 cfg = j.data.serializer.toml.load('%s/cockpit_api/config.toml' % j.dirs.cfgDir)
-prod = cfg.get('mode', {'prod': True}).get('True', True)
-if prod:
-    ays_api.before_request(process_jwt_token)
-    cockpit_api.before_request(process_jwt_token)
+
 app.config['oauth'] = cfg['oauth']
+app.config['production'] = cfg.get('mode', {'prod': True}).get('prod', True)
+init_blueprints()
 
 app.run(**cfg['api']['ays'])

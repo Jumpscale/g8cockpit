@@ -16,6 +16,18 @@ wtforms_json.init()
 
 logger = j.logger.get('j.cockpit.api')
 
+def init_blueprints():
+    if app.config.get('production',True):
+        print('JWT middleware enable')
+        ays_api.before_request(process_jwt_token)
+        cockpit_api.before_request(process_jwt_token)
+
+    app.register_blueprint(ays_api)
+    app.register_blueprint(oauth_api)
+    app.register_blueprint(webhooks_api)
+    app.register_blueprint(cockpit_api)
+
+
 
 def process_jwt_token():
     authorization = request.cookies.get(
@@ -72,12 +84,6 @@ def process_jwt_token():
     response.status_code = 401
     return response
 
-app.register_blueprint(ays_api)
-app.register_blueprint(oauth_api)
-app.register_blueprint(webhooks_api)
-app.register_blueprint(cockpit_api)
-
-
 @app.route('/apidocs/<path:path>')
 def send_js(path):
     root = j.sal.fs.joinPaths(j.sal.fs.getParent(__file__), 'apidocs')
@@ -113,7 +119,3 @@ def handle_bad_request(e):
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def handle_bad_request(e):
     return jsonify(error=e.msg), e.code
-
-
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
