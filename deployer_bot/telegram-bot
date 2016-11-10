@@ -16,7 +16,7 @@ def cli(config):
     cfg = j.data.serializer.yaml.load(config)
     # start flask server for aouth workflow
     app.config.update(cfg['oauth'])
-    cfg['jwt_key'] = get_jwt()
+    cfg['oauth']['jwt_key'] = get_jwt()
     p = Process(target=app.run, kwargs={
         'host': cfg['oauth'].get('host', '127.0.0.1'),
         'port': cfg['oauth'].get('port', 5000)
