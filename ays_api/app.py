@@ -1,6 +1,6 @@
 from flask import Flask, send_from_directory, make_response, request, send_file, jsonify
 import werkzeug.exceptions
-import jwt
+from jose import jwt, exceptions
 import wtforms_json
 from .ays import ays_api
 from .oauth import oauth_api
@@ -42,7 +42,7 @@ def process_jwt_token():
                 payload = jwt.decode(
                     token,
                     app.config['oauth'].get('jwt_key'),
-                    algorithm=headers['alg'],
+                    algorithms=[headers['alg']],
                     audience=app.config['oauth']['organization'],
                     issuer='itsyouonline')
                 # case JWT is for an organization
@@ -55,11 +55,12 @@ def process_jwt_token():
                     return
 
                 msg = 'Unauthorized'
-            except jwt.ExpiredSignatureError as e:
+            except exceptions.ExpiredSignatureError as e:
                 msg = 'Your JWT has expired'
 
-            except jwt.DecodeError as e:
-                msg = 'Your JWT is invalid'
+            except exceptions.JOSEError as e:
+                msg = 'JWT Error: %s' % str(e)
+
             except Exception as e:
                 msg = 'Unexpected error : %s' % str(e)
 
