@@ -297,7 +297,8 @@ class CockpitDeployerBot:
             job = j.core.jobcontroller.db.runs.get(self.run_key).objectGet()
             state = job.state
             if state == "error":
-                msg = "Error occurred while trying to deploy {err}.\ntry run /start again".format(err="\n".join(job.model.logs))
+                traceback = [log['log'] for log in job.model.logs if log.get('log', None)]
+                msg = "Error occurred while trying to deploy {err}.\ntry run /start again".format(err="\n".join(traceback))
                 self.bot.sendMessage(chat_id=chat_id,
                                      text=msg)
                 stop = True
