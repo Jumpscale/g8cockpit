@@ -286,7 +286,7 @@ class CockpitDeployerBot:
 
     def join(self):
         if self.updater is None:
-            self.logger.error( "connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
+            self.logger.error("connection to telegram bot doesn't exist. please initialise the bot with the init method first.")
             return
         self.updater.idle()
         self.logger.info('stopping bot')
@@ -294,9 +294,12 @@ class CockpitDeployerBot:
     def _check_job(self, chat_id, username, args):
         stop = False
         while not stop:
-            state = j.core.jobcontroller.db.runs.get(self.run_key).objectGet().state
+            job = j.core.jobcontroller.db.runs.get(self.run_key).objectGet()
+            state = job.state
             if state == "error":
-                self.bot.sendMessage(chat_id=chat_id, text="An error occurred try run /start again")
+                msg = "Error occurred while trying to deploy {err}.\ntry run /start again".format(err="\n".join(job.model.logs))
+                self.bot.sendMessage(chat_id=chat_id,
+                                     text=msg)
                 stop = True
             elif state == "ok":
                 self.bot.sendMessage(chat_id=chat_id,
