@@ -165,6 +165,12 @@ def createNewBlueprint(repository):
     if new_name in names:
         return jsonify(error="Blueprint with the name %s' already exists" % new_name), 409
 
+    # check validity of input as YAML syntax
+    try:
+        j.data.serializer.yaml.loads(content)
+    except:
+        return jsonify(error="Invalid YAML syntax"), 400
+
     bp_path = j.sal.fs.joinPaths(repo.path, 'blueprints', new_name)
     try:
         j.sal.fs.writeFile(bp_path, content)
@@ -173,6 +179,14 @@ def createNewBlueprint(repository):
         if j.sal.fs.exists(bp_path):
             j.sal.fs.remove(bp_path)
         return jsonify(error="Can't save new blueprint"), 500
+
+    # check validity of input as blueprint syntax
+    try:
+        blueprint.validate()
+    except:
+        if j.sal.fs.exists(bp_path):
+            j.sal.fs.remove(bp_path)
+        return jsonify(error="Invalid blueprint syntax"), 400
 
     return jsonify(blueprint_view(blueprint)), 201
 
