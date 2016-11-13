@@ -1,6 +1,4 @@
 import time
-import logging
-import queue
 import _thread
 
 from JumpScale import j
@@ -175,7 +173,7 @@ class CockpitDeployerBot:
     def _register_handlers(self):
         dispatcher = self.updater.dispatcher
         dispatcher.add_handler(CommandHandler('start', self.start))
-        dispatcher.add_handler(MessageHandler([Filters.text], self.answer_questions))
+        dispatcher.add_handler(MessageHandler(Filters.text, self.answer_questions))
         unknown_handler = RegexHandler(r'/.*', self.unknown)
         dispatcher.add_handler(unknown_handler)
 
@@ -320,5 +318,3 @@ class CockpitDeployerBot:
         # deplyement done, remove user fromc cahce
         del self.in_progess_args[username]
         self.logger.info('Deployment of cockpit for user %s done.' % username)
-
-
