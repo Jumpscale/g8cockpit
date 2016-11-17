@@ -29,22 +29,34 @@ def run_view(run):
     """
     obj = {
         'key': run.key,
-        'state': str(run.dbobj.state),
+        'state': str(run.state),
         'steps': []
     }
-    for step in run.dbobj.steps:
+    for step in run.steps:
         aystep = {
-            'number': step.number,
+            'number': step.dbobj.number,
             'jobs': []
         }
         for job in step.jobs:
+            logs = []
+            for log in job.model.dbobj.logs:
+                log_dict = {}
+                log_record = log.to_dict()
+                log_dict['epoch'] = log_record['epoch'] if 'epoch' in log_record else None
+                log_dict['log'] = log_record['log'] if 'log' in log_record else None
+                log_dict['level'] = log_record['level'] if 'level' in log_record else None
+                log_dict['category'] = log_record['category'] if 'category' in log_record else None
+                log_dict['tags'] = log_record['tags'] if 'tags' in log_record else None
+                logs.append(log_dict)
+
             aystep['jobs'].append({
-                'key': job.key,
-                'action_name': job.actionName,
-                'actor_name': job.actorName,
-                'service_key': job.serviceKey,
-                'service_name': job.serviceName,
-                'state': str(job.state),
+                'key': job.model.key,
+                'action_name': job.model.dbobj.actionName,
+                'actor_name': job.model.dbobj.actorName,
+                'service_key': job.model.dbobj.serviceKey,
+                'service_name': job.model.dbobj.serviceName,
+                'state': str(job.model.dbobj.state),
+                'logs': logs
             })
         obj['steps'].append(aystep)
 

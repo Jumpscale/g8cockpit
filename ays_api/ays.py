@@ -545,7 +545,8 @@ def getRun(aysrun, repository):
     except j.exceptions.NotFound as e:
         return jsonify(error=e.message), 404
 
-    aysrun = repo.runGet(aysrun)
+    aysrun_model = repo.runGet(aysrun)
+    aysrun = aysrun_model.objectGet()
 
     return json.dumps(run_view(aysrun)), 200, {'Content-Type': 'application/json'}
 
