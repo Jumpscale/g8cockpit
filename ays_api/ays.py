@@ -572,7 +572,7 @@ def createRun(repository):
         if not simulate:
             daemon_client.execute_run(run=run, callback_url=callback_url)
 
-        return json.dumps(run_view(run.model)), 200, {'Content-Type': 'application/json'}
+        return json.dumps(run_view(run)), 200, {'Content-Type': 'application/json'}
 
     except j.exceptions.Input as e:
         return jsonify(error=e.msgpub), 500

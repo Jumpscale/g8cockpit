@@ -143,9 +143,27 @@ types:
             type: string
             required: true
           branch:
-             type: string
-             required: true
-             default: 'master'
+              type: string
+              required: true
+              default: 'master'
+
+  Log:
+    properties:
+        category:
+            type: string
+            required: false
+        epoch:
+            type: string
+            required: false
+        level:
+            type: string
+            required: false
+        log:
+            type: string
+            required: false
+        tags:
+            type: string
+            required: false
   Job:
     properties:
         key:
@@ -166,6 +184,10 @@ types:
         state:
             type: string
             required: true
+        logs:
+            type: Log[]
+
+
   AYSStep:
      properties:
         number:
