@@ -1,6 +1,8 @@
 from JumpScale import j
 import telegram
 from .utils import chunks, AYS_REPO_DIR
+import time
+import os
 
 
 class BlueprintMgmt(object):
@@ -15,15 +17,14 @@ class BlueprintMgmt(object):
         repo = j.atyourservice.repoGet(j.sal.fs.joinPaths(AYS_REPO_DIR, repo_name))
         return '%s/blueprints' % (repo.path)
 
-    def _currentRepo(self, username):
-        return self.bot.repo_mgmt._currentRepo(username)
+    def _currentRepoName(self, username):
+        return self.bot.repo_mgmt._currentRepoName(username)
 
-    def _currentRepoPath(self, username):
-        repo = j.atyourservice.repoGet(j.sal.fs.joinPaths(AYS_REPO_DIR, self._currentRepo(username)))
-        return repo.path
+    def _currentRepo(self, username):
+        return j.atyourservice.repoGet(j.sal.fs.joinPaths(AYS_REPO_DIR, self._currentRepoName(username)))
 
     def _currentBlueprintsPath(self, username):
-        return self._blueprintsPath(self._currentRepo(username))
+        return self._blueprintsPath(self._currentRepoName(username))
 
     # blueprint management
     def create(self, bot, update, repo):
@@ -31,7 +32,7 @@ class BlueprintMgmt(object):
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
-        if not self._currentRepo(username):
+        if not self._currentRepoName(username):
             message = "No repo selected, you need to select a repo before sending me blueprint. See /repo"
             return self.bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
@@ -46,8 +47,8 @@ class BlueprintMgmt(object):
 
         # check if it's a blueprint
         try:
-            yaml = j.data.serializer.yaml.loads(update.message.text)
-        except e:
+            j.data.serializer.yaml.loads(update.message.text)
+        except Exception as e:
             message = "This is not a valid blueprint. check the syntaxe"
             return self.bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
@@ -57,7 +58,8 @@ class BlueprintMgmt(object):
             bp_dir = self._currentBlueprintsPath(username)
             bp_path = '%s/%s' % (bp_dir, custom)
             j.sal.fs.writeFile(bp_path, update.message.text)
-
+            msg = """Blueprint has been created. To schedule for run, please execute blueprint.
+            using `blueprint execute`"""
             if msg:
                 self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
         except Exception as e:
@@ -88,14 +90,13 @@ class BlueprintMgmt(object):
             msg = 'Error during blueprint execution, check validity of your blueprint.\n Error: %s' % str(e)
             self.logger.error(e.message)
         else:
-            msg = "Blueprint deployed. Check your service with `/service list`"
+            msg = "Blueprint deployed. Run with `/run create` then `/run exec`"
 
         self.bot.sendMessage(
             chat_id=chat_id,
             text=msg)
 
     def list(self, bot, update):
-        import ipdb; ipdb.set_trace()
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
@@ -105,7 +106,8 @@ class BlueprintMgmt(object):
         bluelist = []
         for bluepath in blueprints:
             blueprint = j.sal.fs.getBaseName(bluepath)
-            bluelist.append(blueprint)
+            if not blueprint.startswith("_"):
+                bluelist.append(blueprint)
 
         if len(bluelist) <= 0:
             self.bot.sendMessage(
@@ -138,16 +140,36 @@ class BlueprintMgmt(object):
             text="Click on the blueprint you want to inspect",
             reply_markup=reply_markup)
 
+    def disable(self, bot, update, blueprint):
+        chat_id = update.message.chat_id
+        username = update.message.from_user.username
+        repo = self._currentRepo(username)
+        bp = repo.blueprintGet("%s" % blueprint)
+
+        bp.disable()
+        bot.sendMessage(text="blueprint disbaled successfuly",
+                        chat_id=chat_id)
+
+    def enable(self, bot, update, blueprint):
+        import ipdb; ipdb.set_trace()
+        chat_id = update.message.chat_id
+        username = update.message.from_user.username
+        repo = self._currentRepo(username)
+        bp = repo.blueprintGet("_%s" % blueprint)
+
+        bp.enable()
+        bot.sendMessage(text="blueprint enabled successfuly",
+                        chat_id=chat_id)
+
     def delete(self, bot, update, names):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-        repo = j.atyourservice.repoGet(j.sal.fs.joinPaths(AYS_REPO_DIR, self._currentRepo(username)))
+        repo = j.atyourservice.repoGet(j.sal.fs.joinPaths(AYS_REPO_DIR, self._currentRepoName(username)))
 
         # ays uninstall before
         def delete_bp(path):
             try:
-                import ipdb; ipdb.set_trace()
                 bp = repo.blueprintGet(path)
 
                 msg = 'Start deletion of blueprint %s' % bp.name
@@ -203,17 +225,17 @@ class BlueprintMgmt(object):
     # UI interaction
     def choose_action(self, bot, update):
         self.callbacks[update.message.from_user.username] = self.dispatch_choice
-        choices = ['add', 'list', 'delete']
+        choices = ['add', 'execute', 'list', 'delete']
         reply_markup = telegram.ReplyKeyboardMarkup([choices], resize_keyboard=True, one_time_keyboard=True)
         return self.bot.sendMessage(chat_id=update.message.chat_id,
                                     text="What do you want to do ?", reply_markup=reply_markup)
 
     def dispatch_choice(self, bot, update):
         message = update.message
-        username = update.message.from_user.username
-        repo = self._currentRepo(username)
         if message.text == "add":
             self.create_prompt(bot, update)
+        elif message.text == 'execute':
+            self.execute_prompt(bot, update)
         elif message.text == 'list':
             self.list(bot, update)
         elif message.text == 'delete':
@@ -224,6 +246,58 @@ class BlueprintMgmt(object):
             self.create(bot, update, update.message.text)
         self.callbacks[update.message.from_user.username] = cb
         return self.bot.sendMessage(chat_id=update.message.chat_id, text="Please paste your blueprint here now.")
+
+    def disable_prompt(self, bot, update):
+        username = update.message.from_user.username
+        blueprints = j.sal.fs.listFilesInDir(self._currentBlueprintsPath(username))
+
+        bluelist = []
+
+        for bluepath in blueprints:
+            blueprint = j.sal.fs.getBaseName(bluepath)
+            if not blueprint.startswith("_"):
+                bluelist.append(blueprint)
+
+        if len(bluelist) == 0:
+            return self.bot.sendMessage(
+                chat_id=update.message.chat_id,
+                text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
+
+        def cb(bot, update):
+            self.disable(bot, update, update.message.text)
+        self.callbacks[username] = cb
+
+        custom_keyboard = [bluelist]
+        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, resize_keyboard=True, one_time_keyboard=True)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="Which blueprint do you want to disable ?", reply_markup=reply_markup)
+
+    def enable_prompt(self, bot, update):
+        import ipdb; ipdb.set_trace()
+        username = update.message.from_user.username
+        blueprints = os.listdir(self._currentBlueprintsPath(username))
+
+        bluelist = []
+
+        for bluepath in blueprints:
+            blueprint = j.sal.fs.getBaseName(bluepath)
+            if blueprint.startswith("_"):
+                blueprint = blueprint.replace("_", "")
+                bluelist.append(blueprint)
+
+        if len(bluelist) == 0:
+            return self.bot.sendMessage(
+                chat_id=update.message.chat_id,
+                text="Sorry, this repository doesn't contains blueprint for now, upload me some of them !")
+
+        def cb(bot, update):
+            self.enable(bot, update, update.message.text)
+        self.callbacks[username] = cb
+
+        custom_keyboard = [bluelist]
+        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, resize_keyboard=True, one_time_keyboard=True)
+        return self.bot.sendMessage(chat_id=update.message.chat_id,
+                                    text="Which blueprint do you want to enable ?", reply_markup=reply_markup)
 
     def execute_prompt(self, bot, update):
         username = update.message.from_user.username
@@ -281,7 +355,7 @@ class BlueprintMgmt(object):
         if not self.bot.repo_mgmt._userCheck(bot, update):
             return
 
-        if not self._currentRepo(username):
+        if not self._currentRepoName(username):
             message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
             return self.bot.sendMessage(chat_id=update.message.chat_id, text=message,
                                         parse_mode=telegram.ParseMode.MARKDOWN)
@@ -296,11 +370,11 @@ class BlueprintMgmt(object):
                 return self.create_prompt(bot, update)
 
             # execute blueprints
-            if args[0] == "execute" or args[0] == "exec":
-                return self.execute_prompt
+            if (args[0] == "execute" or args[0] == "exec") and len(args) == 1:
+                return self.execute_prompt(bot, update)
 
-            if args[0] == "execute" or args[0] == "exec":
-                return self.execute
+            if (args[0] == "execute" or args[0] == "exec") and len(args) > 1:
+                return self.execute(bot, update, args[1])
 
             # list blueprints
             if args[0] == "list":
@@ -314,13 +388,29 @@ class BlueprintMgmt(object):
                 args.pop(0)
                 return self.delete(bot, update, args)
 
+            # enable blueprint
+            if args[0] == "enable" and len(args) == 1:
+                return self.enable_prompt(bot, update)
+
+            if args[0] == "enable" and len(args) > 1:
+                args.pop(0)
+                return self.enable(bot, update, args)
+
+            # disable blueprint
+            if args[0] == "disbale" and len(args) == 1:
+                return self.disable_prompt(bot, update)
+
+            if args[0] == "disable" and len(args) > 1:
+                args.pop(0)
+                return self.disable(bot, update, args)
+
     def document(self, bot, update):
         username = update.message.from_user.username
         doc = update.message.document
         item = bot.getFile(doc.file_id)
         local = '%s/%s' % (self._currentBlueprintsPath(username), doc.file_name)
 
-        if not self._currentRepo(username):
+        if not self._currentRepoName(username):
             message = "Sorry, you are not working on a repo currently, use `/repo` to select a repository"
             return self.bot.sendMessage(chat_id=update.message.chat_id, text=message,
                                         parse_mode=telegram.ParseMode.MARKDOWN)

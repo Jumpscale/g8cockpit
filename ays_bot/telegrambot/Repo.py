@@ -60,7 +60,7 @@ class RepoMgmt:
         data['current_repo'] = name
         self.bot._rediscl.hset('cockpit.telegram.users', username, j.data.serializer.json.dumps(data))
 
-    def _currentRepo(self, username):
+    def _currentRepoName(self, username):
         data = self.bot._rediscl.hget('cockpit.telegram.users', username).decode()
         data = j.data.serializer.json.loads(data)
         return data['current_repo']
@@ -101,13 +101,13 @@ class RepoMgmt:
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
         # current repo (working on)
-        if not self._currentRepo(username):
+        if not self._currentRepoName(username):
             self.bot.sendMessage(chat_id=chat_id, text="No repo selected now.")
         else:
             self.bot.sendMessage(
                 chat_id=chat_id,
                 text="Current repo: *%s*" %
-                self._currentRepo(username),
+                self._currentRepoName(username),
                 parse_mode=telegram.ParseMode.MARKDOWN)
 
         repos = j.atyourservice.reposDiscover(AYS_REPO_DIR)
@@ -146,7 +146,7 @@ class RepoMgmt:
                     reply_markup=reply_markup)
                 continue
 
-            if name == self._currentRepo(username):
+            if name == self._currentRepoName(username):
                 self._setCurrentRepo(username, None)
 
             self.bot.logger.debug('removing repository: %s' % repo.path)
@@ -179,7 +179,6 @@ class RepoMgmt:
         username = update.message.from_user.username
 
         def cb(bot, update):
-            import ipdb; ipdb.set_trace()
             repo = update.message.text
             if repo not in repos:
                 self.bot.sendMessage(chat_id=update.message.chat_id, text="Selected repo doesn't exsits.")

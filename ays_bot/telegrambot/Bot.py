@@ -5,6 +5,7 @@ monkey.patch_all()
 from telegrambot.Repo import RepoMgmt
 from telegrambot.Blueprint import BlueprintMgmt
 from telegrambot.Service import ServiceMgmt
+from telegrambot.run import RunMgmt
 from telegrambot.utils import chunks
 
 import telegram
@@ -60,12 +61,14 @@ class TGBot():
         self.repo_mgmt = RepoMgmt(self)
         self.blueprint_mgmt = BlueprintMgmt(self)
         self.service_mgmt = ServiceMgmt(self)
+        self.run_mgmt = RunMgmt(self)
 
         # commands
         dispatcher.addHandler(CommandHandler('start', self.start_cmd))
         dispatcher.addHandler(CommandHandler('reload', self.reload_cmd))
         # dispatcher.addHandler(CommandHandler('errors', self.list_errors_cmd))
         # dispatcher.addHandler(CommandHandler('errorsof', self.errorsof_cmd, pass_args=True))
+        dispatcher.addHandler(CommandHandler('run', self.run_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('repo', self.repo_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('blueprint', self.blueprint_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('service', self.service_mgmt.handler, pass_args=True))
@@ -296,6 +299,8 @@ class TGBot():
             "",
             "*/service*: will control your services instances",
             "",
+            "*/run*:will let you control the runs and therefore the actions.",
+            "",
             "*/reload*: will force the reloading of all the service in memory",
             "",
             "*/errors*: will show all errors",
@@ -332,7 +337,6 @@ class TGBot():
                 'access_token': None
             }
             resp = self.oauth(bot, update)
-            self.logger.info("********************88888shit****88888shit\n\n\n\n  %s  \n\n\n" % resp)
             if 'error' in resp:
                 return self.endMessage(chat_id=update.message.chat_id, text=resp[
                                        'error'], parse_mode=telegram.ParseMode.MARKDOWN)
@@ -350,6 +354,7 @@ class TGBot():
             "Let's start:",
             " - manage your repositories with: `/repo`",
             " - manage your blueprints with: `/blueprint`",
+            " - manage your runs with: `/run`",
             " - manage your services with: `/service`",
             " - reload your services with: `/reload`",
             "For more information, just type `/help` :)"
