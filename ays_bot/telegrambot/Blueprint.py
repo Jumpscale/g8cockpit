@@ -58,8 +58,7 @@ class BlueprintMgmt(object):
             bp_dir = self._currentBlueprintsPath(username)
             bp_path = '%s/%s' % (bp_dir, custom)
             j.sal.fs.writeFile(bp_path, update.message.text)
-            msg = """Blueprint has been created. To schedule for run, please execute blueprint.
-            using `blueprint execute`"""
+            msg = """Blueprint has been created. To execute blueprint use ;`blueprint execute`"""
             if msg:
                 self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
         except Exception as e:
@@ -80,7 +79,7 @@ class BlueprintMgmt(object):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         # execute blueprint
-        msg = 'Start execution of your blueprint...'
+        msg = 'Start execution of enabled blueprints...'
         self.bot.sendMessage(chat_id=chat_id, text=msg)
 
         try:
@@ -100,14 +99,8 @@ class BlueprintMgmt(object):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-        blueprint_path = self._currentBlueprintsPath(username)
-        blueprints = j.sal.fs.listFilesInDir(blueprint_path)
-
-        bluelist = []
-        for bluepath in blueprints:
-            blueprint = j.sal.fs.getBaseName(bluepath)
-            if not blueprint.startswith("_"):
-                bluelist.append(blueprint)
+        repo = self._currentRepo(username)
+        bluelist = [bp.name for bp in repo.blueprints]
 
         if len(bluelist) <= 0:
             self.bot.sendMessage(
@@ -118,7 +111,8 @@ class BlueprintMgmt(object):
         def cb(bot, update):
             message = update.message
             if message.text in bluelist:
-                content = j.sal.fs.fileGetContents(j.sal.fs.joinPaths(blueprint_path, message.text))
+                bp = repo.blueprintGet(message.text)
+                content = bp.content
                 text = '```\n%s\n```' % content
                 self.bot.sendMessage(
                     chat_id=update.message.chat_id,
@@ -151,7 +145,6 @@ class BlueprintMgmt(object):
                         chat_id=chat_id)
 
     def enable(self, bot, update, blueprint):
-        import ipdb; ipdb.set_trace()
         chat_id = update.message.chat_id
         username = update.message.from_user.username
         repo = self._currentRepo(username)
@@ -165,7 +158,7 @@ class BlueprintMgmt(object):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-        repo = j.atyourservice.repoGet(j.sal.fs.joinPaths(AYS_REPO_DIR, self._currentRepoName(username)))
+        repo = self._currentRepo(username)
 
         # ays uninstall before
         def delete_bp(path):
@@ -175,29 +168,14 @@ class BlueprintMgmt(object):
                 msg = 'Start deletion of blueprint %s' % bp.name
                 self.bot.logger.debug(msg)
                 self.bot.sendMessage(chat_id=chat_id, text=msg)
-
-                rq = self.bot.ays_bot.schedule_action('uninstall', repo.name, force=True, notify=False, chat_id=chat_id)
-                result = rq.get()
-                msg = None
-                if 'error' in result:
-                    # error is something else then bad inited service
-                    if result['error'].find('service not properly inited') == -1:
-                        raise Exception(result['error'])
-                else:
-                    msg = "Blueprint deployed. Check your service with `/service list`"
-
-                # remove uninstalled services
-                for service in bp.services:
-                    j.sal.fs.removeDirTree(service.path)
-                j.sal.fs.remove(path)
-                del repo._blueprints[bp.path]
-
+                j.sal.fs.remove(bp.path)
                 msg = "blueprint %s removed" % (bp.name)
-                self.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
+
             except Exception as e:
                 msg = "Error during deletion of blueprint %s: %s" % (bp.name, str(e))
-                self.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
+
             finally:
+                self.bot.sendMessage(chat_id=update.message.chat_id, text=msg)
                 evt = j.data.models.cockpit_event.Telegram()
                 evt.io = 'input'
                 evt.action = 'bp.delete'
@@ -273,7 +251,6 @@ class BlueprintMgmt(object):
                                     text="Which blueprint do you want to disable ?", reply_markup=reply_markup)
 
     def enable_prompt(self, bot, update):
-        import ipdb; ipdb.set_trace()
         username = update.message.from_user.username
         blueprints = os.listdir(self._currentBlueprintsPath(username))
 

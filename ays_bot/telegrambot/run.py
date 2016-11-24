@@ -1,7 +1,6 @@
 from JumpScale import j
 import telegram
 import datetime
-from .utils import chunks
 from telegrambot.Repo import AYS_REPO_DIR
 # from JumpScale.baselib.atyourservice.robot.ActionRequest import *
 
@@ -27,7 +26,7 @@ class RunMgmt(object):
     def _createname(self, run):
         return datetime.datetime.fromtimestamp(run.dictFiltered["lastModDate"]).strftime('%c')
 
-    def _runlist(self, username):
+    def _runlist(self, username, executed="all"):
         repo = self._currentRepo(username)
         runs_str = self.bot._rediscl.hget('telegrambot.runs', repo.name)
         if not runs_str:
@@ -76,47 +75,48 @@ class RunMgmt(object):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         repo = self._currentRepo(username)
-        runs = []
         run = repo.runGet(run_id).objectGet()
         self.bot.sendMessage(
             chat_id=chat_id,
             text=run.__str__())
 
     def execute(self, bot, update, run_id):
-
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         repo = self._currentRepo(username)
         run = repo.runGet(run_id).objectGet()
+        aysconn = j.core.db.connection_pool.connection_kwargs
+        if aysconn.get('host', None):
+            host, port, socket = aysconn['host'], aysconn['port'], None
+        else:
+            host, port, socket = None, None, aysconn['path']
+
+        ayscl = j.clients.atyourservice.get(host, port, socket)
         try:
-            run.execute()
-            msg = "run for repo %s has completed execution. to view services `/service`" % repo.name
+            ayscl.execute_run(run)
+            msg = "run for repo %s has started execution. to view state use ```/run inspect %s```" % (repo.name, run_id)
         except Exception as e:
             msg = 'Error during run execution,\n Error: %s' % str(e)
             self.bot.logger.error(e.message)
         finally:
             self.bot.sendMessage(
                 chat_id=chat_id,
-                text=msg)
+                text=msg,
+                parse_mode=telegram.ParseMode.MARKDOWN)
 
-
-    def list(self, bot, update, executed=''):
-
+    def list(self, bot, update, executed='all'):
+        import ipdb; ipdb.set_trace()
         username = update.message.from_user.username
-        repo = self._currentRepo(username)
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-        runs = self._runlist(username)
-        if executed == 'executed':
-            runs = repo.runsList()
+        runs = self._runlist(username, executed)
         if not runs:
             self.bot.sendMessage(chat_id=update.message.chat_id,
-                                 text="Sorry, this repository has not had any runs yet. :(;\n to create one use `/run create`")
+                                 text="Sorry, this repository has not had any runs yet. :(;\n to create one use `/run create`",
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
             return
         runs_list = []
         for run in runs:
-            if executed == 'executed':
-                run = self._createname(run)
             runs_list.append('- %s' % run.replace("_", "\_"))
 
         msg = '\n'.join(runs_list)
@@ -126,24 +126,40 @@ class RunMgmt(object):
         username = update.message.from_user.username
         repo = self._currentRepo(username)
         run = repo.runGet(run_id)
-        # data = ''
-        data = j.data.serializer.yaml.dumps(run.dictFiltered)
+        data = ''
+        # data = j.data.serializer.yaml.dumps(run.dictFiltered)
 
-        # for key, value in run.dictFiltered.items():
-        #     if key == 'steps':
-        #         data += '<b>- steps</b>\n'
-        #         for step in value:
-        #             data += '    <b>- %s</b>\n' % step['number']
-        #             for name, val in step.items():
-        #                 data += '        - <b>%s</b>   =  %s \n' % (name, val)
-        #         continue
-        #     elif key == 'repo':
-        #         value = repo.name
-        #     elif key == 'lastModDate':
-        #         value = self._createname(run)
-        #
-        #     data += '<b>- %s</b>\n' % key
-        #     data += '    - %s\n' % value
+        def create_steps():
+            steps = ''
+            for step in run.dictFiltered['steps']:
+                steps += '    <b>- %s</b>\n' % step['number']
+                for name, val in step.items():
+                    if name == "jobs":
+                        steps += '        - <b>%s</b> :\n' % name
+                        for job in val:
+                            steps += '            - <b>%s</b> :\n' % job['actionName']
+                            for k, v in job.items():
+                                steps += '               %s  =  %s\n' % (k, v)
+                    else:
+                        steps += '        - <b>%s</b>   =  %s \n' % (name, val)
+            return steps
+
+        for key, value in run.dictFiltered.items():
+            if key == 'repo':
+                value = repo.name
+            elif key == 'steps':
+                data += '<b>- %s</b>\n' % key
+                data += create_steps()
+                continue
+            elif key == 'epoch':
+                key = "Creation time"
+                value = datetime.datetime.fromtimestamp(value).strftime('%c')
+            elif key == 'lastModDate':
+                value = self._createname(run)
+
+            data += '<b>- %s</b>\n' % key
+            data += '    - %s\n' % value
+
         self.bot.sendMessage(
             chat_id=update.message.chat_id,
             text=data,
@@ -166,9 +182,9 @@ class RunMgmt(object):
         elif message.text == 'create':
             self.create_prompt(bot, update, repo)
         elif message.text == 'simulate':
-            self.simulate_prompt(bot, update, repo)
+            self.simulate_prompt(bot, update)
         elif message.text in ['execute', 'exec']:
-            self.execute(bot, update)
+            self.execute_prompt(bot, update)
         elif message.text in ['inspect', 'see']:
             self.inspect_prompt(bot, update)
 
@@ -176,13 +192,18 @@ class RunMgmt(object):
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         repo = self._currentRepo(username)
-        run_list = self._runlist(username)
+        run_list = self._runlist(username, "new")
 
         def cb(bot, update):
             run_id = self._getrunid(update.message.text, repo)
             self.execute(bot, update, run_id)
 
         self.callbacks[username] = cb
+        if not run_list:
+            self.bot.sendMessage(chat_id=update.message.chat_id,
+                                 text="Sorry, this repository has not had any runs yet. :(;\n to create one use `/run create`",
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
+            return
         reply_markup = telegram.ReplyKeyboardMarkup([run_list], resize_keyboar=True, one_time_keyboard=True)
         self.bot.sendMessage(
             chat_id=chat_id,
@@ -200,6 +221,11 @@ class RunMgmt(object):
             self.inspect(bot, update, run_id)
 
         self.callbacks[username] = cb
+        if not run_list:
+            self.bot.sendMessage(chat_id=update.message.chat_id,
+                                 text="Sorry, this repository has not had any runs yet. :(;\n to create one use `/run create`",
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
+            return
         reply_markup = telegram.ReplyKeyboardMarkup([run_list], resize_keyboar=True, one_time_keyboard=True)
         self.bot.sendMessage(
             chat_id=chat_id,
@@ -217,6 +243,11 @@ class RunMgmt(object):
             self.simulate(bot, update, run_id)
 
         self.callbacks[username] = cb
+        if not run_list:
+            self.bot.sendMessage(chat_id=update.message.chat_id,
+                                 text="Sorry, this repository has not had any runs yet. :(;\n to create one use `/run create`",
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
+            return
         reply_markup = telegram.ReplyKeyboardMarkup([run_list], resize_keyboar=True, one_time_keyboard=True)
         self.bot.sendMessage(
             chat_id=chat_id,

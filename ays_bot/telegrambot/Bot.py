@@ -34,14 +34,14 @@ class TGBot():
         self._errmessages = []
 
         if rootpath == "":
-            rootpath = j.sal.fs.joinPaths(j.dirs.codeDir, "cockpit")
-            j.sal.fs.createDir(rootpath)
+            rootpath = j.sal.fs.joinPaths(j.dirs.varDir, "cockpit_repos")
+        j.sal.fs.createDir(rootpath)
+        j.atyourservice.reposDiscover(rootpath)
 
         self.rootpath = rootpath
         self.logger = j.logger.get('j.app.cockpit.bot')
 
         self.logger.debug("projects will be saved to: %s" % rootpath)
-        j.sal.fs.createDir(rootpath)
 
         self.question_callbacks = {}
 
@@ -65,9 +65,6 @@ class TGBot():
 
         # commands
         dispatcher.addHandler(CommandHandler('start', self.start_cmd))
-        dispatcher.addHandler(CommandHandler('reload', self.reload_cmd))
-        # dispatcher.addHandler(CommandHandler('errors', self.list_errors_cmd))
-        # dispatcher.addHandler(CommandHandler('errorsof', self.errorsof_cmd, pass_args=True))
         dispatcher.addHandler(CommandHandler('run', self.run_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('repo', self.repo_mgmt.handler, pass_args=True))
         dispatcher.addHandler(CommandHandler('blueprint', self.blueprint_mgmt.handler, pass_args=True))
@@ -228,14 +225,10 @@ class TGBot():
         # create keyboard is needed
         keyboard = evt.args.get('keyboard', [])
         if keyboard:
-            reply_markup = telegram.ReplyKeyboardMarkup(
-                list(
-                    chunks(
-                        keyboard,
-                        4)),
-                resize_keyboard=True,
-                one_time_keyboard=True,
-                selective=True)
+            reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(keyboard, 4)),
+                                                        resize_keyboard=True,
+                                                        one_time_keyboard=True,
+                                                        selective=True)
         else:
             reply_markup = None
 
@@ -255,15 +248,6 @@ class TGBot():
 
     def send_event(self, payload):
         self._rediscl.publish('telegram', payload)
-
-    def reload_cmd(self, bot, update):
-        if not self.repo_mgmt._userCheck(bot, update):
-            return
-
-        chat_id = update.message.chat_id
-        self.sendMessage(chat_id=chat_id, text="Start reloading of services")
-        self.ays_bot.reload_all()
-        self.sendMessage(chat_id=chat_id, text="Reloading of services done")
 
     @run_async
     def message_cmd(self, bot, update, **kwargs):
@@ -287,7 +271,7 @@ class TGBot():
             "At first, you need to run `/start` to let me know you.",
             "",
             "After that, you will be able to run some commands:",
-            "`/reload` - `/repo` - `/blueprint` - `/service`",
+            " `/repo` - `/blueprint` - `run` - `/service`",
             "",
             "*/repo*: let you manage your differents AYS repository",
             "",
@@ -297,15 +281,9 @@ class TGBot():
             "",
             "When your blueprints are ready, you can go further:",
             "",
+            "*/run*:will let you control the runs and.",
+            "",
             "*/service*: will control your services instances",
-            "",
-            "*/run*:will let you control the runs and therefore the actions.",
-            "",
-            "*/reload*: will force the reloading of all the service in memory",
-            "",
-            "*/errors*: will show all errors",
-            "",
-            "*/errorsof*: will show errors related to its first argument",
             "",
             "This message was given by `/help`, have fun with me !",
         ]

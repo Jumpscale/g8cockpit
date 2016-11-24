@@ -3,7 +3,7 @@ from .utils import chunks
 import telegram
 import re
 
-AYS_REPO_DIR = j.sal.fs.joinPaths(j.dirs.codeDir, 'cockpit')
+AYS_REPO_DIR = j.sal.fs.joinPaths(j.dirs.varDir, "cockpit_repos")
 
 
 class RepoMgmt:
@@ -22,12 +22,8 @@ class RepoMgmt:
         repopath = '%s/%s' % (self.rootpath, name)
         self.bot.logger.debug('initializing repository: %s' % repopath)
 
-        j.atyourservice.repoCreate(repopath)
+        j.atyourservice.repoCreate(repopath, git_url)
 
-        if self._cuisine.core.run("cd %s && git remote -v" % repopath)[1]:
-            self._cuisine.core.run("cd %s && git remote set-url origin  %s " % (repopath, git_url))
-        else:
-            self._cuisine.core.run("cd %s && git remote add origin  %s " % (repopath, git_url))
         evt = j.data.models.cockpit_event.Telegram()
         evt.io = 'input'
         evt.action = 'repo.create'
@@ -79,11 +75,9 @@ class RepoMgmt:
             return self.bot.sendMessage(chat_id=chat_id, text=message)
 
         # repo already exists
-        path = j.sal.fs.joinPaths(j.dirs.codeDir, 'cockpit', repo_name)
-        if j.atyourservice.reposDiscover(path=path):
+        if repo_name in [rep.name for rep in j.atyourservice.reposList()]:
             self._setCurrentRepo(username, repo_name)
-
-            message = "This repo already exists, `%s` is now your current working repo." % repo_name
+            message = "Repo `%s` exists, it's now your current working repo." % repo_name
             return self.bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
 
         # creating new repo
@@ -110,7 +104,7 @@ class RepoMgmt:
                 self._currentRepoName(username),
                 parse_mode=telegram.ParseMode.MARKDOWN)
 
-        repos = j.atyourservice.reposDiscover(AYS_REPO_DIR)
+        repos = j.atyourservice.reposList()
         # repos list
         if len(repos) == 0:
             message = "You don't have any repo for now, create the first one with: `/repo create [name]`"
@@ -150,16 +144,8 @@ class RepoMgmt:
                 self._setCurrentRepo(username, None)
 
             self.bot.logger.debug('removing repository: %s' % repo.path)
+            repo.destroy()
             j.sal.fs.removeDirTree(repo.path)
-
-            evt = j.data.models.cockpit_event.Telegram()
-            evt.io = 'input'
-            evt.action = 'repo.delete'
-            evt.args = {
-                'username': username,
-                'repo_path': repo.path
-            }
-            self.bot.send_event(evt.to_json())
 
             message = "Repo `%s` removed" % name
             self.bot.sendMessage(chat_id=chat_id, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
@@ -177,7 +163,6 @@ class RepoMgmt:
 
     def select_prompt(self, bot, update):
         username = update.message.from_user.username
-
         def cb(bot, update):
             repo = update.message.text
             if repo not in repos:
@@ -186,15 +171,12 @@ class RepoMgmt:
                 self.checkout(bot, update, repo)
         self.callbacks[username] = cb
 
-        repos = sorted([repo.name for repo in j.atyourservice.reposDiscover(AYS_REPO_DIR)])
-        reply_markup = telegram.ReplyKeyboardMarkup(
-            list(
-                chunks(
-                    repos,
-                    4)),
-            resize_keyboard=True,
-            one_time_keyboard=True,
-            selective=True)
+        repos = sorted([repo.name for repo in j.atyourservice.reposList()])
+        reply_markup = telegram.ReplyKeyboardMarkup(list(chunks(repos, 4)),
+                                                    resize_keyboard=True,
+                                                    one_time_keyboard=True,
+                                                    selective=True)
+
         return self.bot.sendMessage(chat_id=update.message.chat_id,
                                     text="Choose the repo you want to work on.", reply_markup=reply_markup)
 
@@ -224,7 +206,7 @@ class RepoMgmt:
             self.delete(bot, update, [update.message.text])
         self.callbacks[username] = cb
 
-        repos = sorted([r.name for r in j.atyourservice.reposDiscover(AYS_REPO_DIR)])
+        repos = sorted([r.name for r in j.atyourservice.reposList()])
         reply_markup = telegram.ReplyKeyboardMarkup(
             list(
                 chunks(

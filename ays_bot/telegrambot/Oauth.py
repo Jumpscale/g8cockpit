@@ -61,7 +61,6 @@ def create_api_key(organization):
         resp.raise_for_status()
 
     print(resp.json())
-    print("\n\n\n\n this is the response %s" % resp.json())
     return resp.json()['secret']
 
 
@@ -79,7 +78,6 @@ def callback():
 
     organization = j.core.db.hget(STATE_KEY, state).decode()
     token = get_user_token(code, state)
-    print("debug *******************************\n \n \n     %s \n\n\n   %s \n\n\n %s" % (token.get('scope', ''), organization, 'user:memberof:%s' % organization ))
     if token.get('scope', '') != 'user:memberof:%s' % organization:
         err_msg = "You're not part of the organization '%s'. can't deploy a Cockpit." % organization
         j.core.db.lpush(state, j.data.serializer.json.dumps({'error': err_msg}))

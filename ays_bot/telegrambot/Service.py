@@ -49,19 +49,54 @@ class ServiceMgmt(object):
     def inspect(self, bot, update, service_id):
         username = update.message.from_user.username
         repo = self._currentRepo(username)
-        service = repo.serviceGetByKey(service_id).model
+        service = repo.serviceGetByKey(service_id)
+        producers = ''
+        actions = []
+        for producer in service.producers:
+            producers += producer
+
+        def print_date(epoch):
+            if epoch == 0:
+                return "never"
+            return j.data.time.epoch2HRDateTime(epoch)
+
+        for name, model in service.model.actions.items():
+            actions.append("%s:\n    period:%5s\n    lastRun:%s\n " % (name,
+                                                                       j.data.time.getSecondsInHR(model.period),
+                                                                       print_date(model.lastRun)))
+        actions = "\n".join(actions)
+        actions.replace("_", "\_")
+
         msg = """Role: *{role}*
 Instances: *{instance}*
-HRD:
-`{hrd}`
+Schema:
+```
+{schema}
+```
 State:
 ```
 {state}
 ```
-""".format(role=service.role,
-           instance=service.name,
-           hrd=str(service.dataJSON),
-           state=str(service.dictFiltered['state']))
+Parent:
+```
+{parent}
+```
+Producers:
+```
+{producers}
+```
+Recurring actions:
+```
+{actions}
+```
+        """.format(role=service.model.role,
+                   instance=service.model.name,
+                   schema=j.data.serializer.yaml.dumps(j.data.serializer.json.loads(service.model.dataJSON)),
+                   state=j.data.serializer.yaml.dumps(service.model.actionsState),
+                   parent=service.parent,
+                   producers=producers,
+                   actions=actions)
+
         self.bot.sendMessage(
             chat_id=update.message.chat_id,
             text=msg,
@@ -71,7 +106,7 @@ State:
     def delete(self, bot, update, service_id):
         username = update.message.from_user.username
         repo = self._currentRepo(username)
-        service = repo.serviceGetByKey(service_id).model
+        service = repo.serviceGetByKey(service_id)
         try:
             service.delete()
             chat_id = update.message.chat_id
@@ -84,7 +119,7 @@ State:
 
     def choose_action(self, bot, update):
         self.callbacks[update.message.from_user.username] = self.dispatch_choice
-        choices = ['list', 'inspect', 'execute']
+        choices = ['list', 'inspect', 'delete']
         reply_markup = telegram.ReplyKeyboardMarkup([choices], resize_keyboard=True, one_time_keyboard=True)
         return self.bot.sendMessage(chat_id=update.message.chat_id,
                                     text="What do you want to do ?", reply_markup=reply_markup)
@@ -111,8 +146,7 @@ State:
 
         def select_service(bot, update):
             service_id = re.findall("=\W+(\S+)", update.message.text)[0]
-            service = repo.serviceGetByKey(service_id)
-            self.inspect(bot, update, service)
+            self.inspect(bot, update, service_id)
 
         self.callbacks[username] = select_service
         reply_markup = telegram.ReplyKeyboardMarkup(
