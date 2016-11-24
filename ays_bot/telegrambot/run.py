@@ -80,6 +80,7 @@ class RunMgmt(object):
             text=run.__str__())
 
     def execute(self, bot, update, run_id):
+        import ipdb; ipdb.set_trace()
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         repo = self._currentRepo(username)
@@ -120,7 +121,6 @@ class RunMgmt(object):
         self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def inspect(self, bot, update, run_id):
-        import ipdb; ipdb.set_trace()
         username = update.message.from_user.username
         repo = self._currentRepo(username)
         run = repo.runGet(run_id)
