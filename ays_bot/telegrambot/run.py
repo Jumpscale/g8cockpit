@@ -28,16 +28,15 @@ class RunMgmt(object):
 
     def _runlist(self, username, executed="all"):
         repo = self._currentRepo(username)
-        runs_str = self.bot._rediscl.hget('telegrambot.runs', repo.name)
-        if not runs_str:
-            return []
-        runs = j.data.serializer.json.loads(runs_str)
-        run_list = []
-        for run in runs:
-            run = repo.runGet(run)
-            name = self._createname(run)
-            run_list.append(name)
-        return run_list
+        runs = []
+        for run in repo.runsList():
+            if run.dictFiltered['state'] == "ok" and executed == "executed":
+                runs.append(self._createname(run))
+            elif run.dictFiltered['state'] == "new" and executed == "new":
+                runs.append(self._createname(run))
+            elif executed == "all":
+                runs.append(self._createname(run))
+        return runs
 
     def _getrunid(self, name, repo):
         runs = j.data.serializer.json.loads(self.bot._rediscl.hget('telegrambot.runs', repo.name))
@@ -101,11 +100,9 @@ class RunMgmt(object):
         finally:
             self.bot.sendMessage(
                 chat_id=chat_id,
-                text=msg,
-                parse_mode=telegram.ParseMode.MARKDOWN)
+                text=msg)
 
     def list(self, bot, update, executed='all'):
-        import ipdb; ipdb.set_trace()
         username = update.message.from_user.username
         chat_id = update.message.chat_id
         bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
@@ -123,6 +120,7 @@ class RunMgmt(object):
         self.bot.sendMessage(chat_id=update.message.chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def inspect(self, bot, update, run_id):
+        import ipdb; ipdb.set_trace()
         username = update.message.from_user.username
         repo = self._currentRepo(username)
         run = repo.runGet(run_id)
