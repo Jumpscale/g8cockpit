@@ -4,21 +4,22 @@ baseUri: $(baseuri)
 version: v1
 mediaType:  application/json
 securitySchemes:
-    JWT:
-        type: Pass Through
-        description:
-            This API uses JWT to authenticate the requests.
-            All members of an organization on itsyou.online have access to this API.
-        describedBy:
-          headers:
-            Authorization:
-              description: |
-                Should contain the JWT token.
-                Format of the value is : bearer $JWT_TOKEN
-          responses:
-            401:
-              description: Unauthorized
+  JWT:
+    type: Pass Through
+    description:
+      This API uses JWT to authenticate the requests.
+    describedBy:
+      headers:
+        Authorization:
+          description: |
+            Should contain the JWT token.
+            Format of the value is : bearer $JWT_TOKEN
+          type: string
+      responses:
+        401:
+          description: Unauthorized
 
+securedBy: [ JWT ]
 
 types:
   Repository:
@@ -213,7 +214,6 @@ types:
         error: "repository not found"
 
 /cockpit:
-    securedBy: [ JWT ]
     /update:
         post:
             displayName: update
@@ -228,7 +228,6 @@ types:
                     description: "update in progress"
 
 /ays:
-    securedBy: [ JWT ]
     /template:
         post:
             displayName: addTemplateRepo
@@ -521,7 +520,7 @@ types:
                         200:
                             body:
                                 application/json:
-                                type: AYSRun
+                                  type: AYSRun
                 /{aysrun}:
                     uriParameters:
                         aysrun:
@@ -542,6 +541,7 @@ types:
     description:
     /github:
         post:
+            securedBy: [ null ]
             description: Endpoint that receives the events from github
             responses:
                 200:
@@ -551,6 +551,7 @@ types:
 /oauth:
     /callback:
         get:
+            securedBy: [ null ]
             description: oauth endpoint where oauth provider need to send authorization code
             responses:
                 200:
