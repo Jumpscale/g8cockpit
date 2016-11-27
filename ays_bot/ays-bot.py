@@ -9,8 +9,11 @@ from multiprocessing import Process
 
 @click.command()
 @click.option('--config', '-c', help='path to the config file', default='config.toml')
-def cli(config):
+@click.option('-token', help='override token specified in config', default=None)
+def cli(config, token):
     cfg = j.data.serializer.toml.load(config)
+    if token:
+        cfg['access_token'] = token
 
     # start flask server for aouth workflow
     app.config.update(cfg['oauth'])
