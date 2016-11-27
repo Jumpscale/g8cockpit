@@ -3,7 +3,6 @@ g8client__main:
     url: '{g8_url}'
     login: '{g8_user}'
     password: '{g8_password}'
-    account: '{g8_user}'
 
 # give user access to the vdc
 uservdc__{g8_user}:
@@ -13,6 +12,7 @@ uservdc__{g8_user}:
 vdc__{cockpit_name}:
     description: 'cockpit vdc'
     g8client: 'main'
+    account: '{g8_user}'
     location: '{g8_location}'
     uservdc:
         - {g8_user}

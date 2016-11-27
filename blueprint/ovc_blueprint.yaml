@@ -5,7 +5,6 @@ g8client__uk:
     url: 'du-conv-3.demo.greenitglobe.com'
     login: 'myLogin'
     password: 'myPassword'
-    account: 'MyAccount'
 
 # give user access to the vdc
 uservdc__myLogin:
@@ -14,6 +13,7 @@ uservdc__myLogin:
 vdc__cockpit:
     description: 'cockpit vdc'
     g8client: 'uk'
+    account: 'MyAccount'
     location: 'du-conv-3'
     uservdc:
         - 'myLogin'
