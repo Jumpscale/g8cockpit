@@ -59,7 +59,11 @@ def createNewRepository():
     create a new repository
     It is handler for POST /ays/repository
     '''
-    data = json.loads(request.data)
+    try:
+        data = json.loads(request.data)
+    except ValueError:
+        return jsonify(errors="invalid JSON"), 400
+
     inputs = Repository.from_json(data)
     if not inputs.validate():
         return jsonify(errors=inputs.errors), 400
