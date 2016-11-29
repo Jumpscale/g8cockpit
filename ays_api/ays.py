@@ -555,7 +555,7 @@ def listRuns(repository):
         return jsonify(error=e.message), 404
 
     runs = repo.runsList()
-    runs = [run_view(run) for run in runs]
+    runs = [run_view(run.objectGet()) for run in runs]
     return json.dumps(runs), 200, {'Content-Type': 'application/json'}
 
 
