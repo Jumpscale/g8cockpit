@@ -481,15 +481,12 @@ def updateTemplate(template, repository):
     except j.exceptions.NotFound as e:
         return jsonify(error=e.message), 404
 
-    names = [template]
-
-    for n in names:
-        template = repo.templateGet(name=n)
-        try:
-            actor = repo.actorGet(name=n)
-        except Exception as e:
-            return jsonify(error=e.message), 500
-        actor._initFromTemplate(template)
+    template = repo.templateGet(name=template)
+    try:
+        actor = repo.actorGet(name=template)
+    except Exception as e:
+        return jsonify(error=e.message), 500
+    actor._initFromTemplate(template)
     return jsonify(msg='template updated'), 200
 
 @ays_api.route('/ays/repository/<repository>/template/update', methods=['GET'])
