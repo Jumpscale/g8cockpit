@@ -27,6 +27,7 @@ def run_view(run):
     """
     generate a dict that represent a service from a repo object
     """
+    run = run.objectGet()
     obj = {
         'key': run.key,
         'state': str(run.state),
