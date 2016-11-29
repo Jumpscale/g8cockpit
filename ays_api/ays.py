@@ -474,6 +474,27 @@ def getTemplate(template, repository):
     template = template_view(tmpl)
     return json.dumps(template), 200, {'Content-Type': 'application/json'}
 
+@ays_api.route('/ays/repository/<repository>/template/<template>/update', methods=['GET'])
+def updateTemplate(template, repository):
+    try:
+        repo = get_repo(repository)
+    except j.exceptions.NotFound as e:
+        return jsonify(error=e.message), 404
+
+    if template is None:
+        names = repo.templates.keys()
+    else:
+        names = [template]
+
+    for n in names:
+        template = repo.templateGet(name=n)
+        try:
+            actor = repo.actorGet(name=n)
+        except Exception as e:
+            return jsonify(error=e.message), 500
+        actor._initFromTemplate(template)
+    return jsonify(msg='template update'), 200
+
 
 @ays_api.route('/ays/template', methods=['POST'])
 def addTemplateRepo():

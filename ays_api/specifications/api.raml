@@ -495,6 +495,20 @@ types:
                                 body:
                                     application/json:
                                       type: Error
+                    /update:
+                        uriParameter:
+                            template:
+                               type: string 
+                        get:
+                            displayName: updateTemplate
+                            description: update a template
+                            responses:
+                                200:
+                                    description: template updated. 
+                                404:
+                                    body:
+                                        application/json:
+                                          type: Error
             /aysrun:
                 description: aysrun
                 get:
