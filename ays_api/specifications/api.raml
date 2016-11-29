@@ -479,6 +479,16 @@ types:
                             body:
                                 application/json:
                                   type: string[]
+                /update:
+                    displayName: updateTemplates
+                    description: update all templates in repo
+                    responses:
+                        200:
+                            description: template updated. 
+                        404:
+                            body:
+                                application/json:
+                                  type: Error
                 /{template}:
                     uriParameters:
                         template:
