@@ -30,7 +30,7 @@ def get_repo(name):
     name is prepend with AYS_REPO_DIR to create the full path to the repo
     raise j.exceptions.NotFound if repo doesn't exists
     """
-    path = j.sal.fs.joinPaths(AYS_REPO_DIR, name)
+    path = j.sal.fs.pathClean(j.sal.fs.joinPaths(AYS_REPO_DIR, name))
     res = j.atyourservice._repos.find(path=path)
     if len(res) <= 0:
         raise j.exceptions.NotFound(
