@@ -13,7 +13,7 @@ from .ActorRepo import ActorRepo
 ays_api = fBlueprint('ays_api', __name__)
 logger = j.logger.get('j.app.cockpit.api')
 
-AYS_REPO_DIR = '/optvar/cockpit_repos'
+AYS_REPO_DIR = '%s/cockpit_repos' % j.dirs.varDir
 
 ays_cfg_lock = Lock()
 
