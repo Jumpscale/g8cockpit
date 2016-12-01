@@ -1,37 +1,57 @@
 ## Installation using an AYS Blueprint
 
-> Using the **Cockpit Deployer Chatbot** is the recommanded way to install a Cockpit. The option documented here is meant to be used only by Green IT Globe employees.
+> Using the **Cockpit Deployer Chatbot** is the recommended way to install a Cockpit.
 
-Below we discuss 4 steps:
-- **Step 1**: Create an AYS service repository
-- **Step 2**: Create the AYS blueprint
-- **Step 3**: Execute the blueprint
-- **Step 4**: install the AYS service instances
+Below we discuss 5 steps:
+- **step 1**: [Preparation](#prep)
+- **Step 2**: [Create an AYS service repository](#create-repo)
+- **Step 3**: [Create an AYS blueprint for deploying a Cockpit](#create-blueprint)
+- **Step 4**: [Execute the blueprint](#execute-blueprint)
+- **Step 5**: [Run the install actions](#run-actions)
+
+<a id="prep"></a>
+### Step 1: Create an AYS service repository
+
+Go through the preparation steps as documented [here](/installation/prep/prep.md).
+
+Additionally you will need the private and public key of your DNS server. In the example below we assume you have them available in ```/root/.ssh```.
 
 
-### Step 1: Create an AYS service repository:
+<a id="create-repo"></a>
+### Step 2: Create an AYS service repository
 
-```bash
-ays create_repo -p /path/to/my/repo -g http://github.com/account/ays_repo
+On a (virtual) machine with JumpScale installed execute the ```ays create_repo``` command, specifying the local Git directory and the repository on the Git server:
+
+```
+ays create_repo -p {/path/to/my/repo} -g git@github.com:{account/{ays_repo}.git
 ```
 
-### Step 2: Create the AYS blueprint
+Or alternatively, you can also do it all manually:
 
-Go to [https://github.com/Jumpscale/jscockpit/tree/master/blueprint](https://github.com/Jumpscale/jscockpit/tree/master/blueprint) and copy the example blueprint into your local AYS blueprints repository.
-
-```bash
-curl https://raw.githubusercontent.com/Jumpscale/jscockpit/master/blueprint/ovc_blueprint.yaml > /path/to/my/repo/blueprints/cockpit.yaml
+```
+mkdir -p {/path/to/my/repo}/blueprints
+touch {/path/to/my/repo}/.ays
+cd {/path/to/my/repo}
+git init
+vim {/path/to/my/repo}/.git/config
 ```
 
+<a id="create-blueprint"></a>
+### Step 3: Create an AYS blueprint for deploying a Cockpit
 
+Go to [https://github.com/Jumpscale/jscockpit/tree/master/blueprint](https://github.com/Jumpscale/jscockpit/tree/master/blueprint) and copy the example blueprint into your local AYS blueprints repository:
 
-Depending on which patform you install the cockpit the begining of the blueprint can differe. The only importantn thing to remmeber is that the `cockpit` service always use another server of role `node` has parent.
-This will indicate to the cockpit on wich node it needs to be installed. This bring flexibility during installation cause any service of role `node` can be used.
+```
+curl https://raw.githubusercontent.com/Jumpscale/jscockpit/master/blueprint/ovc_blueprint.yaml > {/path/to/my/repo}/blueprints/cockpit.yaml
+```
+
+Depending on which platform you install the Cockpit the beginning of the blueprint can different. The only important thing to remember is that the Cockpit service always uses another server of role `node` has parent.
+This will indicate to the cockpit on which node it needs to be installed. This bring flexibility during installation cause any service of role `node` can be used.
 So you can install a cockpit on top of a VM using `node.ovc`, docker using `node.docker` or any or another node service you would create.
 
 Description of the values for the cockpit service:
 
-```yaml
+```
 sshkey__dns:
     key.path: '/root/.ssh/dns_rsa' # this needs to point to the a sshkey authorize on server of our dns infrastructure
 
@@ -52,8 +72,8 @@ cockpit__main:
        7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6
        6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv
        -----END PUBLIC KEY-----
-
 ```
+
 - **host_node**: Name of the node service you want to install the cockpit on.
 - **dns.sshkey**: Name fo the sshkey servier that point to a sshkey authorize on our DNS infrastructure (dns[1,2,3].aydo.com)
 - **domain**:
@@ -66,15 +86,15 @@ cockpit__main:
 - **oauth.jwt_key**: ItsYou.online public key for JWT signing; see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md for more details
 - **caddy.staging**: (true/false) enable stagging environement of Let's encrypt. Use this when doing test so you don't create real certificate. The number of certificate available for a domain is limited.
 
-
-### Step 3: Execute the blueprint
+<a id="execute-blueprint"></a>
+### Step 4: Execute the blueprint
 
 ```bash
 ays blueprint
 ```
 
-
-### Step 4: install the AYS service instances
+<a id="run-actions"></a>
+### Step 5: Run the install actions
 
 ```bash
 ays run
