@@ -185,9 +185,7 @@ def createNewBlueprint(repository):
         return jsonify(error="Can't save new blueprint"), 500
 
     # check validity of input as blueprint syntax
-    try:
-        blueprint.validate()
-    except:
+    if not blueprint.validate():
         if j.sal.fs.exists(bp_path):
             j.sal.fs.remove(bp_path)
         return jsonify(error="Invalid blueprint syntax"), 400
