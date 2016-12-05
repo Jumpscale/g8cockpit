@@ -17,3 +17,5 @@ This is quite straight forward:
   ![](cockpit-gig-demo.png)
 
 You will need the address of your repository when installing your Cockpit, this is simply the URL in the address bar of your browser, in this example: `https://github.com/gig-projects/cockpit_gig_moehaha-demo`.
+
+It is recommended to connect to GitHub over SSH, instead of HTTP, so you rather use the SSH url, which is in this case: `git@github.com:gig-projects/cockpit_gig_moehaha-demo.git`
