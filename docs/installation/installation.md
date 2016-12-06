@@ -4,7 +4,7 @@
  [Installing a development cockpit](Using-Cuisine/using-cuisine.md)
 
 
- ## Production Cockpit:
+## Production Cockpit:
 
 There are two ways to install a new production cockpit:
 
