@@ -13,7 +13,7 @@ from .ActorRepo import ActorRepo
 ays_api = fBlueprint('ays_api', __name__)
 logger = j.logger.get('j.app.cockpit.api')
 
-AYS_REPO_DIR = '%s/cockpit_repos' % j.dirs.varDir
+AYS_REPO_DIR = '%s/cockpit_repos' % j.dirs.VARDIR
 
 ays_cfg_lock = Lock()
 
@@ -524,7 +524,7 @@ def addTemplateRepo():
     if url.endswith('.git'):
         url = url[:-len('.git')]
 
-    cfg_path = j.sal.fs.joinPaths(j.dirs.cfgDir, 'ays/ays.conf')
+    cfg_path = j.sal.fs.joinPaths(j.dirs.JSCFGDIR, 'ays/ays.conf')
 
     # single thread access to prevent race condition on config file
     with ays_cfg_lock:

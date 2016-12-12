@@ -34,7 +34,7 @@ class TGBot():
         self._errmessages = []
 
         if rootpath == "":
-            rootpath = j.sal.fs.joinPaths(j.dirs.varDir, "cockpit_repos")
+            rootpath = j.sal.fs.joinPaths(j.dirs.VARDIR, "cockpit_repos")
         j.sal.fs.createDir(rootpath)
         j.atyourservice.reposDiscover(rootpath)
 

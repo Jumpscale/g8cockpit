@@ -3,7 +3,7 @@ from .utils import chunks
 import telegram
 import re
 
-AYS_REPO_DIR = j.sal.fs.joinPaths(j.dirs.varDir, "cockpit_repos")
+AYS_REPO_DIR = j.sal.fs.joinPaths(j.dirs.VARDIR, "cockpit_repos")
 
 
 class RepoMgmt:
