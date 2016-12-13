@@ -63,7 +63,7 @@ def process_jwt_token():
 
                 # case JWT is for a user
                 if 'scope' in payload and 'user:memberof:%s' % app.config[
-                        'oauth'].get('organization') in payload['scope'].split(','):
+                        'oauth'].get('organization') in payload['scope']:
                     return
 
                 msg = 'Unauthorized'
