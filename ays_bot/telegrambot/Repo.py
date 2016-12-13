@@ -12,7 +12,7 @@ class RepoMgmt:
         self.bot = bot
         self.rootpath = bot.rootpath
         self.callbacks = bot.question_callbacks
-        self._cuisine = j.tools.cuisine.local
+        self.cuisine = j.tools.cuisine.local
         self.reg_repo = re.compile(r'^[a-zA-Z0-9-_]+$')
 
     def init_repo(self, update, bot, name, git_url):
