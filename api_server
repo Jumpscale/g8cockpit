@@ -2,7 +2,7 @@
 from ays_api.app import app, init_blueprints
 from JumpScale import j
 
-cfg = j.data.serializer.toml.load('%s/cockpit_api/config.toml' % j.dirs.cfgDir)
+cfg = j.data.serializer.toml.load('%s/cockpit_api/config.toml' % j.dirs.JSCFGDIR)
 
 app.config['oauth'] = cfg['oauth']
 app.config['production'] = cfg.get('mode', {'prod': True}).get('prod', True)
