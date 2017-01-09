@@ -13,7 +13,7 @@ from .ActorRepo import ActorRepo
 ays_api = fBlueprint('ays_api', __name__)
 logger = j.logger.get('j.app.cockpit.api')
 
-AYS_REPO_DIR = '/optvar/cockpit_repos'
+AYS_REPO_DIR = '%s/cockpit_repos' % j.dirs.varDir
 
 ays_cfg_lock = Lock()
 
@@ -30,7 +30,7 @@ def get_repo(name):
     name is prepend with AYS_REPO_DIR to create the full path to the repo
     raise j.exceptions.NotFound if repo doesn't exists
     """
-    path = j.sal.fs.joinPaths(AYS_REPO_DIR, name)
+    path = j.sal.fs.pathClean(j.sal.fs.joinPaths(AYS_REPO_DIR, name))
     res = j.atyourservice._repos.find(path=path)
     if len(res) <= 0:
         raise j.exceptions.NotFound(
@@ -59,7 +59,11 @@ def createNewRepository():
     create a new repository
     It is handler for POST /ays/repository
     '''
-    data = json.loads(request.data)
+    try:
+        data = json.loads(request.data)
+    except ValueError:
+        return jsonify(errors="invalid JSON"), 400
+
     inputs = Repository.from_json(data)
     if not inputs.validate():
         return jsonify(errors=inputs.errors), 400
@@ -181,9 +185,7 @@ def createNewBlueprint(repository):
         return jsonify(error="Can't save new blueprint"), 500
 
     # check validity of input as blueprint syntax
-    try:
-        blueprint.validate()
-    except:
+    if not blueprint.validate():
         if j.sal.fs.exists(bp_path):
             j.sal.fs.remove(bp_path)
         return jsonify(error="Invalid blueprint syntax"), 400
@@ -470,6 +472,37 @@ def getTemplate(template, repository):
     template = template_view(tmpl)
     return json.dumps(template), 200, {'Content-Type': 'application/json'}
 
+@ays_api.route('/ays/repository/<repository>/template/<template>/update', methods=['GET'])
+def updateTemplate(template, repository):
+    try:
+        repo = get_repo(repository)
+    except j.exceptions.NotFound as e:
+        return jsonify(error=e.message), 404
+
+    template = repo.templateGet(name=template)
+    try:
+        actor = repo.actorGet(name=template)
+    except Exception as e:
+        return jsonify(error=e.message), 500
+    actor._initFromTemplate(template)
+    return jsonify(msg='template updated'), 200
+
+@ays_api.route('/ays/repository/<repository>/template/update', methods=['GET'])
+def updateTemplates(repository):
+    try:
+        repo = get_repo(repository)
+    except j.exceptions.NotFound as e:
+        return jsonify(error=e.message), 404
+
+    names = repo.templates.keys()
+    for n in names:
+        template = repo.templateGet(name=n)
+        try:
+            actor = repo.actorGet(name=n)
+        except Exception as e:
+            return jsonify(error=e.message), 500
+        actor._initFromTemplate(template)
+    return jsonify(msg='templates updated'), 200
 
 @ays_api.route('/ays/template', methods=['POST'])
 def addTemplateRepo():
@@ -530,7 +563,7 @@ def listRuns(repository):
         return jsonify(error=e.message), 404
 
     runs = repo.runsList()
-    runs = [run_view(run) for run in runs]
+    runs = [run_view(run.objectGet()) for run in runs]
     return json.dumps(runs), 200, {'Content-Type': 'application/json'}
 
 

@@ -17,6 +17,11 @@ Go through the preparation steps as documented [here](/installation/prep/prep.md
 Additionally you will need the private and public key of your DNS server. In the example below we assume you have them available in ```/root/.ssh```.
 
 
+Go to [https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint](https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint) and copy the example blueprint into your local AYS blueprints repository.
+
+```bash
+curl https://raw.githubusercontent.com/Jumpscale/jscockpit/8.1.0/blueprint/ovc_blueprint.yaml > /path/to/my/repo/blueprints/cockpit.yaml
+
 <a id="create-repo"></a>
 ### Step 2: Create an AYS service repository
 
@@ -66,12 +71,7 @@ cockpit__main:
    oauth.organization: 'myOrg'
    oauth.client_id: 'myOrg'
    oauth.client_secret: 'replace_me'
-   oauth.jwt_key: |
-       -----BEGIN PUBLIC KEY-----
-       MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2
-       7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6
-       6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv
-       -----END PUBLIC KEY-----
+   oauth.jwt_key:'MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n27MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny66+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv'
 ```
 
 - **host_node**: Name of the node service you want to install the cockpit on.
