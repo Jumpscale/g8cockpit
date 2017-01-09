@@ -72,6 +72,7 @@ Create a new repository :
 curl -X POST -H "Authorization: bearer $JWT$" -H "Content-Type: application/json" -d '{"name":"yves01", "git_url":"git@github.com:yveskerwyn/cockpit_repo_yves.git"}' http://85.255.197.77:5000/ays/repository | python -m json.tool
 ```
 
+Notice the pipe to `python -m json.tool` in order to display the returned JSON in a readable format.
 
 <a id="send-blueprint"></a>
 ### Send the blueprint to the Cockpit
@@ -110,7 +111,7 @@ In the **Cockpit** go to **Services** and select the `app` service of the `scali
 
 Notice the value for `domain` which you will need in the configuration of `s3cmd` here below.
 
-The same information can be retrieved using `js`, when executed in the repository directory:
+The same information can be retrieved using `js`, with the repository directory as current directory:
 
 ```python
 In [1]: repo = j.atyourservice.get()
@@ -141,9 +142,9 @@ signature_v2 = True
 use_https = False
 ```
 
-Make sure you changed to values of `host_base` and `host_bucket` to the value you got for `domain` through the **Cockpit** or executing `js`.
+Make sure you changed the values of `host_base` and `host_bucket` to the value you got for `domain` in the **Cockpit** or by executing `js`, as explained [above](#check-result).
 
-Once done, you can use start creating a bucket with `s3cmd mb` and use `s3cmd put` and `s3cmd put` to test the S3 server:
+Once done, you can use start creating a bucket with `s3cmd mb` and use `s3cmd put` and `s3cmd get` to test the S3 server:
 
 ```
 s3cmd ls
