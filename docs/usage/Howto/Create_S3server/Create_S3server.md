@@ -9,7 +9,7 @@ Steps:
 - [Execute the blueprint](#execute-blueprint)
 - [Create a run](#create-run)
 - [Check result](#check-result)
-- [Test using s3cmd](s#3cmd-test)
+- [Test using s3cmd](#s3cmd-test)
 
 
 <a id="review-blueprint"></a>
