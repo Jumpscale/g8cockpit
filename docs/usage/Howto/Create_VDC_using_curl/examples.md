@@ -1,5 +1,6 @@
 ## CURL Examples
 
+
 ### Get an access token
 
 curl -d "grant_type=client_credentials&client_id=centrilogic-gig-dev&client_secret=s9lTJqjcCHJHzkceQd-7iVFfGuNwDbyumXkpmXX012FUGGgMNERv" https://itsyou.online/v1/oauth/access_token
