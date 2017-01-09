@@ -11,7 +11,7 @@ curl -H "Authorization: token 3x-cgmEzNbRYr7z8lgK96akuq0Jd" https://itsyou.onlin
 
 ### List all repositories
 
-curl -X GET -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYXJ0aWxpdW12MiIsImFydGlsaXVtdjIiXSwiZXhwIjoxNDgwMzUzMDg0LCJnbG9iYWxpZCI6ImFydGlsaXVtdjIiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.-ozo2xI0wepqmSGVUrNNSgEXRN1hKxg-VSfoR-7n1iNDLpn035DucKyxz5VD6cxwcWojsgqdRMR_Q1xWN2HNG6MblubZ57gcNk7IQQaWyGy9jm3DG6m3wu9o9Y95AIk9" https://artilium.aydo2.com/api/ays/repository
+curl -X GET -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYXJ0aWxpdW12MiIsImFydGlsaXVtdjIiXSwiZXhwIjoxNDgwMzUzMDg0LCJnbG9iYWxpZCI6ImFydGlsaXVtdjIiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.-ozo2xI0wepqmSGVUrNNSgEXRN1hKxg-VSfoR-7n1iNDLpn035DucKyxz5VD6cxwcWojsgqdRMR_Q1xWN2HNG6MblubZ57gcNk7IQQaWyGy9jm3DG6m3wu9o9Y95AIk9" https://artilium.aydo2.com/
 
 
 ### Create a repository
@@ -41,7 +41,7 @@ curl -X DELETE -H "Authorization: bearer $JWT$" https://cl2.aydo2.com/api/ays/re
 
 ### Create blueprint for a g8client service
 
-curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYXJ0aWxpdW12MiIsImFydGlsaXVtdjIiXSwiZXhwIjoxNDgwMzUzMDg0LCJnbG9iYWxpZCI6ImFydGlsaXVtdjIiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.-ozo2xI0wepqmSGVUrNNSgEXRN1hKxg-VSfoR-7n1iNDLpn035DucKyxz5VD6cxwcWojsgqdRMR_Q1xWN2HNG6MblubZ57gcNk7IQQaWyGy9jm3DG6m3wu9o9Y95AIk9" -H "Content-Type: application/json" -d '{"name":"uk.yaml","content":"g8client__uk:\n  url: uk-g8-1.demo.greenitglobe.com\n  login: yves\n  password: IAM4greenIT\n  account: Account of Yves"}' https://artilium.aydo2.com/api/ays/repository/yves01/blueprint
+curl -X POST -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYXJ0aWxpdW12MiIsImFydGlsaXVtdjIiXSwiZXhwIjoxNDgwMzUzMDg0LCJnbG9iYWxpZCI6ImFydGlsaXVtdjIiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.-ozo2xI0wepqmSGVUrNNSgEXRN1hKxg-VSfoR-7n1iNDLpn035DucKyxz5VD6cxwcWojsgqdRMR_Q1xWN2HNG6MblubZ57gcNk7IQQaWyGy9jm3DG6m3wu9o9Y95AIk9" -H "Content-Type: application/json" -d '{"name":"uk.yaml","content":"g8client__uk:\n  url: uk-g8-1.demo.greenitglobe.com\n  login: yves\n  password: ****\n  account: Account of Yves"}' https://artilium.aydo2.com/api/ays/repository/yves01/blueprint
 
 
 ### Delete g8client blueprint
