@@ -1,5 +1,20 @@
 ## How to create a S3 server
 
+Steps:
+
+- [Review the blueprint](#review-blueprint)
+- [Put blueprint in a JSON file](#json-file)
+- [Create a new repository (optionally)](#create-repository)
+- [Send the blueprint to the Cockpit](#send-blueprint)
+- [Execute the blueprint](#execute-blueprint)
+- [Create a run](#create-run)
+- [Check result](#check-result)
+- [Test using s3cmd](s#3cmd-test)
+
+
+<a id="review-blueprint"></a>
+### Review the blueprint
+
 Here's the blueprint:
 
 ```yaml
@@ -32,6 +47,10 @@ actions:
   - action: 'install'
 ```
 
+
+<a id="json-file"></a>
+### Put blueprint in a JSON file
+
 Let's first put the blueprint in JSON file:
 
 ```
@@ -44,38 +63,46 @@ Copy/paste:
 {"name":"s3.yaml","content":"g8client__cl:\n  url: uk-g8-1.demo.greenitglobe.com\n  login: cockpit\n  password: cockpit12345\n  account: Account of Yves\n\nvdc__vdc4s3:\n  g8client: cl\n  account: Account of Yves\n  location: uk-g8-1\n\nsshkey__main:\n\ndisk.ovc__disk1:\n  size: 1000\n\ns3__s3server:\n  vdc: vdc4s3\n  sshkey: main\n  disk:\n    - 'disk1'\n  hostprefix: 'mys3'\n  key.access: 'access'\n  key.secret: 'secret'\n\nactions:\n  - action: 'install'"}
 ```
 
-List all repositories:
+<a id="create-repository"></a>
+### Create a new repository (optionally)
 
-```
-curl -X GET -H "Authorization: bearer $JWT$" http://85.255.197.77:5000/ays/repository | python -m json.tool
-```
-
-Create a new repository:
+Create a new repository :
 
 ```
 curl -X POST -H "Authorization: bearer $JWT$" -H "Content-Type: application/json" -d '{"name":"yves01", "git_url":"git@github.com:yveskerwyn/cockpit_repo_yves.git"}' http://85.255.197.77:5000/ays/repository | python -m json.tool
 ```
 
-Set the blueprint to the Cockpit:
+
+<a id="send-blueprint"></a>
+### Send the blueprint to the Cockpit
+
+Sending the blueprint to the Cockpit using `curl`:
 
 ```
 curl -X POST -H "Authorization: bearer $JWT$" -H "Content-Type: application/json" -d @s3server.json http://85.255.197.77:5000/ays/repository/yves01/blueprint | python -m json.tool
 ```
 
 
+<a id="execute-blueprint"></a>
+### Execute the blueprint
 
-Execute the blueprint:
+Again using `curl`:
 
 ```
 curl -X POST -H "Authorization: bearer $JWT$" http://85.255.197.77:5000/ays/repository/yves01/blueprint/uk.yaml | python -m json.tool
 ```
 
-Create a run:
+<a id="create-run"></a>
+### Create a run
+
+Using curl:
 
 ```
 curl -X POST -H "Authorization: bearer $JWT$" http://85.255.197.77:5000/ays/repository/yves01/aysrun | python -m json.tool
 ```
 
+<a id="check-result"></a>
+### Check result
 
 In the **Cockpit** go to **Services** and select the `app` service of the `scalitity` actor:
 
@@ -93,6 +120,10 @@ In [2]: scalityapp = repo.serviceGet('scality', 'app')
 In [3]: scalityapp.model.data
 Out[3]: <schema_f9020c5a81a2021c_capnp:Schema builder (os = "app", domain = "mys3-1442825545.gigapps.io", storageData = "/data/data", storageMeta = "/data/meta", keyAccess = "access", keySecret = "secret")>
 ```
+
+
+<a id="s3cmd-test"></a>
+###  Test using s3cmd
 
 Now let's test the S3 server using [s3cmd](http://s3tools.org/s3cmd-howto).
 
