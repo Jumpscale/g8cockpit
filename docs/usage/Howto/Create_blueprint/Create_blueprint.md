@@ -21,7 +21,7 @@ Make sure to validate your blueprint first to have valid YAML format using a too
 <a id="portal"></a>
 ### Using the Cockpit Portal
 
-See the [Getting started with blueprints](../../Getting_started_with_blueprints/Getting_started_with_blueprints.md) section.
+See the [Getting started with blueprints](../../Getting_started_with_blueprints/getting_started_with_blueprints.md) section.
 
 
 <a id="api"></a>
@@ -35,7 +35,7 @@ Once you got the JWT, you can create a blueprint, for instance here below for cr
 curl -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
      -d '{"name":"user1.yaml","content":"ovc_user__user1:\n  g8.client.name: 'gig'\n  username: 'mike'\n  email: 'mike@gmail.com'\n  provider: 'itsyouonline'"}'
-     https://BASE_URL/api/ays/repository/
+     https://BASE_URL/ays/repository/REPO_NAME/blueprint/
 ```
 
 > Note that the above blueprint will not create the user. Two more steps are are required for that, first execute the blueprint and then install the user, respectively documented in the sections [How to execute a blueprint](../Execute_blueprint/Execute_blueprint.md) and [How to install a service](Install_service/Install_service.md).
