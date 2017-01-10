@@ -22,7 +22,7 @@ After clicking **create** specify a name for the new repository, and see the res
 <a id="portal"></a>
 ### Using the Cockpit Portal
 
-See the [Getting started with blueprints](../../Getting_started_with_blueprints/Getting_started_with_blueprints.md) section.
+See the [Getting started with blueprints](../../Getting_started_with_blueprints/getting_started_with_blueprints.md) section.
 
 
 <a id="api"></a>
@@ -35,8 +35,8 @@ Once you got the JWT:
 ```
 curl -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
-     -d '{"name":"test-repo"}'
-     https://BASE_URL/api/ays/repository
+     -d '{"name":"test-repo", "git_url": "https://github.com/user/reponame"}'
+     http://BASE_URL/ays/repository
 ```
 
 In the **API Console**:
