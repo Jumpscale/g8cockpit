@@ -15,3 +15,4 @@
 * [Delete a service](Delete_service/Delete_service.md)
 * [How to create a VDC using curl](Create_VDC_using_curl/Create_VDC_using_curl.md)
 * [How to create a S3 server](Create_S3server/Create_S3server.md)
+* [How to create an ownCloud server](Create_ownCloud/Create_ownCloud.md)

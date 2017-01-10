@@ -19,15 +19,15 @@ Here's the blueprint:
 
 ```yaml
 g8client__cl:
-  url: uk-g8-1.demo.greenitglobe.com
-  login: cockpit
-  password: cockpit12345
-  account: Account of Yves
+  url: 'uk-g8-1.demo.greenitglobe.com'
+  login: 'cockpit'
+  password: 'cockpit12345'
+  account: 'Account of Yves'
 
 vdc__vdc4s3:
-  g8client: cl
-  account: Account of Yves
-  location: uk-g8-1
+  g8client: 'cl'
+  account: 'Account of Yves'
+  location: 'uk-g8-1'
 
 sshkey__main:
 
@@ -60,7 +60,7 @@ vi s3server.json
 Copy/paste:
 
 ```json
-{"name":"s3.yaml","content":"g8client__cl:\n  url: uk-g8-1.demo.greenitglobe.com\n  login: cockpit\n  password: cockpit12345\n  account: Account of Yves\n\nvdc__vdc4s3:\n  g8client: cl\n  account: Account of Yves\n  location: uk-g8-1\n\nsshkey__main:\n\ndisk.ovc__disk1:\n  size: 1000\n\ns3__s3server:\n  vdc: vdc4s3\n  sshkey: main\n  disk:\n    - 'disk1'\n  hostprefix: 'mys3'\n  key.access: 'access'\n  key.secret: 'secret'\n\nactions:\n  - action: 'install'"}
+{"name":"s3.yaml","content":"g8client__cl:\n  url: 'uk-g8-1.demo.greenitglobe.com'\n  login: 'cockpit'\n  password: 'cockpit12345'\n  account: 'Account of Yves'\n\nvdc__vdc4s3:\n  g8client: cl\n  account: 'Account of Yves'\n  location: 'uk-g8-1'\n\nsshkey__main:\n\ndisk.ovc__disk1:\n  size: 1000\n\ns3__s3server:\n  vdc: vdc4s3\n  sshkey: main\n  disk:\n    - 'disk1'\n  hostprefix: 'mys3'\n  key.access: 'access'\n  key.secret: 'secret'\n\nactions:\n  - action: 'install'"}
 ```
 
 <a id="create-repository"></a>
@@ -90,7 +90,7 @@ curl -X POST -H "Authorization: bearer $JWT$" -H "Content-Type: application/json
 Again using `curl`:
 
 ```
-curl -X POST -H "Authorization: bearer $JWT$" http://85.255.197.77:5000/ays/repository/yves01/blueprint/uk.yaml | python -m json.tool
+curl -X POST -H "Authorization: bearer $JWT$" http://85.255.197.77:5000/ays/repository/yves01/blueprint/s3.yaml | python -m json.tool
 ```
 
 <a id="create-run"></a>
