@@ -1,28 +1,55 @@
-## Viewing runs using the Cockpit portal
-In Repo details page you can select Runs in the navigation menu to get an overview of all runs executed in this repository.
+## Runs
+
+The **Runs** page shows all runs for a specific AYS repository.
+
+You get to a **Runs** page from any **Repository Details** page by clicking **Runs** in the navigation menu under **Links**:
 
 ![Alt](repoDetails.png)
 
-Here you can see an overview of runs on this repository, with their last modification time and their state.
+The **Runs** page lists alls runs, here for the repository `ays_test`:
 
 ![Alt](runs.png)
 
-Clicking the name ID of a run open run details, where the steps of this run are listed.
-Each step of the run can be expanded, showing the actor name created in this run, service name and the action executed in this step.
+For each run you see the last modification date/time and the current state.
+
+Possible values for **State** are:
+
+- **new** for runs that are still executing
+- **ok** for runs that executed successfully
+- **error** for runs that have failed
+
+From the **Actions** dropdown you can choose to **Remove all runs in DB**.
+
+Clicking the **Run ID** of a run opens the **Run Details** page, where the steps of the selected run are listed.
+Each step of the run can be expanded, showing all the executed jobs. For each job you see the **Actor name**, the **Service Name** and the executed **Action Name**:
 
 ![Alt](runDetails.png)
 
-By clicking on the actor name it is possible to examine the job details: the code of the executed function and the log file.
+By clicking on the actor name you get to the **Job Details** page, showing you the executed action code and the log file.
 
 ![Alt](job.png)
 
-## Using the Cockpit API
-In order to use the Cockpit API you first need to obtain an JWT, as documented in the section about [how to get a JWT.](https://github.com/Jumpscale/jscockpit/blob/8.1.1/docs/usage/Howto/Get_JWT/Get_JWT.md)
-Using curl we can send a GET request to get a JSON object holding the run details.
 
-Authorization header isn't necessary if on an development installation, otherwise you need to include the JWT in the request header.
+## Using the Cockpit API
+
+Runs can also be retrieved using the Cockpit API, the below will return a JSON object containing all runs:
+
 ```
-curl -H "Authorization: bearer JWT"  /
+curl -X GET
+     -H "Authorization: bearer JWT"  /
+     -H "Content-Type: application/json" /
+     http://BASE_URL/ays/repository/REPO_NAME/aysrun
+```
+
+Or for run details:
+
+```
+curl -X GET
+     -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
      http://BASE_URL/ays/repository/REPO_NAME/aysrun/RUN_ID
 ```
+
+In order to use the Cockpit API you first need to obtain an JWT, as documented in the section about [how to get a JWT.](https://github.com/Jumpscale/jscockpit/blob/8.1.1/docs/usage/Howto/Get_JWT/Get_JWT.md).
+
+The authorization header containing the JWT isn't necessary in case of an development installation of the Cockpit.
