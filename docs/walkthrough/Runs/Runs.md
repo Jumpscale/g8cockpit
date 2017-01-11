@@ -1,9 +1,9 @@
 ## Viewing runs using the Cockpit portal
-In Repo details page you can select Runs in the Links menu to get an overview of all runs executed in this repository.
+In Repo details page you can select Runs in the navigation menu to get an overview of all runs executed in this repository.
 
 ![Alt](repoDetails.png)
 
-Here you can see a listing of all runs on this repository as as well as their time and their state.
+Here you can see an overview of runs on this repository, with their last modification time and their state.
 
 ![Alt](runs.png)
 
@@ -20,7 +20,7 @@ By clicking on the actor name it is possible to examine the job details: the cod
 In order to use the Cockpit API you first need to obtain an JWT, as documented in the section about [how to get a JWT.](https://github.com/Jumpscale/jscockpit/blob/8.1.1/docs/usage/Howto/Get_JWT/Get_JWT.md)
 Using curl we can send a GET request to get a JSON object holding the run details.
 
-You need to include the JWT in the request header.
+Authorization header isn't necessary if on an development installation, otherwise you need to include the JWT in the request header.
 ```
 curl -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
