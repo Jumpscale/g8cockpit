@@ -29,7 +29,6 @@ By clicking on the actor name you get to the **Job Details** page, showing you t
 
 ![Alt](job.png)
 
-
 ## Using the Cockpit API
 
 Runs can also be retrieved using the Cockpit API, the below will return a JSON object containing all runs:

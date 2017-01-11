@@ -1,17 +1,19 @@
 ## Installation of a Cockpit
 
-## Development Cockpit:
- [Installing a development cockpit](Using-Cuisine/using-cuisine.md)
+You can either install a Cockpit for development purposes, or install a Production Cockpit.
 
+### Development Cockpit
 
-## Production Cockpit:
+Installation of a Cockpit for development purposes is done through JumpScale Cuisine, and documented in [here](Using-Cuisine/using-cuisine.md).
 
-There are two ways to install a new production cockpit:
+### Production Cockpit
 
-- [Installing using Telegram](Using-Telegram/using-Telegram.md) (highly recommended)
+There are two ways to install a new production Cockpit:
+
 - [Installing using an AYS Blueprint](Using-Blueprint/using-blueprint.md)
+- [Installing using Telegram](Using-Telegram/using-Telegram.md)
 
-Both options requires some pre-installation preparation, documented [here](prep/prep.md).
+Both options require some pre-installation preparation, documented [here](prep/prep.md).
 
 ### Allow the Cockpit to push to your Github repository
 
