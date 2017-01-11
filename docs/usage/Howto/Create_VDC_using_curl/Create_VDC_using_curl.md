@@ -35,7 +35,7 @@ curl -H "Authorization: token OAUTH-TOKEN" /
 ```
 curl -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
-     -d '{"name":"test-repo"}'
+     -d '{"name":"test-repo"}' /
      https://BASE_URL/api/ays/repository
 ```
 
@@ -45,7 +45,7 @@ curl -H "Authorization: bearer JWT"  /
 ```
 curl -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
-     -d '{"name":"user1.yaml","content":"ovc_user__user1:\n  g8.client.name: 'gig'\n  username: 'mike'\n  email: 'mike@gmail.com'\n  provider: 'itsyouonline'"}'
+     -d '{"name":"uk.yaml","content":"g8client__uk:\n  g8.url: uk-g8-1.demo.greenitglobe.com\n  g8.login: yves\n  g8.password: *****\n  g8.account: Account of Yves"}'
      https://BASE_URL/api/ays/repository/
 ```
 

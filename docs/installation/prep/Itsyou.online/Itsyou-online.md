@@ -1,18 +1,23 @@
 ## Configure ItsYou.online
 
-The **Cockpit** uses [ItsYou.online](http://www.itsyou.on) for authenticating users.
+This is how a **Cockpit** depends on ItsYou.online:
 
-A **Cockpit** is always deployed for a specific organization that needs to be registered at [ItsYou.online](http://www.itsyou.on).
+- a **Cockpit** uses [ItsYou.online](http://www.itsyou.online) for authenticating users.
+- a **Cockpit** is always deployed for a specific organization that needs to be registered at [ItsYou.online](http://www.itsyou.online).
 
-Let's start by creating a new organization at [ItsYou.online](http://www.itsyou.on):
+Let's start by creating a new organization at [ItsYou.online](http://www.itsyou.online):
 
-- Once logged in goto the **Organizations** tab:
+- Once logged in select **Organizations** from the dropdown menu that appears when clicking the pawn icon in the right top corner:
 
-  ![](organizations.png)
+  ![](pawn-menu.png)
 
-- Click **+ CREATE NEW**:
+- Click the **+ CREATE NEW** in order to create a new organization:
 
   ![](create-new-organization.png)
+
+- Here I create a new organization **cloud potatoes**:
+
+  ![](cloud-potatoes.png)
 
 As part of the [Cockpit installation process through Telegram](../Telegram/Telegram.md) you will be requested to authenticate on **ItsYou.online** and authorize the **Cockpit Chatbot** to verify that you are member/owner of the organization for which the **Cockpit** is setup.
 

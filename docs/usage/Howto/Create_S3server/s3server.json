@@ -1,0 +1,4 @@
+{
+  "name":"s3.yaml",
+  "content":"g8client__cl:\n  url: 'uk-g8-1.demo.greenitglobe.com'\n  login: 'yves'\n  password: 'IAM4greenIT'\n  account: 'Account of Yves'\n\nvdc__vdc4s3:\n  g8client: 'cl'\n  account: 'Account of Yves'\n  location: 'uk-g8-1'\n\ndisk.ovc__disk1:\n  size: 1000\n\ns3__s3server:\n  vdc: 'vdc4s3'\n  disk:\n    - 'disk1'\n  domain: 'mystorage.com'\n  key.access: 'access'\n  key.secret: 'secret'\n\nactions:\n  - action: 'install'"
+}
