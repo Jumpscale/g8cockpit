@@ -111,6 +111,8 @@ In the **Cockpit** go to **Services** and select the `app` service of the `scali
 
 Notice the value for `domain` which you will need in the configuration of `s3cmd` here below.
 
+This domain name is generated using **ipdns**, a stateless DNS server, see: https://github.com/0-complexity/ipdns
+
 The same information can be retrieved using `js`, with the repository directory as current directory:
 
 ```python

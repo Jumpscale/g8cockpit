@@ -100,6 +100,8 @@ In the **Cockpit** go to **Services** and select the `oc1` service of the `blueo
 
 Notice the value for `fqdn` which is the actual URL where you can test the ownCloud server, discussed below.
 
+This fully qualified domain name (`fqdn`) is generated using **ipdns**, a stateless DNS server, see: https://github.com/0-complexity/ipdns
+
 The same information can be retrieved using `js`, with the repository directory as current directory:
 
 ```python
