@@ -69,7 +69,7 @@ Copy/paste:
 Create a new repository :
 
 ```
-curl -X POST -H "Authorization: bearer $JWT$" -H "Content-Type: application/json" -d '{"name":"yves01", "git_url":"git@github.com:yveskerwyn/cockpit_repo_yves.git"}' http://85.255.197.77:5000/ays/repository | python -m json.tool
+curl -X POST -H "Authorization: bearer $JWT$" -H "Content-Type: application/json" -d '{"name":"yves01", "git_url":"git@github.com:yveskerwyn/cockpit_repo_yves.git"}' http://{address}:5000/ays/repository | python -m json.tool
 ```
 
 Notice the pipe to `python -m json.tool` in order to display the returned JSON in a readable format.
@@ -90,7 +90,7 @@ curl -X POST -H "Authorization: bearer $JWT$" -H "Content-Type: application/json
 Again using `curl`:
 
 ```
-curl -X POST -H "Authorization: bearer $JWT$" http://85.255.197.77:5000/ays/repository/yves01/blueprint/s3.yaml | python -m json.tool
+curl -X POST -H "Authorization: bearer $JWT$" http://{address}:5000/ays/repository/yves01/blueprint/s3.yaml | python -m json.tool
 ```
 
 <a id="create-run"></a>
@@ -99,11 +99,23 @@ curl -X POST -H "Authorization: bearer $JWT$" http://85.255.197.77:5000/ays/repo
 Using curl:
 
 ```
-curl -X POST -H "Authorization: bearer $JWT$" http://85.255.197.77:5000/ays/repository/yves01/aysrun | python -m json.tool
+curl -X POST -H "Authorization: bearer $JWT$" http://{address}:5000/ays/repository/yves01/aysrun | python -m json.tool
 ```
 
 <a id="check-result"></a>
 ### Check result
+
+You can check the result in three ways:
+
+- [Cockpit Portal](#cockpit-portal)
+- [JumpScale Interactice Shell](#js-shell)
+- [Cockpit-API](#cockpit-API)
+
+All discussed below.
+
+
+<a id="cockpit-portal"></a>
+### Check result via the Cockpit Portal
 
 In the **Cockpit** go to **Services** and select the `app` service of the `scalitity` actor:
 
@@ -112,6 +124,10 @@ In the **Cockpit** go to **Services** and select the `app` service of the `scali
 Notice the value for `domain` which you will need in the configuration of `s3cmd` here below.
 
 This domain name is generated using **ipdns**, a stateless DNS server, see: https://github.com/0-complexity/ipdns
+
+
+<a id="js-shell"></a>
+### Check result via the JumpScale Shell
 
 The same information can be retrieved using `js`, with the repository directory as current directory:
 
@@ -124,6 +140,30 @@ In [3]: scalityapp.model.data
 Out[3]: <schema_f9020c5a81a2021c_capnp:Schema builder (os = "app", domain = "mys3-1442825545.gigapps.io", storageData = "/data/data", storageMeta = "/data/meta", keyAccess = "access", keySecret = "secret")>
 ```
 
+
+<a id="cockpit-api"></a>
+### Check result via the Cockpit API
+
+Here's how using curl:
+
+```
+curl -X GET -H "Authorization: bearer $JWT$" -H "Content-Type: application/json" http://{address}:5000/ays/repository/{repository-name}/service/s3/{actor-instance-name} | python -m json.tool
+```
+
+The JSON result will include all details, including the `fqdn`, `keyAcces`, and `keySecret`:
+
+```
+...
+"enablehttps": false,
+"fqdn": "mys3-1442825551.gigapps.io",
+"hostprefix": "mys3",
+"image": "Ubuntu 16.04 x64",
+"keyAccess": "access",
+"keySecret": "secret",
+"sshkey": "main",
+"vdc": "vdc4s3"
+...
+```
 
 <a id="s3cmd-test"></a>
 ###  Test using s3cmd
