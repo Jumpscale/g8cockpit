@@ -1,5 +1,7 @@
 ## How to
 
+### Basics
+
 * [Get an OAuth authorization code](Get_oauth_authorization_code/Get_oauth_authorization_code.md)
 * [Get an OAuth access token](Get_oauth_access_token/Get_oauth_access_token.md)
 * [Get a JWT](Get_JWT/Get_JWT.md)
@@ -13,6 +15,12 @@
 * [Install a service instance](Install_service/Install_service.md)
 * [Uninstall a service instance](Uninstall_service/Uninstall_service.md)
 * [Delete a service](Delete_service/Delete_service.md)
-* [How to create a VDC using curl](Create_VDC_using_curl/Create_VDC_using_curl.md)
-* [How to create a S3 server](Create_S3server/Create_S3server.md)
-* [How to create an ownCloud server](Create_ownCloud/Create_ownCloud.md)
+
+
+### Using OpenvCloud Actor Templates
+
+* [Create a VDC](Create_VDC/Create_VDC.md)
+* [Create a VM](Create_VM/Create_VM.md)
+* [Create a S3 server](Create_S3server/Create_S3server.md)
+* [Create an ownCloud server](Create_ownCloud/Create_ownCloud.md)
+* [Activate an auto-snapshotting policy](Set_autosnapshotting/Set_autosnapshotting.md)

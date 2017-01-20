@@ -1,4 +1,4 @@
-## How to create a VDC using curl
+## How to create a VDC
 
 Steps:
 - [Get an OAuth token with Client Credentials Flow](#get-token)
