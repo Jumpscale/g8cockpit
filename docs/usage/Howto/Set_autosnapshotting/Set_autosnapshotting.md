@@ -41,9 +41,3 @@ autosnapshotting__mysnapshotting:
 actions:
   - action: install
 ```
-
-Curl:
-
-```
-
-```
