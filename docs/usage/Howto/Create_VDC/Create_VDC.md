@@ -1,6 +1,25 @@
 ## How to create a VDC
 
-Steps:
+Here's an example blueprint for creating a virtual datacenter (VDC):
+
+```
+g8client__cl:
+  url: 'uk-g8-1.demo.greenitglobe.com'
+  login: '***'
+  password: '***'
+  account: '***'
+
+vdc__myvdc:
+  g8client: 'cl'
+  account: '***'
+  location: 'uk-g8-1'
+
+actions:
+  - action: install
+```
+
+Below we discuss creating a VDC step by step using curl commands:
+
 - [Get an OAuth token with Client Credentials Flow](#get-token)
 - [Get a JWT to talk to the Cockpit](#get-JWT)
 - [Create a new repository](#create-repository)
@@ -10,14 +29,14 @@ Steps:
 - [Execute the user blueprint](#user-execute)
 - [Create blueprint for new VDC](#vdc-blueprint)
 - [Execute the VDC blueprint](#vdc-execute)
-- [Execute the install action for VDC](#install-VDC)
+- [Start a run to actually deploy the VDC](#install-VDC)
 
 
 <a id="get-token"></a>
 ### Get an OAuth token with Client Credentials Flow
 
 ```
-curl -d "grant_type=client_credentials&client_id=CLIENT_ID&client_secret=CLIENT_SECRET" /
+curl -d "grant_type=client_credentials&client_id={CLIENT_ID}&client_secret={CLIENT_SECRET}" /
      https://itsyou.online/v1/oauth/access_token
 ```
 
@@ -36,7 +55,7 @@ curl -H "Authorization: token OAUTH-TOKEN" /
 curl -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
      -d '{"name":"test-repo"}' /
-     https://BASE_URL/api/ays/repository
+     https://{address}:5000/ays/repository
 ```
 
 <a id="g8client-blueprint"></a>
@@ -45,8 +64,8 @@ curl -H "Authorization: bearer JWT"  /
 ```
 curl -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
-     -d '{"name":"uk.yaml","content":"g8client__uk:\n  g8.url: uk-g8-1.demo.greenitglobe.com\n  g8.login: yves\n  g8.password: *****\n  g8.account: Account of Yves"}'
-     https://BASE_URL/api/ays/repository/
+     -d '{"name":"cl.yaml","content":"g8client__cl:\n  g8.url: uk-g8-1.demo.greenitglobe.com\n  g8.login: ***\n  g8.password: ***\n  g8.account:***"}'
+     https://{address}:5000/ays/repository/
 ```
 
 <a id="g8client-execute"></a>
@@ -54,7 +73,7 @@ curl -H "Authorization: bearer JWT"  /
 
 ```
 curl -H "Authorization: bearer JWT"  /  
-     https://BASE_URL/api/ays/repository/REPOSITORY-NAME/blueprint/BLUEPRINT-NAME
+     https://{address}:5000/ays/repository/{repository-name}/blueprint/cl.yaml
 ```
 
 <a id="user-blueprint"></a>
@@ -63,8 +82,8 @@ curl -H "Authorization: bearer JWT"  /
 ```
 curl -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
-     -d '{"name":"user1.yaml","content":"ovc_user__user1:\n  g8.client.name: 'gig'\n  username: 'mike'\n  email: 'mike@gmail.com'\n  provider: 'itsyouonline'"}'
-     https://BASE_URL/api/ays/repository/
+     -d '{"name":"user1.yaml","content":"ovc_user__user1:\n  g8.client.name: 'cl'\n  username: 'mike'\n  email: 'mike@gmail.com'\n  provider: 'itsyouonline'"}'
+     https://{address}:5000/ays/repository/
 ```
 
 <a id="user-execute"></a>
@@ -72,7 +91,7 @@ curl -H "Authorization: bearer JWT"  /
 
 ```
 curl -H "Authorization: bearer JWT"  /  
-     https://BASE_URL/api/ays/repository/REPOSITORY-NAME/blueprint/BLUEPRINT-NAME
+     https://{address}:5000/ays/repository/{repository-name}/blueprint/user1.yaml
 ```
 
 <a id="vdc-blueprint"></a>
@@ -81,8 +100,8 @@ curl -H "Authorization: bearer JWT"  /
 ```
 curl -H "Authorization: bearer JWT"  /
      -H "Content-Type: application/json" /
-     -d '{"name":"user1.yaml","content":"ovc_user__user1:\n  g8.client.name: 'gig'\n  username: 'mike'\n  email: 'mike@gmail.com'\n  provider: 'itsyouonline'"}'
-     https://BASE_URL/api/ays/repository/
+     -d '{"name":"myvdc.yaml","content":"vdc__myvdc:\n  g8client: 'cl'\n  location: uk-g8-1"}'
+     https://{address}:5000/ays/repository/
 ```
 
 <a id="vdc-execute"></a>
@@ -90,14 +109,14 @@ curl -H "Authorization: bearer JWT"  /
 
 ```
 curl -H "Authorization: bearer JWT"  /  
-     https://BASE_URL/api/ays/repository/REPOSITORY-NAME/blueprint/BLUEPRINT-NAME
+     https:/{address}:5000/ays/repository/{repository-name}/blueprint/myvdc.yaml
 ```
 
 <a id="install-VDC"></a>
-### Execute the install action for VDC
+### Start a run to actually deploy the VDC
 
 ```
-curl -H "Authorization: bearer JWT"  /
-     -d "action=install&async=true&force=false&instance=INSTANCE-NAME&role=ROLE"
-     https://BASE_URL/api/ays/repository/REPOSITORY-NAME/execute
+curl -X POST
+     -H "Authorization: bearer JWT" /
+     http://{address}:5000/ays/repository/{repository-name}/aysrun | python -m json.tool
 ```
