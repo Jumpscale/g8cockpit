@@ -47,7 +47,7 @@
     * [How to create a VDC](usage/Howto/Create_VDC/Create_VDC.md)
     * [How to create a S3 server](usage/Howto/Create_S3server/Create_S3server.md)
     * [How to create an ownCloud server](usage/Howto/Create_ownCloud/Create_ownCloud.md)
-    * [How to activate an auto-snapshotting policy](Set_autosnapshotting/Set_autosnapshotting.md)
+    * [How to activate an auto-snapshotting policy](usage/Howto/Set_autosnapshotting/Set_autosnapshotting.md)
 * [Configuration](configuration.md)  
 * [Build](build.md)
 * [Client](client.md)
