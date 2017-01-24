@@ -27,9 +27,9 @@ You can perform several actions on an  AYS repository:
 - **Install** execute the `install()` function defined in the *actions.py*
 
 In the **Links** menu the components of the AYS repository are listed:
-- **ActorTemplates** contains all templates of this repository for more details see [here](/docs/walkthrough/Templates/Templates.md)
-- **Services** All deployed instances of the templates for more information see [here](/docs/walkthrough/Services/Services.md)
-- **Blueprints** contains the blueprints of the repo, see [here](/docs/walkthrough/Blueprints/Blueprints.md)
+- **ActorTemplates** contains all templates of this repository for more details see [here](/docs/walkthrough/Templates)
+- **Services** All deployed instances of the templates for more information see [here](/docs/walkthrough/Services)
+- **Blueprints** contains the blueprints of the repo, see [here](/docs/walkthrough/Blueprints)
 - **Explorer** simulates exploration of the repo as windows Explorer
 - **Simulator** shows the steps that needs to be executed:
 
