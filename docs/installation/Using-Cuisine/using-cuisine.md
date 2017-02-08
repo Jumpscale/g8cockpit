@@ -21,7 +21,7 @@ With the parameters:
 - `ip` ('localhost'|{ip-address}) you set the IP address on which the REST API will be available for remote interactions; if you specify `localhost` the REST API will only be available locally
 
 
-Alternatively you can also get your Cockpit up and running in development mode on a **remote** machine by using an executor:
+Alternatively you can also get your Cockpit up and running in development mode, locally or on a **remote** machine by using an executor:
 
 ```
 executor = j.tools.executor.getSSHBased(addr='localhost|{ip-address}', port={port-number}, login='{username}', passwd=None|'{password}', debug={True|False}, allow_agent=True, look_for_keys=True, timeout=5, usecache=True, passphrase=None, key_filename=None)
