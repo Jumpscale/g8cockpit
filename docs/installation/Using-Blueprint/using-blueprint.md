@@ -20,7 +20,7 @@ Additionally you will need the private and public key of your DNS server. In the
 Go to [https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint](https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint) and copy the example blueprint into your local AYS blueprints repository.
 
 ```bash
-curl https://raw.githubusercontent.com/Jumpscale/jscockpit/8.1.0/blueprint/ovc_blueprint.yaml > /path/to/my/repo/blueprints/cockpit.yaml
+curl https://raw.githubusercontent.com/Jumpscale/jscockpit/8.1.1/blueprint/ovc_blueprint.yaml > /path/to/my/repo/blueprints/cockpit.yaml
 
 <a id="create-repo"></a>
 ### Step 2: Create an AYS service repository

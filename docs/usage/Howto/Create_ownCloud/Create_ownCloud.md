@@ -1,5 +1,7 @@
 ## How to create an ownCloud server
 
+For deploying an ownCloud use the **blueowncloud** actor template, available here: https://github.com/Jumpscale/ays_jumpscale8/tree/master/templates/app/blueowncloud
+
 Steps:
 
 - [Review the blueprint](#review-blueprint)
@@ -19,21 +21,24 @@ Here's the blueprint:
 
 ```yaml
 g8client__env1:
-  url: uk-g8-1.demo.greenitglobe.com
-  login: cockpit
-  password: cockpit12345
-  account: Account of Yves
+  url: 'uk-g8-1.demo.greenitglobe.com'
+  login: 'cockpit'
+  password: 'cockpit12345'
+  account: 'Account of Yves'
 
-vdc__ocspace1:
+vdc__myvdc:
   g8client: 'env1'
   location: 'uk-g8-1'
 
-blueowncloud__oc1:
-  vdc: 'ocspace1'
+blueowncloud__myowncloud:
+  vdc: 'myvdc'
   datadisks:
-      - 1000
-      - 1000
+    - 1000
+    - 1000
   hostprefix: 'myowncloud'
+
+actions:
+  - action: install
 ```
 
 

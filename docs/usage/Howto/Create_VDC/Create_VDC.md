@@ -1,6 +1,8 @@
 ## How to create a VDC
 
-Here's an example blueprint for creating a virtual datacenter (VDC):
+For creating a virtual datacenter (VDC) use the **vdc** actor template, available here: https://github.com/Jumpscale/ays_jumpscale8/tree/master/templates/ovc/vdc
+
+Here's an example blueprint for creating a VDC:
 
 ```
 g8client__cl:
