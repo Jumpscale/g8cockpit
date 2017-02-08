@@ -7,16 +7,16 @@ A Cockpit can be installed in two modes:
 
 Both are discussed here below.
 
-Once installed you will want to make sure that your Cockpit can push changes back to your Git server, as [discussed here below](#github)
+Once installed you will want to make sure that your Cockpit can push changes back to your Git server, as discussed [here below](#github)
 
 
 <a id="development"></a>
-### Development Cockpit
+### Installing a Cockpit in Development Mode
 
 Installing a Cockpit for development purposes can be achieved in two ways:
 
 - [Automated using the Cockpit Installer](https://github.com/Jumpscale/ays_automatic_cockpit_based_testing/tree/master/cockpit_testing/Framework/Installer)
-- [Manually using cuisine](Using-Cuisine/using-cuisine.md))
+- [Manually using cuisine](Using-Cuisine/using-cuisine.md)
 
 In both cases realize that for a Cockpit in development mode:
 
@@ -27,7 +27,7 @@ In both cases realize that for a Cockpit in development mode:
 
 
 <a id="production"></a>
-### Production Cockpit
+### Installing a Cockpit in Production Mode
 
 There are two ways to install a new production Cockpit:
 
