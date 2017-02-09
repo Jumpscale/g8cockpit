@@ -8,6 +8,7 @@ g8client__uk:
 
 # give user access to the vdc
 uservdc__myLogin:
+  g8client: 'uk'
 
 # create the vdc that will contain the vm of the cockpit
 vdc__cockpit:
@@ -41,11 +42,16 @@ cockpit__main:
    dns.sshkey: 'dns'
    domain: 'mycockpit.aydo2.com'
    caddy.email: 'me@mail.com'
-
+   flist: 'https://stor.jumpscale.org/stor2/flist/aysbuild/jumpscale.flist'
    oauth.organization: 'myOrg'
    oauth.client_id: 'myOrg'
    oauth.client_secret: 'replace_me'
-   oauth.jwt_key: 'MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n27MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny66+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv'
+   oauth.jwt_key: |
+       -----BEGIN PUBLIC KEY-----
+       MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2
+       7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6
+       6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv
+       -----END PUBLIC KEY-----
 
 actions:
     - action: 'install'
