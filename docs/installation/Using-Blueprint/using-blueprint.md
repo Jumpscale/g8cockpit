@@ -10,45 +10,100 @@ Below we discuss 5 steps:
 - **Step 5**: [Run the install actions](#run-actions)
 
 <a id="prep"></a>
-### Step 1: Create an AYS service repository
+### Step 1: Preparation
 
 Go through the preparation steps as documented [here](/installation/prep/prep.md).
 
-Additionally you will need the private and public key of your DNS server. In the example below we assume you have them available in ```/root/.ssh```.
+Additionally you will need the private and public key of your DNS server. In the example below we assume you have them available in `/root/.ssh`.
 
-
-Go to [https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint](https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint) and copy the example blueprint into your local AYS blueprints repository.
-
-```bash
-curl https://raw.githubusercontent.com/Jumpscale/jscockpit/8.1.1/blueprint/ovc_blueprint.yaml > /path/to/my/repo/blueprints/cockpit.yaml
 
 <a id="create-repo"></a>
-### Step 2: Create an AYS service repository
+### Step 2: Create an AYS service repository for your Cockpit
 
-On a (virtual) machine with JumpScale installed execute the ```ays create_repo``` command, specifying the local Git directory and the repository on the Git server:
+First create your Git repository on the Git server, or on GitHub.
+
+Create an AYS service repository on your machine using the `ays create_repo` command, specifying your local Git directory and the repository on the Git server:
 
 ```
-ays create_repo -p {/path/to/my/repo} -g git@github.com:{account/{ays_repo}.git
+sudo ays create_repo -p {/path/to/my/repo} -g git@github.com:{account}/cockpit_{cockpit-name}.git
 ```
 
 Or alternatively, you can also do it all manually:
 
 ```
 mkdir -p {/path/to/my/repo}/blueprints
-touch {/path/to/my/repo}/.ays
 cd {/path/to/my/repo}
+touch .ays
 git init
 vim {/path/to/my/repo}/.git/config
 ```
 
+Add following configuration:
+
+```
+[remote "origin"]
+        url = git@github.com:{account}/cockpit_{cockpit-name}.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+```
+
+Make sure your Git `user.name` and `user.email` are set:
+
+```
+git config --global user.name "{your-full-nmne}"
+git config --global user.email "{your-email-address}"
+```
+
+If you're not logged in as root, you will need to set ownership of the current directory and all subdirectories (recursively) to the currently logged in user, in this case for `cloudscalers`:
+
+```
+cd {/path/to/my/repo}
+sudo chown -R cloudscalers.cloudscalers .
+```
+
+Do your first commit:
+
+```
+git add .
+git commit -m "first commit"
+```
+
+Pull the remote master branch to merge into your local master branch:
+
+```
+git pull origin master
+```
+
+Push all changes to the server, and since this is your first push you need to specify the up-stream branch you want to push to:
+
+```
+git push --set-upstream origin master
+```
+
+This will add the following entry to your `.git/config`:
+
+```
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+```
+
+When you push to a remote and you use the `--set-upstream` flag Git sets the branch you are pushing to as the remote tracking branch of the branch you are pushing.
+
+Adding a remote tracking branch means that Git then knows what you want to do when you git fetch, git pull or git push in future. It assumes that you want to keep the local branch and the remote branch it is tracking in sync and does the appropriate thing to achieve this.
+
+
 <a id="create-blueprint"></a>
 ### Step 3: Create an AYS blueprint for deploying a Cockpit
 
-Go to [https://github.com/Jumpscale/jscockpit/tree/master/blueprint](https://github.com/Jumpscale/jscockpit/tree/master/blueprint) and copy the example blueprint into your local AYS blueprints repository:
+Go to [https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint](https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint) and copy the example blueprint to your local machine, in a directory that you will use for the Git repository of your new Cockpit:
 
 ```
-curl https://raw.githubusercontent.com/Jumpscale/jscockpit/master/blueprint/ovc_blueprint.yaml > {/path/to/my/repo}/blueprints/cockpit.yaml
+curl https://raw.githubusercontent.com/Jumpscale/jscockpit/8.1.1/blueprint/ovc_blueprint.yaml > {/path/to/my/repo}/blueprints/cockpit_{cockpit-name}.yaml
 ```
+
+
+
+
 
 Depending on which platform you install the Cockpit the beginning of the blueprint can different. The only important thing to remember is that the Cockpit service always uses another server of role `node` has parent.
 This will indicate to the cockpit on which node it needs to be installed. This bring flexibility during installation cause any service of role `node` can be used.
