@@ -28,7 +28,7 @@ Then create an AYS service repository on your machine using the `ays create_repo
 sudo ays create_repo -p {/path/to/my/repo} -g git@github.com:{account}/cockpit_{cockpit-name}.git
 ```
 
-Or alternatively, you can also do it manually:
+Or alternatively, you can also do this manually:
 
 ```
 mkdir -p {/path/to/my/repo}/blueprints
