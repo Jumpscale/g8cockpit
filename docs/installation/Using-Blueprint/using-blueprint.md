@@ -73,7 +73,7 @@ Pull the remote master branch to merge into your local master branch:
 git pull origin master
 ```
 
-Push all changes to the server, and since this is your first push you need to specify the up-stream branch you want to push to:
+Push all changes to the Git server, and since this is your first push you need to specify the up-stream branch you want to push to:
 
 ```
 git push --set-upstream origin master
@@ -87,9 +87,7 @@ This will add the following entry to your `.git/config`:
 	merge = refs/heads/master
 ```
 
-When you push to a remote and you use the `--set-upstream` flag Git sets the branch you are pushing to as the remote tracking branch of the branch you are pushing.
-
-Adding a remote tracking branch means that Git then knows what you want to do when you git fetch, git pull or git push in future. It assumes that you want to keep the local branch and the remote branch it is tracking in sync and does the appropriate thing to achieve this.
+> Note: When you push to a remote and you use the `--set-upstream` flag Git sets the branch you are pushing to as the remote tracking branch of the branch you are pushing. Adding a remote tracking branch means that Git then knows what you want to do when you git fetch, git pull or git push in future. It assumes that you want to keep the local branch and the remote branch it is tracking in sync and does the appropriate thing to achieve this.
 
 
 <a id="create-blueprint"></a>
