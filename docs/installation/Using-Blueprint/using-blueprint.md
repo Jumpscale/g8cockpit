@@ -22,13 +22,13 @@ Additionally you will need the private and public key of your DNS server. In the
 
 First create your Git repository on the Git server, or on GitHub.
 
-Create an AYS service repository on your machine using the `ays create_repo` command, specifying your local Git directory and the repository on the Git server:
+Then create an AYS service repository on your machine using the `ays create_repo` command, specifying your local repository directory and the repository on the Git server:
 
 ```
 sudo ays create_repo -p {/path/to/my/repo} -g git@github.com:{account}/cockpit_{cockpit-name}.git
 ```
 
-Or alternatively, you can also do it all manually:
+Or alternatively, you can also do it manually:
 
 ```
 mkdir -p {/path/to/my/repo}/blueprints
@@ -49,11 +49,11 @@ Add following configuration:
 Make sure your Git `user.name` and `user.email` are set:
 
 ```
-git config --global user.name "{your-full-nmne}"
+git config --global user.name "{your-full-name}"
 git config --global user.email "{your-email-address}"
 ```
 
-If you're not logged in as root, you will need to set ownership of the current directory and all subdirectories (recursively) to the currently logged in user, in this case for `cloudscalers`:
+If you're not logged in as root, you will need to reset ownership of the current directory and all subdirectories (recursively) to the currently logged in user, in this case for `cloudscalers`:
 
 ```
 cd {/path/to/my/repo}
