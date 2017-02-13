@@ -1,28 +1,29 @@
 ## Installation using an AYS Blueprint
 
-> Using the **Cockpit Deployer Chatbot** is the recommended way to install a Cockpit.
+Below we discuss 6 steps:
 
-Below we discuss 5 steps:
 - **step 1**: [Preparation](#prep)
 - **Step 2**: [Create an AYS service repository](#create-repo)
-- **Step 3**: [Create an AYS blueprint for deploying a Cockpit](#create-blueprint)
+- **Step 3**: [Create the blueprint for deploying your Cockpit](#create-blueprint)
 - **Step 4**: [Execute the blueprint](#execute-blueprint)
 - **Step 5**: [Run the install actions](#run-actions)
+- **Step 6**: [Verify the installation](#verify-installation)
+
 
 <a id="prep"></a>
 ### Step 1: Preparation
 
 Go through the preparation steps as documented [here](/installation/prep/prep.md).
 
-Additionally you will need the private and public key of your DNS server. In the example below we assume you have them available in `/root/.ssh`.
+Additionally you will need the private and public key of your DNS server.
 
 
 <a id="create-repo"></a>
 ### Step 2: Create an AYS service repository for your Cockpit
 
-First create your Git repository on the Git server, or on GitHub.
+First create your Git repository on your Git server, or on GitHub.
 
-Then create an AYS service repository on your machine using the `ays create_repo` command, specifying your local repository directory and the repository on the Git server:
+Then create an AYS service repository on your machine using the `ays create_repo` command, specifying your local repository directory with `{/path/to/my/repo}` and the repository on the Git server with `{account}/cockpit_{cockpit-name}`:
 
 ```
 sudo ays create_repo -p {/path/to/my/repo} -g git@github.com:{account}/cockpit_{cockpit-name}.git
@@ -34,8 +35,9 @@ Or alternatively, you can also do this manually:
 mkdir -p {/path/to/my/repo}/blueprints
 cd {/path/to/my/repo}
 touch .ays
-git init
-vim {/path/to/my/repo}/.git/config
+git initays
+vim {/path/t
+   o/my/repo}/.git/config
 ```
 
 Add following configuration:
@@ -91,64 +93,147 @@ This will add the following entry to your `.git/config`:
 
 
 <a id="create-blueprint"></a>
-### Step 3: Create an AYS blueprint for deploying a Cockpit
+### Step 3: Create the blueprint for deploying your Cockpit
 
-Go to [https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint](https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint) and copy the example blueprint to your local machine, in a directory that you will use for the Git repository of your new Cockpit:
+An example blueprint is available from the [Jumpscale/jscockpit](https://github.com/Jumpscale/jscockpit) GitHub repository. You might first need to request read access since this repository is private.
 
-```
-curl https://raw.githubusercontent.com/Jumpscale/jscockpit/8.1.1/blueprint/ovc_blueprint.yaml > {/path/to/my/repo}/blueprints/cockpit_{cockpit-name}.yaml
-```
-
-
-
-
-
-Depending on which platform you install the Cockpit the beginning of the blueprint can different. The only important thing to remember is that the Cockpit service always uses another server of role `node` has parent.
-This will indicate to the cockpit on which node it needs to be installed. This bring flexibility during installation cause any service of role `node` can be used.
-So you can install a cockpit on top of a VM using `node.ovc`, docker using `node.docker` or any or another node service you would create.
-
-Description of the values for the cockpit service:
+In order to copy the example blueprint to your local machine use the following commands:
 
 ```
+export BRANCH="8.1.1"
+curl https://raw.githubusercontent.com/Jumpscale/jscockpit/${BRANCH}/blueprint/ovc_blueprint.yaml > {/path/to/my/repo}/blueprints/cockpit_{cockpit-name}.yaml
+```
+
+Here's the blueprint:
+
+```
+# connection to the g8 where to deploy the cockpit
+g8client__env:
+   url: '{url}'
+   login: '{login}'
+   password: '{password}'
+   account: '{account}'
+
+# give user access to the vdc
+uservdc__username:
+   g8client: 'env'
+   email: '{email}'
+   provider:  'itsyouonline'
+
+# create the vdc that will contain the vm of the cockpit
+vdc__{vdc}:
+   description: 'Cockpit VDC for LCI Production Cockpit'
+   g8client: 'env'
+   account: '{account}'
+   location: '{location}'
+   uservdc:
+     - 'username'
+
+sshkey__main:
+
+# create the host vm
+node.ovc__{vm}:
+   bootdisk.size: 50
+   memory: 2
+   os.image: 'Ubuntu 16.04 x64'
+   ports:
+        - '22'
+        - '80:80'
+        - '443:443'
+   vdc: '{vdc}'
+   sshkey: 'main'
+
 sshkey__dns:
-    key.path: '/root/.ssh/dns_rsa' # this needs to point to the a sshkey authorize on server of our dns infrastructure
+   key.path: '{path}'
 
 # actually install the cockpit
-cockpit__main:
-   host_node: 'cockpit'
+cockpit__{cockpit}:
+   host_node: '{vm}'
    dns.sshkey: 'dns'
-   domain: 'mycockpit.aydo2.com'
-   caddy.email: 'me@mail.com'
-   caddy.staging: false
+   domain: '{domain}'
+   caddy.email: '{caddy-email}'
+   flist: 'https://stor.jumpscale.org/stor2/flist/aysbuild/jumpscale.flist'
+   oauth.organization: '{organization}'
+   oauth.client_id: '{client-id}'
+   oauth.client_secret: '{client-secret}'
+   oauth.jwt_key: |
+       -----BEGIN PUBLIC KEY-----
+       MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2
+       7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6
+       6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv
+       -----END PUBLIC KEY-----
 
-   oauth.organization: 'myOrg'
-   oauth.client_id: 'myOrg'
-   oauth.client_secret: 'replace_me'
-   oauth.jwt_key:'MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n27MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny66+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv'
+actions:
+    - action: 'install'
 ```
 
-- **host_node**: Name of the node service you want to install the cockpit on.
-- **dns.sshkey**: Name fo the sshkey servier that point to a sshkey authorize on our DNS infrastructure (dns[1,2,3].aydo.com)
-- **domain**:
-  - Domain you want for your Cockpit, e.g. `mycockpit.barcelona.aydo.com`
-  - If you don't use the auto DNS deployment then make sure your DNS name resolves to the Cockpit IP address
-- **caddy.email** : email use for [caddy](https://caddyserver.com/). This email will receive notification when the HTTPS certificate of the cockpit are about to expire. Caddy is supposed to renew them automaticly, but it's always good to double check that it actually happened.
-- **oauth.organization**: Name of the organization as set in ItsYou.online, to which you as a user belong to as a member or as an owner; can be the same organization as specified in client_id, but can also be different
-- **oauth.client_id**: Name of the organization as set in ItsYou.online, typically the company/organization for which you are setting up the Cockpit; as a user you are not necessairly owner or member of this organization
-- **oauth.client_secret**: Client secret for your organization as generated by ItsYou.online
-- **oauth.jwt_key**: ItsYou.online public key for JWT signing; see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md for more details
-- **caddy.staging**: (true/false) enable stagging environement of Let's encrypt. Use this when doing test so you don't create real certificate. The number of certificate available for a domain is limited.
+Following values need to provided:
+
+- **{url}**: address of the G8 environment where the Cockpit needs to be installed
+- **{login}**: username of the user that will be used to install the Cockpit on the targeted G8 environment
+- **{password}**: password of the user on the targeted G8 environment
+- **{account}**: name of the account on targeted G8 environment that will used to install the Cockpit; make sure that the specified user has admin access to this account  
+- **{email}**: verified e-mail address of the user as known at ItsYou.online
+- **{vdc}**: case sensitive name of the virtual datacenter (VDC) that will be created for the Cockpit; no spaces are allowed
+- **{location}**: name of the location in the targeted G8 environment where the Cockpit needs to be installed
+- **{vm}**: case sensitive name of the virtual machine that will be created for the Cockpit; no spaces are allowed
+- **{path}**: path to private SSH key of the DNS server enabling AYS to create a DNS entry for your Cockpit, e.g. `'/root/.ssh/dns_rsa'`
+- **{cockpit}**: name of your Cockpit
+- **{domain}**: fully qualified domain name (FQDN) for your Cockpit, e.g. `mycockpit.barcelona.aydo.com`
+  - If you don't use the auto DNS deployment then make sure manually that your DNS name resolves to the Cockpit IP address
+- **{caddy-email}**: email address to which the [Caddy](https://caddyserver.com/) server will send notifications when the HTTPS certificate of the Cockpit is about to expire
+  - Caddy is supposed to renew them automatically, but it's always good to double check that it actually happened
+- **{organization}**: name of the organization as set in ItsYou.online, to which a Cockpit user needs be member or owner; can be the same organization as specified with {client-id}, but can also be different
+- **{client-id}**: name of the organization as set in ItsYou.online, typically the company/organization for which you are setting up the Cockpit; in order for a user to be able to use the Cockpit he doesn't need be owner or member of this organization
+- **{client-secret}**: the client secret that goes with the {client-id} of the organization for which the Cockpit is setup
+
+> Note: the JWT value specified for **oauth.jwt_key** is the ItsYou.online public key for JWT signing; see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md for more details.
+
+> Note: the value for **host_node** {vm} needs to point to a service of role `node`, such as `node.ovc`. It can also be `node.docker` if you want the Cockpit to be installed in a Docker container.
+
 
 <a id="execute-blueprint"></a>
 ### Step 4: Execute the blueprint
 
-```bash
-ays blueprint
 ```
+cd {/path/to/my/repo}
+sudo ays blueprint
+```
+
+You might get an `ImportError: No module named 'pytoml'` error, in that case simply execute:
+
+```
+pip install pytoml`
+```
+
 
 <a id="run-actions"></a>
 ### Step 5: Run the install actions
 
-```bash
-ays run
+```
+sudo ays run
+```
+
+
+<a id="verify-installation"></a>
+### Step 6: Verify the installation
+
+On the virtual machine running the Cockpit you can verify the configuration of the **Cockpit API** and the **Cockpit Portal**:
+
+- Cockpit API:
+
+  ```
+  vi /optvar/cfg/cockpit_api/config.toml
+  ```
+
+- Portal:
+
+  ```
+  vi /optvar/cfg/portals/main/config.hrd
+  ```
+
+If you need to stop and/or restart any of the Cockpit components, check the tmux sessions:
+
+```
+tmux list-sessions
 ```
