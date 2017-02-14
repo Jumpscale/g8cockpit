@@ -21,7 +21,9 @@ Additionally you will need the private and public key of your DNS server.
 <a id="create-repo"></a>
 ### Step 2: Create an AYS service repository for your Cockpit
 
-First create your Git repository on your Git server, or on GitHub.
+First create your Git repository on your Git server, or on GitHub:
+
+![](new-repository.png)
 
 Then create an AYS service repository on your machine using the `ays create_repo` command, specifying your local repository directory with `{/path/to/my/repo}` and the repository on the Git server with `{account}/cockpit_{cockpit-name}`:
 
@@ -115,7 +117,7 @@ g8client__env:
    account: '{account}'
 
 # give user access to the vdc
-uservdc__username:
+uservdc__{username}:
    g8client: 'env'
    email: '{email}'
    provider:  'itsyouonline'
@@ -127,7 +129,7 @@ vdc__{vdc}:
    account: '{account}'
    location: '{location}'
    uservdc:
-     - 'username'
+     - '{username}@itsyouonline'
 
 sshkey__main:
 
@@ -172,9 +174,10 @@ Following values need to provided:
 - **{url}**: address of the G8 environment where the Cockpit needs to be installed
 - **{login}**: username of the user that will be used to install the Cockpit on the targeted G8 environment
 - **{password}**: password of the user on the targeted G8 environment
-- **{account}**: name of the account on the targeted G8 environment that will used to install the Cockpit; make sure that the specified user has admin access to this account  
+- **{account}**: name of the account on the targeted G8 environment that will used to install the Cockpit; make sure that the specified user has admin access to this account
+- **{username}**: ItsYou.online username that will be granted access to the virtual datacenter (VDC) that will be created for the Cockpit
 - **{email}**: verified e-mail address of the user as known at ItsYou.online
-- **{vdc}**: case sensitive name of the virtual datacenter (VDC) that will be created for the Cockpit; no spaces are allowed
+- **{vdc}**: case sensitive name of the VDC that will be created for the Cockpit; no spaces are allowed
 - **{location}**: name of the location in the targeted G8 environment where the Cockpit needs to be installed
 - **{vm}**: case sensitive name of the virtual machine that will be created for the Cockpit; no spaces are allowed
 - **{path}**: path to the private SSH key of the DNS server, enabling AYS to create a DNS entry for your Cockpit, e.g. `'/root/.ssh/dns_rsa'`
