@@ -48,8 +48,8 @@ In this dialog:
 
 - **Label** can be any value, typically identifying the purpose of the key
 - **Callback URL** is the address to which users will be redirected after having authenticated, for a Cockpit this is always `{FQDN}/restmachine/system/oauth/authorize`
-- **May be used in client credentials grant type** allows the Cockpit to interact with the ItsYou.online using the **Client Credential Flow**, as discussed in the [ItsYou.online documentation](https://gig.gitbooks.io/itsyouonline/content/oauth2/oauth2.html)
+- **May be used in client credentials grant type** allows the Cockpit to interact with ItsYou.online using the **Client Credential Flow**, as discussed in the [ItsYou.online documentation](https://gig.gitbooks.io/itsyouonline/content/oauth2/oauth2.html)
 - **Secret** is created by clicking the **Create** button
 
 
-The blueprint for creating a Cockpit takes the **name of organization** (not the API Key label!) as the value for `oauth.client_id` (`{client-id}`) and the **secret** as the value for `oauth.client_secret` (`{client-secret}`).
+The blueprint for creating a Cockpit takes the **name of the organization** (not the API Key label!) as the value for `oauth.client_id` (`{client-id}`) and the **secret** as the value for `oauth.client_secret` (`{client-secret}`).
