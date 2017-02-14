@@ -2,7 +2,7 @@
 
 Below we discuss 6 steps:
 
-- **step 1**: [Preparation](#prep)
+- **Step 1**: [Preparation](#prep)
 - **Step 2**: [Create an AYS service repository](#create-repo)
 - **Step 3**: [Create the blueprint for deploying your Cockpit](#create-blueprint)
 - **Step 4**: [Execute the blueprint](#execute-blueprint)
@@ -172,12 +172,12 @@ Following values need to provided:
 - **{url}**: address of the G8 environment where the Cockpit needs to be installed
 - **{login}**: username of the user that will be used to install the Cockpit on the targeted G8 environment
 - **{password}**: password of the user on the targeted G8 environment
-- **{account}**: name of the account on targeted G8 environment that will used to install the Cockpit; make sure that the specified user has admin access to this account  
+- **{account}**: name of the account on the targeted G8 environment that will used to install the Cockpit; make sure that the specified user has admin access to this account  
 - **{email}**: verified e-mail address of the user as known at ItsYou.online
 - **{vdc}**: case sensitive name of the virtual datacenter (VDC) that will be created for the Cockpit; no spaces are allowed
 - **{location}**: name of the location in the targeted G8 environment where the Cockpit needs to be installed
 - **{vm}**: case sensitive name of the virtual machine that will be created for the Cockpit; no spaces are allowed
-- **{path}**: path to private SSH key of the DNS server enabling AYS to create a DNS entry for your Cockpit, e.g. `'/root/.ssh/dns_rsa'`
+- **{path}**: path to the private SSH key of the DNS server, enabling AYS to create a DNS entry for your Cockpit, e.g. `'/root/.ssh/dns_rsa'`
 - **{cockpit}**: name of your Cockpit
 - **{domain}**: fully qualified domain name (FQDN) for your Cockpit, e.g. `mycockpit.barcelona.aydo.com`
   - If you don't use the auto DNS deployment then make sure manually that your DNS name resolves to the Cockpit IP address

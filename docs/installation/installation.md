@@ -20,7 +20,7 @@ Installing a Cockpit for development purposes can be achieved in two ways:
 
 In both cases realize that for a Cockpit in development mode:
 
- - Oauth is disabled for both the Cockpit Portal and the Cockpit Engine
+ - OAuth is disabled for both the Cockpit Portal and the Cockpit Engine
  - Everything will be installed locally (all configurations will assume local)
  - You'll get the latest of the branch you're installing from, not the latest stable build, so proceed with caution
  - Part of the installation pulls in the most recent code, make sure the required code is committed first
