@@ -319,6 +319,10 @@ def executeBlueprint(blueprint, repository):
         # }
         # j.core.db.publish('telegram', evt.to_json())
 
+    except j.exceptions.Input as e:
+        error_msg = "Error during execution of the blueprint:\n %s" % str(e)
+        logger.error(error_msg)
+        return jsonify(error=error_msg), 403
     except Exception as e:
         error_msg = "Error during execution of the blueprint:\n %s" % str(e)
         logger.error(error_msg)
