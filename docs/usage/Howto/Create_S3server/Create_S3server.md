@@ -17,35 +17,53 @@ Steps:
 
 Here's the blueprint:
 
-```yaml
-g8client__cl:
-  url: 'uk-g8-1.demo.greenitglobe.com'
-  login: 'cockpit'
-  password: 'cockpit12345'
-  account: 'Account of Yves'
+```
+g8client__{environment}:
+  url: '{url}'
+  login: '{login}'
+  password: '{password}'
+  account: '{account}'
 
-vdc__vdc4s3:
-  g8client: 'cl'
-  account: 'Account of Yves'
-  location: 'uk-g8-1'
+vdc__{vdc-name}:
+  g8client: '{environment}'
+  account: '{account}'
+  location: '{location}'
 
-sshkey__main:
+sshkey__{sshkey-name}:
 
-disk.ovc__disk1:
-  size: 1000
+disk.ovc__{disk-name}:
+  size: {size}
 
-s3__s3server:
-  vdc: vdc4s3
-  sshkey: main
+s3__{s3server}:
+  vdc: {vdc-name}
+  sshkey: '{sshkey-name}''
   disk:
-    - 'disk1'
-  hostprefix: 'mys3'
-  key.access: 'access'
-  key.secret: 'secret'
+    - '{disk-name}'
+  hostprefix: 'host-prefix'
+  key.access: '{access}'
+  key.secret: '{secret}'
+  enablehttps: '{True | False}'
 
 actions:
   - action: 'install'
 ```
+
+Values:
+
+- `{environment}`: environment name for referencing in the blueprint
+- `{url}`: URL to to the G8 environment, e.g. `gig.demo.greenitglobe.com`
+- `{login}`: username on the targeted G8 environment
+- `{password}`: password for the username
+- `{account}`: account on the targeted G8 environment used for the S3 server
+- `{vdc-name}`: VDC that will be created for the S3 server
+- `{location}`: location where the VDC needs to be created
+- `{sshkey-name}`: name of the SSH key that will be created
+- `{disk-name}`: name of the disk that will be created; you ca create multiple disks
+- `{size}`: disk size in GB, for more details see
+- `{hostprefix}`: the first part in your app URL, i.e `hostprefix` in the FQDN `hostprefix-machinedecimalip.gigapps.io`; the remaining part of the FQDN will be calculated, for more information see https://github.com/0-complexity/ipdns
+- `{key.access}`: S3 access key (username); will be auto-generated when not set  
+- `{key.secret}`: S3 access secret (password); will be auto-generated when not set
+- `{enablehttps}`: to enable https; when omitted will default to False
 
 
 <a id="json-file"></a>

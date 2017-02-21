@@ -71,13 +71,13 @@ git add .
 git commit -m "first commit"
 ```
 
-Pull the remote master branch to merge into your local master branch:
+Push your changes to the Git server, and since this is your first push you need to specify the up-stream branch you want to push to::
 
 ```
-git pull origin master
+git push -u origin master
 ```
 
-Push all changes to the Git server, and since this is your first push you need to specify the up-stream branch you want to push to:
+Or alternatively use:
 
 ```
 git push --set-upstream origin master
@@ -120,11 +120,11 @@ g8client__env:
 uservdc__{username}:
    g8client: 'env'
    email: '{email}'
-   provider:  'itsyouonline'
+   provider: 'itsyouonline'
 
 # create the vdc that will contain the vm of the cockpit
 vdc__{vdc}:
-   description: 'Cockpit VDC for LCI Production Cockpit'
+   description: 'Production Cockpit'
    g8client: 'env'
    account: '{account}'
    location: '{location}'
@@ -182,7 +182,7 @@ Following values need to provided:
 - **{vm}**: case sensitive name of the virtual machine that will be created for the Cockpit; no spaces are allowed
 - **{path}**: path to the private SSH key of the DNS server, enabling AYS to create a DNS entry for your Cockpit, e.g. `'/root/.ssh/dns_rsa'`
 - **{cockpit}**: name of your Cockpit
-- **{domain}**: fully qualified domain name (FQDN) for your Cockpit, e.g. `mycockpit.barcelona.aydo.com`
+- **{domain}**: fully qualified domain name (FQDN) for your Cockpit, e.g. `mycockpit.aydo2.com`
   - If you don't use the auto DNS deployment then make sure manually that your DNS name resolves to the Cockpit IP address
 - **{caddy-email}**: email address to which the [Caddy](https://caddyserver.com/) server will send notifications when the HTTPS certificate of the Cockpit is about to expire
   - Caddy is supposed to renew them automatically, but it's always good to double check that it actually happened
@@ -206,7 +206,7 @@ sudo ays blueprint
 You might get an `ImportError: No module named 'pytoml'` error, in that case simply execute:
 
 ```
-pip install pytoml`
+pip install pytoml
 ```
 
 
