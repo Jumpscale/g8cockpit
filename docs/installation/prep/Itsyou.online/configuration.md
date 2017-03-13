@@ -38,7 +38,7 @@ Values:
   -----END PUBLIC KEY-----
   ```
 
-Restart the Cockpit and the Portal:
+Restart the Cockpit API (`cockpit_main`) and the Portal (`portal`):
 
 ```
 systemctl restart cockpit_main
