@@ -2,25 +2,9 @@
 
 You can list all service instance in multiple ways ways:
 
-- [Using the Telegram Chatbot](#telegram)
 - [In the Cockpit Portal](#portal)
 - [Using the Cockpit API](#api)
 - [At the CLI](#cli)
-
-<a id="telegram"></a>
-### Using the Telegram Chatbot
-
-Start the conversation with the chatbot with **/start**, type **/repo** and then click **select**:
-
-![](select-repository.png)
-
-After having selected one of the repositories from the list you'll got following reply:
-
-![](repository-selected.png)
-
-Then type **/service** and click **list**, which will show you all the service instances:
-
-![](instances-list.png)
 
 
 <a id="portal"></a>

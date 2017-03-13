@@ -12,12 +12,6 @@ All are discussed here below.
 Make sure to validate your blueprint first to have valid YAML format using a tool like [YAML Lint](http://www.yamllint.com/).
 
 
-<a id="telegram"></a>
-### Using the Telegram Chatbot
-
-@todo
-
-
 <a id="portal"></a>
 ### Using the Cockpit Portal
 

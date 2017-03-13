@@ -4,15 +4,9 @@ Before installing a service instance, make sure it is initialized, typically acc
 
 You can install a service instance in multiple ways:
 
-- [Using the Telegram Chatbot](#telegram)
 - [In the Cockpit Portal](#portal)
 - [Using the Cockpit API](#api)
 - [At the CLI](#cli)
-
-<a id="telegram"></a>
-### Using the Telegram Chatbot
-
-@todo
 
 
 <a id="portal"></a>

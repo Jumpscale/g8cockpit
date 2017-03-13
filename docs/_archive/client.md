@@ -1,5 +1,5 @@
-
 ### Generate Client for AYS REST API:
+
 - Install go-raml : https://github.com/Jumpscale/go-raml#install
 - Generate client code from raml specifications
 ```
@@ -8,6 +8,7 @@ go-raml client -l python --dir client --ramlfile jscockpit/ays_api/specification
 - Edit the client.py file and update the `BASE_URI`
 
 #### How to use:
+
 ```python
 jwt = "jwt from itsyou.online"
 cl = Client()

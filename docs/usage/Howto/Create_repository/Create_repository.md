@@ -2,21 +2,9 @@
 
 You can create a repository in multiple ways:
 
-- [Using the Telegram Chatbot](#telegram)
 - [In the Cockpit Portal](#portal)
 - [Using the Cockpit API](#api)
 - [At the CLI](#cli)
-
-<a id="telegram"></a>
-### Using the Telegram Chatbot
-
-Here using the @moehaha-chatbot:
-
-![](moehaha-chatbot.png)
-
-After clicking **create** specify a name for the new repository, and see the result:
-
-![](repository-created.png)
 
 
 <a id="portal"></a>

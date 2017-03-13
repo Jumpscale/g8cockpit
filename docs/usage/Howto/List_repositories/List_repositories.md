@@ -1,18 +1,7 @@
 ## How to list all Repositories
 
-- [Using the Telegram Chatbot](#telegram)
 - [In the Cockpit Portal](#portal)
 - [Using the Cockpit API](#api)
-
-
-<a id="telegram"></a>
-### Using the Telegram Chatbot
-
-Here's how to request the list:
-![](list-repositories.png)
-
-Select list:
-![](repositories-list.png)
 
 
 <a id="portal"></a>

@@ -35,3 +35,27 @@ As a result you'll have your Cockpit running in development mode, and listing to
 - Port 5000, for the Cockpit REST API
 
 If you installed the Cockpit on a G8 hosted virtual machine, you will want to configure port forwards to make it available for remote interactions.
+
+There are two Cockpit configuration files:
+
+- Portal configuration: `/optvar/cfg/portals/main/config.hrd`
+- Cockpit API configuration: `/optvar/cfg/cockpit_api/config.toml`
+
+By default JumpScale Cuisine install the Cockpit with ItsYou.online integration disabled. You can manually enable OAuth integration, as discussed in [How to Configure ItsYou.online Integration](../prep/Itsyou.online/configuration.md).
+
+When changing configuration make sure to restart the **Cockpit API** (`cockpit_main`), **Cockpit Engine** (`cockpit_daemon_main`) and/or the **Portal** (`portal`):
+
+```
+systemctl restart cockpit_main
+systemctl restart cockpit_daemon_main
+systemctl restart portal
+```
+
+
+Use the following command to check the status:
+
+```
+systemctl status cockpit_daemon_main
+systemctl status cockpit_main
+systemctl status portal
+``` 

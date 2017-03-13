@@ -4,15 +4,9 @@ Executing a blueprint means that you will initialize all service instances as de
 
 You can execute a blueprint in three ways:
 
-- [Using the Telegram Chatbot](#telegram)
 - [In the Cockpit Portal](#portal)
 - [Using the Cockpit API](#api)
 - [At the CLI](#cli)
-
-<a id="telegram"></a>
-### Using the Telegram Chatbot
-
-@todo
 
 
 <a id="portal"></a>
