@@ -25,5 +25,6 @@
 ## Set cockpit to `NOT` use itsyou.online
 ### Open /optvar/cfg/portals/main/config.hrd
 - set `param.cfg.production           = False`
+
 ### Open /optvar/cfg/cockpit_api/config.toml
 - set `production = False`
