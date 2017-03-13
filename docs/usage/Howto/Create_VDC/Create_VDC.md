@@ -39,6 +39,8 @@ uservdc__{username2}:
   email: '{email2}'
   provider: 'itsyouonline'
 
+vdcfarm__{vdcfarm}:
+
 vdc__{vdc-name}:
   description: '{description}'
   vdcfarm: '{vdcfarm}'

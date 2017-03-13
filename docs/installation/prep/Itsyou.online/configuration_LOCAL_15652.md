@@ -38,13 +38,6 @@ Values:
   -----END PUBLIC KEY-----
   ```
 
-Restart the Cockpit and the Portal:
-```
-systemctl restart cockpit_main
-systemctl restart cockpit_daemon_main
-systemctl restart portal
-```
-
 ## Diable ItsYou.online integration
 
 
@@ -55,3 +48,6 @@ Update `/optvar/cfg/portals/main/config.hrd` as follows:
 Update `/optvar/cfg/cockpit_api/config.toml` as follows:
 
 - Set `production = False`
+
+
+systemctl restart portal
