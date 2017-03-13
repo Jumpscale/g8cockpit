@@ -1,4 +1,4 @@
-## Configure ItsYou.online
+## Setup the ItsYou.online Organizations
 
 This is how a **Cockpit** depends on ItsYou.online:
 

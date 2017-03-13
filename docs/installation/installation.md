@@ -1,6 +1,6 @@
 ## Installation of a Cockpit
 
-A Cockpit can be installed in two modes:
+A Cockpit can be installed in one of the two possible modes:
 
 - [Development Mode](#development)
 - [Production Mode](#production)
@@ -13,17 +13,17 @@ Once installed you will want to make sure that your Cockpit can push changes bac
 <a id="development"></a>
 ### Installing a Cockpit in Development Mode
 
-Installing a Cockpit for development purposes can be achieved in two ways:
+Installing a Cockpit in development mode can be achieved using **JumpScale Cuisine** as discussed in [Installing a Cockpit in Development Mode using JumpScale Cuisine](Using-Cuisine/using-cuisine.md).
 
-- [Automated using the Cockpit Installer](https://github.com/Jumpscale/ays_automatic_cockpit_based_testing/tree/master/cockpit_testing/Framework/Installer)
-- [Manually using cuisine](Using-Cuisine/using-cuisine.md)
+Realize that for a Cockpit in development mode:
 
-In both cases realize that for a Cockpit in development mode:
-
- - OAuth is disabled for both the Cockpit Portal and the Cockpit Engine
+ - OAuth is by default disabled
  - Everything will be installed locally (all configurations will assume local)
  - You'll get the latest of the branch you're installing from, not the latest stable build, so proceed with caution
  - Part of the installation pulls in the most recent code, make sure the required code is committed first
+ - Redis data is only kept in memory, not persisted to disk
+
+While OAuth is disabled by default, you can manually enable OAuth integration, as discussed in [How to Configure ItsYou.online Integration](prep/Itsyou.online/configuration.md)
 
 
 <a id="production"></a>
@@ -34,7 +34,7 @@ There are two ways to install a new production Cockpit:
 - [Installing using an AYS Blueprint](Using-Blueprint/using-blueprint.md)
 - [Installing using Telegram](Using-Telegram/using-Telegram.md)
 
-Both options requires some pre-installation preparation, documented [here](prep/prep.md).
+Both options require some pre-installation preparation, documented [here](prep/prep.md).
 
 
 <a id="github"></a>

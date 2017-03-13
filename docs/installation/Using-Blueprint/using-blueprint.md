@@ -186,9 +186,9 @@ Following values need to provided:
   - If you don't use the auto DNS deployment then make sure manually that your DNS name resolves to the Cockpit IP address
 - **{caddy-email}**: email address to which the [Caddy](https://caddyserver.com/) server will send notifications when the HTTPS certificate of the Cockpit is about to expire
   - Caddy is supposed to renew them automatically, but it's always good to double check that it actually happened
-- **{organization}**: name of the organization as set in ItsYou.online, to which a Cockpit user needs be member or owner; can be the same organization as specified with {client-id}, but can also be different
+- **{organization}**: name of the organization as set in ItsYou.online, to which a Cockpit user needs be member or owner; can be the same organization as specified with `{client-id}`, but can also be different
 - **{client-id}**: name of the organization as set in ItsYou.online, typically the company/organization for which you are setting up the Cockpit; in order for a user to be able to use the Cockpit he doesn't need be owner or member of this organization
-- **{client-secret}**: the client secret that goes with the {client-id} of the organization for which the Cockpit is setup
+- **{client-secret}**: the client secret that goes with the `{client-id}` of the organization for which the Cockpit is setup
 
 > Note: the JWT value specified for **oauth.jwt_key** is the ItsYou.online public key for JWT signing; see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md for more details.
 

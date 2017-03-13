@@ -1,4 +1,4 @@
-## Installation Manually using JumpScale Cuisine
+## Installing a Cockpit in Development Mode using JumpScale Cuisine
 
 On a machine with JumpScale preinstalled, as documented [here](https://gig.gitbooks.io/jumpscale-core8/content/Installation/JSDevelopment.html), open the JumpScale interactive shell:
 

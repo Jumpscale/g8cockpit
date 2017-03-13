@@ -50,12 +50,12 @@ actions:
 
 Values:
 
-- `{environment}`: environment name for referencing in the blueprint
+- `{environment}`: environment name for referencing elsewhere in the same blueprint or other blueprint in the repository
 - `{url}`: URL to to the G8 environment, e.g. `gig.demo.greenitglobe.com`
 - `{login}`: username on the targeted G8 environment
 - `{password}`: password for the username
 - `{account}`: account on the targeted G8 environment used for the S3 server
-- `{vdc-name}`: VDC that will be created for the S3 server
+- `{vdc-name}`: name of the VDC that will be created for the S3 server, and if a VDC with the specified name already exists then that VDC will be used
 - `{location}`: location where the VDC needs to be created
 - `{sshkey-name}`: name of the SSH key that will be created
 - `{disk-name}`: name of the disk that will be created; you ca create multiple disks

@@ -5,7 +5,7 @@
 * [Installation](installation/installation.md)
   * [Preparation](installation/prep/prep.md)
     * [Create a Cloud Space](installation/prep/CloudSpace/CloudSpace.md)
-    * [Configure ItsYou.online](installation/prep/Itsyou.online/Itsyou-online.md)
+    * [Setup the ItsYou.online Organizations](installation/prep/Itsyou.online/Itsyou-online.md)
     * [Create a Telegram Chatbot](installation/prep/Telegram/Telegram.md)
     * [Create a GitHub Repository](installation/prep/GitHub/GitHub.md)
   * [Installation using JumpScale Cuisine](installation/Using-Cuisine/using-cuisine.md)
