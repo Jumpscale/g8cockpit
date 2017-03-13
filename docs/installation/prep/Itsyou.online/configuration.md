@@ -27,7 +27,7 @@ Update `/optvar/cfg/portals/main/config.hrd` as follows:
 - Change `param.cfg.client_secret     = '{client-secret}'`
 - Set `param.cfg.redirect_url         = 'https://{cockpit-base-address}/restmachine/system/oauth/authorize'`
 - Set `param.cfg.organization         = '{organization}'`
-- Add ` param.cfg.oauth.default_groups = 'admin', 'user',`
+- Add `param.cfg.oauth.default_groups = 'admin', 'user',`
 - Set `param.cfg.client_user_info_url = 'https://itsyou.online/api/users/'`
 - Set `param.cfg.token_url            = 'https://itsyou.online/v1/oauth/access_token'`
 
@@ -38,7 +38,7 @@ Update `/optvar/cfg/cockpit_api/config.toml` as follows:
 - Set `organization = "{organization}"`
 - Set `redirect_uri = "https://cockpit-base-address/api/oauth/callback"`
 - Set `client_secret = "{client-secret}"`
-- Set `client_id = "{organization_id}"`
+- Set `client_id = "{organization}"`
 - Set `jwt_key = "{JWT-for-ItsYou.online}"`
 
 
