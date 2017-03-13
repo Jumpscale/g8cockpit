@@ -1,5 +1,19 @@
 # How to Configure ItsYou.online Integration
 
+Below we discuss how to:
+
+- [Enable ItsYou.online integration](#enable)
+- [Diable ItsYou.online integration](#disable)
+
+In both cases a restart of the of the **Cockpit API** (`cockpit_main`) and the **Portal** (`portal`) is required:
+
+```
+systemctl restart cockpit_main
+systemctl restart portal
+```
+
+
+<a id="enable"></a>
 ## Enable ItsYou.online integration
 
 First make sure that you setup the required ItsYou.online organizations as documented in [Setup the ItsYou.online Organizations](Itsyou.online).
@@ -38,13 +52,8 @@ Values:
   -----END PUBLIC KEY-----
   ```
 
-Restart the Cockpit API (`cockpit_main`) and the Portal (`portal`):
 
-```
-systemctl restart cockpit_main
-systemctl restart portal
-```
-
+<a id="disable"></a>
 ## Diable ItsYou.online integration
 
 
