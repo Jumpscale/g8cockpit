@@ -21,15 +21,20 @@ First make sure that you setup the required ItsYou.online organizations as docum
 Update `/optvar/cfg/portals/main/config.hrd` as follows:
 
 - Set `param.cfg.production           = True`
-- Set `param.cfg.force_oauth_instance = 'ItsYou.online'`
+- Set `param.cfg.client_scope         = 'user:email:main,user:memberof:{organization}'`
+- Set `param.cfg.force_oauth_instance = 'itsYou.online'`
 - Change `param.cfg.client_id         = '{client-id}'`
 - Change `param.cfg.client_secret     = '{client-secret}'`
 - Set `param.cfg.redirect_url         = 'https://{cockpit-base-address}/restmachine/system/oauth/authorize'`
 - Set `param.cfg.organization         = '{organization}'`
+- Add ` param.cfg.oauth.default_groups = 'admin', 'user',`
+- Set `param.cfg.client_user_info_url = 'https://itsyou.online/api/users/'`
+- Set `param.cfg.token_url            = 'https://itsyou.online/v1/oauth/access_token'`
+
 
 Update `/optvar/cfg/cockpit_api/config.toml` as follows:
 
-- Remove `production = False` or set to `True`
+- Remove `prod = False` or set to `True`
 - Set `organization = "{organization}"`
 - Set `redirect_uri = "https://cockpit-base-address/api/oauth/callback"`
 - Set `client_secret = "{client-secret}"`
@@ -63,4 +68,4 @@ Update `/optvar/cfg/portals/main/config.hrd` as follows:
 
 Update `/optvar/cfg/cockpit_api/config.toml` as follows:
 
-- Set `production = False`
+- Set `prod = False`
