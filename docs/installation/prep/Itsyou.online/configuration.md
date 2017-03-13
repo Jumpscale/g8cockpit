@@ -5,14 +5,16 @@
 ![](api.png)
 
 ## Change cockpit to use itsyou.online if it is in dev mode
-### Open /optvar/cfg/portals/main/config.hrd
+
+### - Open /optvar/cfg/portals/main/config.hrd
 - set `param.cfg.production           = True`
 - set `param.cfg.force_oauth_instance = 'itsyou.online'`
 - change `param.cfg.client_id            = 'cockpitorg1'` to your Organinzation ID that is in itsyou.online
 - change `param.cfg.client_secret        = 'MT*************************************pq'` to the equivalent one in itsyou.online
 - set `param.cfg.redirect_url         = 'https://testcockpit.aydo2.com/restmachine/system/oauth/authorize'` to the correct cockpit url or use IP
 - set `param.cfg.organization         = 'cockpitorg1'` set to organization ID
-### Open /optvar/cfg/cockpit_api/config.toml
+
+### - Open /optvar/cfg/cockpit_api/config.toml
 - if you have `production = False` remove it or set to `True`
 - set `organization = "cockpitorg1"` to be the organization you created in itsyou.online
 - set `redirect_uri = "https://testcockpit.aydo2.com/api/oauth/callback"`
