@@ -39,6 +39,7 @@ Values:
   ```
 
 Restart the Cockpit and the Portal:
+
 ```
 systemctl restart cockpit_main
 systemctl restart cockpit_daemon_main
