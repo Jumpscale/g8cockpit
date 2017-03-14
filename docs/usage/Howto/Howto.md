@@ -20,6 +20,7 @@
 ### Using OpenvCloud Actor Templates
 
 * [Create a VDC](Create_VDC/Create_VDC.md)
+* [Delete a VDC](Delete_VDC/Delete_VDC.md)
 * [Create a VM](Create_VM/Create_VM.md)
 * [Create a S3 server](Create_S3server/Create_S3server.md)
 * [Create an ownCloud server](Create_ownCloud/Create_ownCloud.md)

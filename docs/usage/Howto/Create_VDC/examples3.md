@@ -2,16 +2,16 @@
 
 ### Get an access token
 
-curl -d "grant_type=client_credentials&client_id=artiliumv2&client_secret=ge9Qw99EPDiTYrt-vzpooPKIaUshoeneK70UVqxpoh2Qg2HfOvbg" https://itsyou.online/v1/oauth/access_token
+curl -d "grant_type=client_credentials&client_id=cloud%20potatoes&client_secret=yrY2PTrKFQrOCkAe9fnqXzj4-XAMEZiv1rrosOyOBHnhMBp8tQ85" https://itsyou.online/v1/oauth/access_token
 
 ### Get a JWT
 
-curl -H "Authorization: token 3x-cgmEzNbRYr7z8lgK96akuq0Jd" https://itsyou.online/v1/oauth/jwt?aud=artiliumv2
+curl -H "Authorization: token 8NBGLc-lv7UTlXbtEezYMfHbKgWi" https://itsyou.online/v1/oauth/jwt?aud=cloud%20potatoes
 
 
 ### List all repositories
 
-curl -X GET -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYXJ0aWxpdW12MiIsImFydGlsaXVtdjIiXSwiZXhwIjoxNDgwMzUzMDg0LCJnbG9iYWxpZCI6ImFydGlsaXVtdjIiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6W119.-ozo2xI0wepqmSGVUrNNSgEXRN1hKxg-VSfoR-7n1iNDLpn035DucKyxz5VD6cxwcWojsgqdRMR_Q1xWN2HNG6MblubZ57gcNk7IQQaWyGy9jm3DG6m3wu9o9Y95AIk9" https://artilium.aydo2.com/
+curl -X GET -H "Authorization: bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiY2xvdWQgcG90YXRvZXMiXSwiYXpwIjoiY2xvdWQgcG90YXRvZXMiLCJleHAiOjE0ODk1ODgxNTAsImdsb2JhbGlkIjoiY2xvdWQgcG90YXRvZXMiLCJpc3MiOiJpdHN5b3VvbmxpbmUiLCJzY29wZSI6WyJvcmdhbml6YXRpb246b3duZXIiXX0.h0JrX5FTMIPsgYeI_653wru9gGWoAcXiFdriB5Yi-qRPk12Rv0v69y48myC8dKvi6aKRwxLs2qgS1EwVKG_rpAvq30qi_gaG89fqTG5IRqZvBDqCs6vTQ5aqsurGL6Dh" http://212.23.52.74/
 
 
 ### Create a repository
