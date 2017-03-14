@@ -20,7 +20,6 @@ With the parameters:
 - `reset` (True|False) you control wether also the portal needs to be reinstalled
 - `ip` ('localhost'|{ip-address}) you set the IP address on which the REST API will be available for remote interactions; if you specify `localhost` the REST API will only be available locally
 
-
 Alternatively you can also get your Cockpit up and running in development mode, locally or on a **remote** machine by using an executor:
 
 ```
@@ -29,10 +28,15 @@ cuisine = j.tools.cuisine.get(executor)
 cuisine.solutions.cockpit.install_all_in_one(start=True, branch='8.1.1', reset=True, ip='localhost}|{ip-address}')
 ```
 
+The IP address you specify can always be updated, which requires updates in two files:
+
+- In `/opt/jumpscale8/apps/ays_api/ays_api/apidocs/api.raml` change the value for `baseUri` in the `[API]` section
+- In `/opt/jumpscale8/apps/portals/main/base/AYS81/.space/nav.wiki` change the value for `AYS API`
+
 As a result you'll have your Cockpit running in development mode, and listing to following ports:
 
-- Port 82, for the Cockpit Portal
-- Port 5000, for the Cockpit REST API
+- Port 82, for the **Cockpit Portal**
+- Port 5000, for the **Cockpit REST API**
 
 If you installed the Cockpit on a G8 hosted virtual machine, you will want to configure port forwards to make it available for remote interactions.
 
