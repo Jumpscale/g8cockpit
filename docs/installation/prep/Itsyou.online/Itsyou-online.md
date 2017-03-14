@@ -5,7 +5,7 @@ This is how a **Cockpit** depends on ItsYou.online:
 - Cockpit users are authenticated against ItsYou.online, they need to be member of a specific ItsYou.online organization
 - Cockpits are always deployed for specific organizations on behalf of which they operate, these organizations also need to be registered at ItsYou.online
 
-For each of these purposes you can setup a distinct/independent organization, or you can opt to use only one organization for both.
+For each of these purposes you can setup a distinct/independent organization, or you can opt to use the same organization for both purposes.
 
 
 ### Setup an ItsYou.online organization for authenticating Cockpit Users

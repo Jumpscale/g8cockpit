@@ -29,12 +29,7 @@ While OAuth is disabled by default, you can manually enable OAuth integration, a
 <a id="production"></a>
 ### Installing a Cockpit in Production Mode
 
-There are two ways to install a new production Cockpit:
-
-- [Installing using an AYS Blueprint](Using-Blueprint/using-blueprint.md)
-- [Installing using Telegram](Using-Telegram/using-Telegram.md)
-
-Both options require some pre-installation preparation, documented [here](prep/prep.md).
+Installing a Cockpit in production mode is achieved using an AYS blueprint as discussed in [Installing using an AYS Blueprint](Using-Blueprint/using-blueprint.md) and requires some pre-installation preparation, documented [here](prep/prep.md).
 
 
 <a id="git"></a>

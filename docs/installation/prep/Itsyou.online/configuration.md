@@ -22,7 +22,7 @@ Update `/optvar/cfg/portals/main/config.hrd` as follows:
 
 - Set `param.cfg.production           = True`
 - Set `param.cfg.client_scope         = 'user:email:main,user:memberof:{organization}'`
-- Set `param.cfg.force_oauth_instance = 'itsYou.online'`
+- Set `param.cfg.force_oauth_instance = 'itsyou.online'`
 - Change `param.cfg.client_id         = '{client-id}'`
 - Change `param.cfg.client_secret     = '{client-secret}'`
 - Set `param.cfg.redirect_url         = 'https://{cockpit-base-address}/restmachine/system/oauth/authorize'`
@@ -34,12 +34,12 @@ Update `/optvar/cfg/portals/main/config.hrd` as follows:
 
 Update `/optvar/cfg/cockpit_api/config.toml` as follows:
 
-- Remove `prod = False` or set to `True`
+- Remove `prod = false` or set to `true`
 - Set `organization = "{organization}"`
 - Set `redirect_uri = "https://cockpit-base-address/api/oauth/callback"`
 - Set `client_secret = "{client-secret}"`
 - Set `client_id = "{organization}"`
-- Set `jwt_key = "{JWT-for-ItsYou.online}"`
+- Set `jwt_key = "jwt_key = "-----BEGIN PUBLIC KEY-----\nMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2\n7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6\n6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv\n-----END PUBLIC KEY-----\n"`
 
 
 Values:
@@ -48,14 +48,6 @@ Values:
 - **{client-secret}**: the client secret that goes with the `{client-id}` of the organization for which the Cockpit is setup
 - **{cockpit-base-address}**: the IP address of domain name (FQDN) on which the Cockpit is active, e.g. `mycockpit.aydo2.com`
 - **{organization}**: name of the organization as set in ItsYou.online, to which a Cockpit user needs be member or owner; can be the same organization as specified with `{client-id}`, but can also be different
-- **{JWT-for-ItsYou.online}**: set it to the following string:
-  ```
-  -----BEGIN PUBLIC KEY-----
-  MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2
-  7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6
-  6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv
-  -----END PUBLIC KEY-----
-  ```
 
 
 <a id="disable"></a>
