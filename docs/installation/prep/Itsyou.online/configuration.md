@@ -18,6 +18,10 @@ systemctl restart portal
 
 First make sure that you setup the required ItsYou.online organizations as documented in [Setup the ItsYou.online Organizations](Itsyou.online).
 
+You will have to update to files:
+- `/optvar/cfg/portals/main/config.hrd` for configuring the **Cockpit Portal**
+- `/optvar/cfg/cockpit_api/config.toml` for configuring the **Cockpit API**
+
 Update `/optvar/cfg/portals/main/config.hrd` as follows:
 
 - Set `param.cfg.production           = true`
@@ -51,13 +55,12 @@ Values:
 
 
 <a id="disable"></a>
-## Diable ItsYou.online integration
-
+## Disable ItsYou.online integration
 
 Update `/optvar/cfg/portals/main/config.hrd` as follows:
 
-- Set `param.cfg.production           = False`
+- Set `param.cfg.production           = false`
 
 Update `/optvar/cfg/cockpit_api/config.toml` as follows:
 
-- Set `prod = False`
+- Set `prod = false`
