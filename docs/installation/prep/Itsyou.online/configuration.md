@@ -20,7 +20,7 @@ First make sure that you setup the required ItsYou.online organizations as docum
 
 Update `/optvar/cfg/portals/main/config.hrd` as follows:
 
-- Set `param.cfg.production           = True`
+- Set `param.cfg.production           = true`
 - Set `param.cfg.client_scope         = 'user:email:main,user:memberof:{organization}'`
 - Set `param.cfg.force_oauth_instance = 'itsyou.online'`
 - Change `param.cfg.client_id         = '{client-id}'`
