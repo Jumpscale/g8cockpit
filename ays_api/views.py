@@ -88,7 +88,7 @@ def template_view(template):
     actions_path = j.sal.fs.joinPaths(template.path, 'actions.py')
     actions_file = None
     if j.sal.fs.exists(actions_path):
-        actions_file = j.sal.fs.fileGetContents()
+        actions_file = j.sal.fs.fileGetContents(actions_path)
 
     str_hrd = str(template._hrd)
     actor_hrd = str_hrd if str_hrd != '' else None
