@@ -24,6 +24,9 @@ daemon_client = j.clients.atyourservice.get(
     unixsocket=j.atyourservice.config['redis'].get('unixsocket'))
 
 
+def get_err_msg(err):
+    return err.args[0]
+
 def get_repo(name):
     """
     try to get a repo by his name.
@@ -98,7 +101,7 @@ def getRepository(repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     return jsonify(name=repo.name, path=repo.path)
 
@@ -112,7 +115,7 @@ def deleteRepository(repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     repo.destroy()
     if j.sal.fs.exists(repo.path):
@@ -131,7 +134,7 @@ def listBlueprints(repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     include_archived = j.data.types.bool.fromString(request.args.get('archived', 'True'))
 
@@ -156,7 +159,7 @@ def createNewBlueprint(repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     inputs = Blueprint.from_json(request.json)
     if not inputs.validate():
@@ -202,7 +205,7 @@ def updateBlueprint(blueprint, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     inputs = Blueprint.from_json(request.json)
     if not inputs.validate():
@@ -233,7 +236,7 @@ def archiveBlueprint(blueprint, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     by_names = {bp.name: bp for bp in repo.blueprints}
     if blueprint not in by_names:
@@ -253,7 +256,7 @@ def restoreBlueprint(blueprint, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     by_names = {bp.name: bp for bp in repo.blueprintsDisabled}
     if blueprint not in by_names:
@@ -273,7 +276,7 @@ def getBlueprint(blueprint, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     bp = None
     for item in repo.blueprints:
@@ -295,7 +298,7 @@ def executeBlueprint(blueprint, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     bp = None
     for item in repo.blueprints:
@@ -307,7 +310,6 @@ def executeBlueprint(blueprint, repository):
 
     try:
         repo.blueprintExecute(path=bp.path, role='', instance='')
-
         # notify bot new services have been created
         # TODO: unify event for telegram and REST
         # evt = j.data.models.cockpit_event.Telegram()
@@ -340,7 +342,7 @@ def deleteBlueprint(blueprint, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 4044
+        return jsonify(error=get_err_msg(e)), 4044
 
     by_names = {bp.name: bp for bp in repo.blueprints}
     for bp in repo.blueprintsDisabled:
@@ -367,7 +369,7 @@ def listServices(repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     services = []
     for s in repo.services:
@@ -387,7 +389,7 @@ def listServicesByRole(role, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     services = []
     for s in repo.servicesFind(actor='%s.*' % role):
@@ -407,7 +409,7 @@ def serviceGetByName(name, role, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     s = repo.serviceGet(role=role, instance=name, die=False)
     if s is None:
@@ -427,7 +429,7 @@ def deleteServiceByName(name, role, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     service = repo.serviceGet(role=role, instance=name, die=False)
     if service is None:
@@ -448,7 +450,7 @@ def listTemplates(repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     templates = [k for k in repo.templates.keys()]
 
@@ -466,7 +468,7 @@ def getTemplate(template, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     template_names = list(repo.templates.keys())
     if template not in template_names:
@@ -481,22 +483,24 @@ def updateTemplate(template, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
-    template = repo.templateGet(name=template)
     try:
         actor = repo.actorGet(name=template)
     except Exception as e:
-        return jsonify(error=e.message), 500
-    actor._initFromTemplate(template)
+        return jsonify(error=get_err_msg(e)), 500
+
+    templateobj = repo.templateGet(name=template)
+    actor._initFromTemplate(templateobj)
     return jsonify(msg='template updated'), 200
 
 @ays_api.route('/ays/repository/<repository>/template/update', methods=['GET'])
 def updateTemplates(repository):
+    import ipdb; ipdb.set_trace()
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     names = repo.templates.keys()
     for n in names:
@@ -504,7 +508,7 @@ def updateTemplates(repository):
         try:
             actor = repo.actorGet(name=n)
         except Exception as e:
-            return jsonify(error=e.message), 500
+            return jsonify(error=get_err_msg(e)), 500
         actor._initFromTemplate(template)
     return jsonify(msg='templates updated'), 200
 
@@ -564,7 +568,7 @@ def listRuns(repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     runs = repo.runsList()
     runs = [run_view(run.objectGet()) for run in runs]
@@ -580,7 +584,7 @@ def getRun(aysrun, repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     aysrun_model = repo.runGet(aysrun)
     aysrun = aysrun_model.objectGet()
@@ -598,7 +602,7 @@ def createRun(repository):
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
-        return jsonify(error=e.message), 404
+        return jsonify(error=get_err_msg(e)), 404
 
     simulate = j.data.types.bool.fromString(request.args.get('simulate', 'False'))
     callback_url = request.args.get('callback_url', None)
