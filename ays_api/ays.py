@@ -496,7 +496,6 @@ def updateTemplate(template, repository):
 
 @ays_api.route('/ays/repository/<repository>/template/update', methods=['GET'])
 def updateTemplates(repository):
-    import ipdb; ipdb.set_trace()
     try:
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
