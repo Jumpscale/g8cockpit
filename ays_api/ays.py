@@ -299,7 +299,6 @@ def executeBlueprint(blueprint, repository):
         repo = get_repo(repository)
     except j.exceptions.NotFound as e:
         return jsonify(error=get_err_msg(e)), 404
-
     bp = None
     for item in repo.blueprints:
         if item.name == blueprint:
@@ -310,6 +309,7 @@ def executeBlueprint(blueprint, repository):
 
     try:
         repo.blueprintExecute(path=bp.path, role='', instance='')
+        bp.disable()
         # notify bot new services have been created
         # TODO: unify event for telegram and REST
         # evt = j.data.models.cockpit_event.Telegram()
