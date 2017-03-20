@@ -34,3 +34,5 @@ ccl.archiveBlueprint    ccl.deleteBlueprint     ccl.executeBlueprint    ccl.getS
 ccl.createNewBlueprint  ccl.deleteRepository    ccl.getBlueprint        ccl.getTemplate         ccl.listServiceActions  ccl.restoreBlueprint
 ccl.createNewRepository ccl.deleteServiceByName ccl.getRepository       ccl.listBlueprints      ccl.listServices        ccl.simulateAction
 ```
+
+> Please note: default behavior for executeBlueprint from the REST API is to archive the blueprint directly after execution
