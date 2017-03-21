@@ -21,7 +21,7 @@ Make sure to validate your blueprint first to have valid YAML format using a too
 <a id="portal"></a>
 ### Using the Cockpit Portal
 
-See the [Getting started with blueprints](../../Getting_started_with_blueprints/Getting_started_with_blueprints.md) section.
+See the [Getting started with blueprints](../../Getting_started_with_blueprints/getting_started_with_blueprints.md) section.
 
 
 <a id="api"></a>
@@ -45,6 +45,33 @@ Also see the section about the [API Console](../../API_Console/API_Console.md)
 <a id="cli"></a>
 ### At the CLI
 
-@todo
+Navigate to your blueprints subdirectory in your repo.
+
+Using your preferred text editor (in this example vim) create a new YAML file.
+
+`vim user1.yaml`
+
+To create a new virtual data center, paste this code in the new file:
+
+```yaml
+g8client__dubai:
+  url: 'gig.demo.greenitglobe.com'
+  login: 'yves'
+  password: '****'
+  account: 'Demo Account'
+
+vdc__demo1:
+  g8.client.name: 'dubai'
+  g8.location: 'du-conv-1'
+  maxMemoryCapacity: 2
+  maxVDiskCapacity: 10
+  maxCPUCapacity: 2
+  maxNASCapacity: 20
+  maxArchiveCapacity: 20
+  maxNetworkOptTransfer: 5
+  maxNetworkPeerTransfer: 15
+  maxNumPublicIP: 1
+```
+It is now possible to execute the blueprint as documented in [Execute_blueprint](../Execute_blueprint/Execute_blueprint.md).
 
 Also see [How to add a user](../Add_user/Add_user.md).

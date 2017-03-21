@@ -49,4 +49,22 @@ For more information about the **API Console** go to the section about the [API 
 <a id="cli"></a>
 ### At the CLI
 
-@todo
+To create a new repository execute the following command:
+
+`ays repo create --git {git repo url} --name {path of reopsitory}`
+
+The command will create a new repo in the path specified in the **name** option, and the **git** option is the url of the git repository that will be atached to this repo.
+
+Viewing the possible options is possible using the **help** option:
+
+```
+ays repo create --help
+Usage: ays repo create [OPTIONS]
+
+  create a new AYS repository
+
+Options:
+  -n, --name TEXT  name of the new AYS repo you want to create
+  -g, --git TEXT   URL of the git repository to attach to this AYS repository
+  --help           Show this message and exit.
+```
