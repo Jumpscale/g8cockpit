@@ -18,7 +18,7 @@ You can execute a blueprint in three ways:
 <a id="portal"></a>
 ### Using the Cockpit Portal
 
-See the [Getting started with blueprints](../../Getting_started_with_blueprints/Getting_started_with_blueprints.md) section.
+See the [Getting started with blueprints](../../Getting_started_with_blueprints/getting_started_with_blueprints.md) section.
 
 
 <a id="api"></a>
@@ -47,4 +47,12 @@ Also see the section about the [API Console](../../API_Console/API_Console.md)
 <a id="cli"></a>
 ### At the CLI
 
-@todo
+Navigate to your repo.
+
+Use the following command to execute blueprints:
+
+`ays blueprint`
+
+The above command will execute all the blueprints in the repo. To execute a specific blueprint, you can specify the name of the blueprint as follows:
+
+`ays blueprint {blueprint name}.yaml`
