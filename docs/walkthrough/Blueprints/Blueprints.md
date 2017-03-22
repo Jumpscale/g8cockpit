@@ -1,6 +1,19 @@
 ## Blueprints
 
-On the **Blueprints** page you see all blueprints for a selected repository:
+
+
+
+The **Blueprints** page shows all blueprints for a selected AYS repository.
+
+You get to a **Blueprint Details** page from any **Repository Details** page by clicking **Blueprints** in the navigation menu under **Links**:
+
+![](repo_details.png)
+
+The **Blueprint Details** page provides an overview of all blueprint files in the AYS repository:
+
+![](blueprint_details.png)
+
+By clicking on the name of a blueprint we can examine the content of the blueprint file.
 
 ![](Blueprints.png)
 
