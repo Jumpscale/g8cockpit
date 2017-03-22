@@ -40,7 +40,7 @@ Update `/optvar/cfg/cockpit_api/config.toml` as follows:
 
 - Remove `prod = false` or set to `true`
 - Set `organization = "{organization}"`
-- Set `redirect_uri = "https://{cockpit-base-address}/api/oauth/callback"`
+- Set `redirect_uri = "http://{cockpit-base-address}/api/oauth/callback"`
 - Set `client_secret = "{client-secret}"`
 - Set `client_id = "{organization}"`
 - Set `jwt_key = "-----BEGIN PUBLIC KEY-----\nMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2\n7MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny6\n6+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv\n-----END PUBLIC KEY-----\n"`
