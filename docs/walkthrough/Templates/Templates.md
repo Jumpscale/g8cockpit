@@ -1,37 +1,20 @@
-## Service Templates
-
-In the **Templates** page you get an overview of all AYS service templates available in the Cockpit:
+## Actor Templates
+In the **Templates** page you get an overview of all AYS actor templates available in the Cockpit:
 
 ![](templates.png)
 
-Here you can filter on the name of the **repository** where the template is available, or on the **name** of the service template:
+Here you can filter on the name of the **Role** , on the **name** of the actor template or based on its **path**:
 
 ![](filter-on-template-name.png)
 
-Clicking the name of the service template leads you to the service **Template Details** page:
+To update the available templates, select from the drop down menu under the page title the option **Update Templates**.
 
-![](service-template-info.png)
+![](templates_action.png)
 
-Under **schema.hrd** you see the attributes for describing a service instance of the service template type:
+Clicking the name of the actor template leads you to **Actor Template Info** page:
 
-![](schema.png)
+![](actor-template-info.png)
 
-Under **actions.py** you see the implementation of all actions available for service instances of the service template type.
+**schema.hrd** and **schema.capnp** describes a service instance of the actor template using different file formats.
 
-Here for the VDC service template for actions are implemented:
-
-- init()
-  ![](init.png)
-
-- install()
-  ![](install.png)
-
-- uninstall()
-  ![](uninstall.png)
-
-- getClient()
-  ![](getClient.png)
-
-  At the bottom of the page there is an overview of all service instances based on this service template:
-
-  ![]()
+At the bottom of the screen it is possible to examine the created services of this template.
