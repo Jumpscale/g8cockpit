@@ -105,6 +105,8 @@ In order to copy the example blueprint to your local machine use the following c
 export BRANCH="8.1.1"
 curl https://raw.githubusercontent.com/Jumpscale/jscockpit/${BRANCH}/blueprint/ovc_blueprint.yaml > {/path/to/my/repo}/blueprints/cockpit_{cockpit-name}.yaml
 ```
+### note : make sure that you have the dns key 
+
 
 Here's the blueprint:
 
