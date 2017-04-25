@@ -41,6 +41,7 @@
     * [Install a service instance](usage/Howto/Install_service/Install_service.md)
     * [Uninstall a service instance](usage/Howto/Uninstall_service/Uninstall_service.md)
     * [Delete a service](usage/Howto/Delete_service/Delete_service.md)
+    * [How to create an account](usage/Howto/Create_account/Create_account.md)
     * [How to create a VDC](usage/Howto/Create_VDC/Create_VDC.md)
     * [How to delete a VDC](usage/Howto/Delete_VDC/Delete_VDC.md)
     * [How to create a S3 server](usage/Howto/Create_S3server/Create_S3server.md)

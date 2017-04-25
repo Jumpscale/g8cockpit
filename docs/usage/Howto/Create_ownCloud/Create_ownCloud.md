@@ -18,6 +18,29 @@ Steps:
 ### Review the blueprint
 
 Here's the blueprint:
+```
+g8client__{environment}:
+  url: '{url}'
+  login: '{login}'
+  password: '{password}'
+  account: '{account}'
+
+vdc__{vdc-name}:
+  g8client: '{environment}'
+  location: '{location}'
+
+blueowncloud__{owncloud-name}:
+  vdc: '{vdc-name}'
+  datadisks:
+    - 1000
+    - 1000
+  hostprefix: '{owncloud-prefix}'
+
+actions:
+  - action: install
+```
+
+Example:
 
 ```yaml
 g8client__env1:
@@ -124,3 +147,5 @@ Out[3]: Out[5]: <schema_d2f66794a82288c0_capnp:Schema builder (vdc = "ocspace1",
 Visit the URL you found as a value for `fqdn`, and login with admin/admin:
 
 ![](owncloud.png)
+
+See the section [How to customize your OwnCloud server](Customize_ownCloud.md) for instructions on how to customize.

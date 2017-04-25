@@ -19,6 +19,7 @@
 
 ### Using OpenvCloud Actor Templates
 
+* [Create an account](Create_account/Create_account.md)
 * [Create a VDC](Create_VDC/Create_VDC.md)
 * [Delete a VDC](Delete_VDC/Delete_VDC.md)
 * [Create a VM](Create_VM/Create_VM.md)

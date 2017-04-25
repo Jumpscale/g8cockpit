@@ -63,3 +63,5 @@ systemctl status cockpit_daemon_main
 systemctl status cockpit_main
 systemctl status portal
 ```
+
+Also see: https://github.com/Jumpscale/jumpscale_core8/blob/8.1.1/docs/AYS/configuration.md

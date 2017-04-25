@@ -35,7 +35,7 @@ Commands:
 
 
 ```
-ays create_repo
+ays create_repo -g http://fake -p /optvar/cockpit_repos/owncloud1
 ```
 
 ```
@@ -62,3 +62,6 @@ ays run
 ```
 ays discover
 ```
+
+Also see:
+https://github.com/Jumpscale/jumpscale_core8/blob/8.2.0/docs/AYS/Commands/actor/update.md
