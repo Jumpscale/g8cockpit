@@ -14,6 +14,8 @@ g8client__{environment}:
 account__{account-name}:
   g8client: '{environment}'
   location: '{location}'
+  accountusers:
+  - '{admin}'
 
 actions:
   - action: install    
@@ -42,4 +44,8 @@ Values:
 - `{url}`: URL to to the G8 environment, e.g. `gig.demo.greenitglobe.com`
 - `{login}`: username on the targeted G8 environment
 - `{password}`: password for the username
+- `{jwt}`: JWT
 - `{account}`: account on the targeted G8 environment used for the S3 server
+- `{location}`: location
+- `{account-name}`: new account
+- `{admin}`: username of first admin
