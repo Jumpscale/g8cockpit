@@ -24,18 +24,24 @@ actions:
 **Full blueprint**:
 
 ```
-description = type:multiline
+g8client__{environment}:
+  url: '{url}'
+  jwt: '{jwt}'
+  account: '{account}'
 
-g8client = type:str consume:'g8client' auto
-accountusers = list type:str consume:'uservdc' auto
+account__{account-name}:
+  description: '{description}'
+  g8client: '{environment}'
+  location: '{location}'
+  accountusers:
+  - '{admin}'
+  maxMemoryCapacity: {maxMemoryCapacity}
+  maxCPUCapacity: {maxCPUCapacity}
+  maxNumPublicIP: {maxNumPublicIP}
+  maxDiskCapacity: {maxDiskCapacity}
 
-accountID = type:int default:0
-
-maxMemoryCapacity = type:int default:-1
-maxCPUCapacity = type:int default:-1
-maxNumPublicIP = type:int default:-1
-maxDiskCapacity = type:int default:-1
-
+actions:
+  - action: install    
 ```
 
 Values:
@@ -49,3 +55,8 @@ Values:
 - `{location}`: location
 - `{account-name}`: new account
 - `{admin}`: username of first admin
+- `{description}`: description for the account
+- `{maxMemoryCapacity}`: total memory capacity in MB available in the account
+- `{maxCPUCapacity}`: number of virtual CPU core available in the account
+- `{maxNumPublicIP}`: number of external IP addresses available in the account
+- `{maxDiskCapacity}`: total disk capacity in GB available in the account
