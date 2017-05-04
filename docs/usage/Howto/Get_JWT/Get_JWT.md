@@ -6,14 +6,14 @@ A JWT is requested from ItsYou.online, and requires an OAuth access token, which
 
 Once you've got the OAuth access token, the JWT is requested as follows.
 
-- If on behalf of a user:
+- On behalf of a user:
 
   ```
   curl -H "Authorization: token OAUTH-TOKEN" /
        https://itsyou.online/v1/oauth/jwt?scope=user:memberof:org1
   ```
 
-- Or, if on behalf of the organization for which the Cockpit was set-up:
+- Or, on behalf of the organization for which the Cockpit was setup:
 
   ```
   curl -H "Authorization: token OAUTH-TOKEN" /

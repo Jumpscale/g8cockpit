@@ -18,9 +18,12 @@ In order to use the Cockpit API you first need to obtain an JWT, as documented i
 Once you got the JWT:
 
 ```
+JWT="..."
 curl -X GET
-     -H "Authorization: bearer JWT"  /
-     https://BASE_URL/api/ays/repository
+     -H "Authorization: bearer ${JWT}"  /
+     https://BASE_URL:AYS_PORT/api/ays/repository
 ```
+
+The `AYS_PORT` typically is 5000 and can be configured in `/optvar/cfg/cockpit_api/config.toml`.
 
 Also see the section about the [API Console](../../API_Console/API_Console.md)
