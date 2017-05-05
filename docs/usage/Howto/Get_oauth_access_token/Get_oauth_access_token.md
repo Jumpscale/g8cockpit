@@ -17,8 +17,11 @@ The application requests an OAuth access token by either using:
   This is what you will actually send - in both case:
 
   ```
-       curl -d "grant_type=client_credentials&client_id=CLIENT_ID/APPLICATION_ID&client_secret=CLIENT_SECRET" /
-       https://itsyou.online/v1/oauth/access_token
+  CLIENT_ID="..."
+  CLIENT_SECRET="..."
+  curl -d "grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}" https://itsyou.online/v1/oauth/access_token > result.txt
+  ACCESS_TOKEN=$(awk '{split($0,a,",");split(a[1],b,":");gsub(/\"/,"",b[2]);print b[2]}' result.txt)
+  echo $ACCESS_TOKEN
   ```
 
 - or the **Authorization Code Flow**, in which case your application will first obtain an OAuth authorization code, and send this to ItsYou.online along with its own **Client id** (global_id of the organization) + one of the **client secrets** managed under **API Access keys** on the **SETTINGS** tab of the profile page for the organization on ItsYou.online (see first screenshot here above)
@@ -28,8 +31,12 @@ The application requests an OAuth access token by either using:
   This is what you will actually send:
 
   ```
-  curl -d "client_id=CLIENT_ID&client_secret=CLIENT_SECRET&code=AUTHORIZATION_CODE&redirect_uri=CALLBACK_URL&state=STATE"
-       https://itsyou.online/v1/oauth/access_token?
+  CLIENT_ID="..."
+  CLIENT_SECRET="..."
+  AUTHORIZATION_CODE="..."
+  CALLBACK_URL="..."
+  STATE="..."
+  curl -d "client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${AUTHORIZATION_CODE}&redirect_uri=${CALLBACK_URL}&state=${STATE}" https://itsyou.online/v1/oauth/access_token?
   ```
 
 With the received a OAuth access token, you can request the JWT needed for all Cockpit API calls, see the section about [How to get a JWT](../Get_JWT/Get_JWT.md) for more details.

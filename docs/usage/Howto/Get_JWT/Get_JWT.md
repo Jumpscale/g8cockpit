@@ -9,15 +9,18 @@ Once you've got the OAuth access token, the JWT is requested as follows.
 - On behalf of a user:
 
   ```
-  curl -H "Authorization: token OAUTH-TOKEN" /
-       https://itsyou.online/v1/oauth/jwt?scope=user:memberof:org1
+  ACCESS_TOKEN="..."
+  USER="..."
+  ORGANIZATION="..."
+  curl -H "Authorization: token ${ACCESS_TOKEN}" https://itsyou.online/v1/oauth/jwt?scope=${USER}:memberof:${ORGANIZATION}
   ```
 
 - Or, on behalf of the organization for which the Cockpit was setup:
 
   ```
-  curl -H "Authorization: token OAUTH-TOKEN" /
-       https://itsyou.online/v1/oauth/jwt?aud=client_id
+  ACCESS_TOKEN="..."
+  CLIENT_ID="..."
+  curl -H "Authorization: token ${ACCESS_TOKEN}" https://itsyou.online/v1/oauth/jwt?aud={CLIENT_ID}
   ```
 
 In the above:
