@@ -19,9 +19,11 @@ Once you got the JWT:
 
 ```
 JWT="..."
-curl -X GET
-     -H "Authorization: bearer ${JWT}"  /
-     https://BASE_URL:AYS_PORT/api/ays/repository
+BASE_URL="<IP-address>"
+AYS_PORT="5000"
+curl -X GET \
+     -H "Authorization: bearer $JWT"  \
+     https://$BASE_URL:$AYS_PORT/ays/repository
 ```
 
 The `AYS_PORT` typically is 5000 and can be configured in `/optvar/cfg/cockpit_api/config.toml`.

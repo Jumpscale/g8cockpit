@@ -24,11 +24,12 @@ Once you got the JWT:
 JWT="..."
 REPO_NAME="..."
 GIT_URL="https://github.com/user/reponame"
-BASE_URL="212.23.52.75:5000"
-curl -H "Authorization: bearer ${JWT}" /
-     -H "Content-Type: application/json" /
-     -d '{"name":"${REPO_NAME}", "git_url": "${GIT_URL}"}' /
-     https://${BASE_URL}/ays/repository
+BASE_URL="<IP-address>"
+AYS_PORT="5000"
+curl -H "Authorization: bearer $JWT" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"'$REPO_NAME'", "git_url": "'$GIT_URL'"}' \
+     https://$BASE_URL:$AYS_PORT/ays/repository
 ```
 
 In the **API Console**:
