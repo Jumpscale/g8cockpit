@@ -20,7 +20,7 @@ Once you've got the OAuth access token, the JWT is requested as follows.
   ```
   ACCESS_TOKEN="..."
   CLIENT_ID="..."
-  curl -H "Authorization: token ${ACCESS_TOKEN}" https://itsyou.online/v1/oauth/jwt?aud={CLIENT_ID}
+  curl -H "Authorization: token ${ACCESS_TOKEN}" https://itsyou.online/v1/oauth/jwt?aud=${CLIENT_ID}
   ```
 
 In the above:

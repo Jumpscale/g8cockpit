@@ -21,10 +21,14 @@ In order to use the Cockpit API you first need to obtain an JWT, as documented i
 Once you got the JWT:
 
 ```
-curl -H "Authorization: bearer JWT"  /
+JWT="..."
+REPO_NAME="..."
+GIT_URL="https://github.com/user/reponame"
+BASE_URL="212.23.52.75:5000"
+curl -H "Authorization: bearer ${JWT}" /
      -H "Content-Type: application/json" /
-     -d '{"name":"test-repo", "git_url": "https://github.com/user/reponame"}'
-     http://BASE_URL/ays/repository
+     -d '{"name":"${REPO_NAME}", "git_url": "${GIT_URL}"}' /
+     https://${BASE_URL}/ays/repository
 ```
 
 In the **API Console**:
@@ -37,4 +41,8 @@ For more information about the **API Console** go to the section about the [API 
 <a id="cli"></a>
 ### At the CLI
 
-@todo
+```
+REPO_NAME="..."
+GIT_URL="https://github.com/<user>/<repository-name>"
+ays create_repo -n ${REPO_NAME} -p ${GIT_URL}
+```
