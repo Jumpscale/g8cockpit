@@ -36,7 +36,7 @@ The application requests an OAuth access token by either using:
   AUTHORIZATION_CODE="..."
   CALLBACK_URL="..."
   STATE="..."
-  curl -d "client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${AUTHORIZATION_CODE}&redirect_uri=${CALLBACK_URL}&state=${STATE}" https://itsyou.online/v1/oauth/access_token?
+  curl -d "client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${AUTHORIZATION_CODE}&redirect_uri=${CALLBACK_URL}&state=${STATE}" https://itsyou.online/v1/oauth/access_token
   ```
 
 With the received a OAuth access token, you can request the JWT needed for all Cockpit API calls, see the section about [How to get a JWT](../Get_JWT/Get_JWT.md) for more details.

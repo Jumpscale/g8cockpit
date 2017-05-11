@@ -146,87 +146,142 @@ Below we discuss creating a VDC step by step using curl commands:
 ### Get an OAuth token with Client Credentials Flow
 
 ```
-curl -d "grant_type=client_credentials&client_id={CLIENT_ID}&client_secret={CLIENT_SECRET}" /
-     https://itsyou.online/v1/oauth/access_token
+CLIENT_ID="..."
+CLIENT_SECRET="..."
+curl -d "grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}" \
+     https://itsyou.online/v1/oauth/access_token > token.txt
+ACCESS_TOKEN=$(awk '{split($0,a,",");split(a[1],b,":");gsub(/\"/,"",b[2]);print b[2]}' token.txt)
+echo $ACCESS_TOKEN
 ```
 
 <a id="get-JWT"></a>
 ### Get a JWT to talk to the Cockpit
 
 ```
-curl -H "Authorization: token OAUTH-TOKEN" /
-     https://itsyou.online/v1/oauth/jwt?aud=client_id
+JWT=$(curl -H "Authorization: token ${ACCESS_TOKEN}" https://itsyou.online/v1/oauth/jwt?aud=${CLIENT_ID})
+echo $JWT
 ```
 
 <a id="create-repository"></a>
 ### Create a new repository
 
 ```
-curl -H "Authorization: bearer JWT"  /
-     -H "Content-Type: application/json" /
-     -d '{"name":"test-repo"}' /
-     https://{address}:5000/ays/repository
+REPO_NAME="..."
+GIT_URL="https://github.com/user/reponame"
+BASE_URL="<IP-address>"
+AYS_PORT="5000"
+curl -H "Authorization: bearer $JWT" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"'$REPO_NAME'", "git_url":"'$GIT_URL'"}' \
+     https://$BASE_URL:$AYS_PORT/ays/repository
 ```
 
 <a id="g8client-blueprint"></a>
 ### Create blueprint for a g8client service instance
 
 ```
-curl -H "Authorization: bearer JWT"  /
-     -H "Content-Type: application/json" /
-     -d '{"name":"cl.yaml","content":"g8client__cl:\n  g8.url: uk-g8-1.demo.greenitglobe.com\n  g8.login: ***\n  g8.password: ***\n  g8.account:***"}'
-     https://{address}:5000/ays/repository/
+G8_URL="..."
+LOGIN="..."
+PASSWORD="..."
+ACCOUNT="..."
+curl -H "Authorization: bearer $JWT" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"cl.yaml", "content":"g8client__cl:\n  url: '$G8_URL'\n  login: '$LOGIN'\n  password: '$PASSWORD'\n  account: '$ACCOUNT'"}' \
+     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint
 ```
+
 
 <a id="g8client-execute"></a>
 ### Execute the g8client blueprint
 
 ```
-curl -H "Authorization: bearer JWT"  /  
-     https://{address}:5000/ays/repository/{repository-name}/blueprint/cl.yaml
+curl -H "Authorization: bearer $JWT" \
+     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint/cl.yaml
 ```
 
 <a id="user-blueprint"></a>
 ### Create blueprint for a user
 
 ```
-curl -H "Authorization: bearer JWT"  /
-     -H "Content-Type: application/json" /
-     -d '{"name":"user1.yaml","content":"ovc_user__user1:\n  g8.client.name: 'cl'\n  username: 'mike'\n  email: 'mike@gmail.com'\n  provider: 'itsyouonline'"}'
-     https://{address}:5000/ays/repository/
+USERNAME2="..."
+EMAIL="..."
+curl -H "Authorization: bearer $JWT" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"user1.yaml","content":"ovc_user__user1:\n  g8.client.name: cl\n  username: '$USERNAME2'\n  email: '$EMAIL'\n  provider: itsyouonline"}' \
+     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint
 ```
 
 <a id="user-execute"></a>
 ### Execute the user blueprint
 
 ```
-curl -H "Authorization: bearer JWT"  /  
-     https://{address}:5000/ays/repository/{repository-name}/blueprint/user1.yaml
+curl -H "Authorization: bearer $JWT" \  
+     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint/user1.yaml
 ```
 
 <a id="vdc-blueprint"></a>
 ### Create blueprint for new VDC
 
+In order to create a VDC you need the name of the G8 location and the ID of the external network.
+
+In order to get a list of available external networks for a given account use the Cloud API, here for account with ID=23:
+
 ```
-curl -H "Authorization: bearer JWT"  /
-     -H "Content-Type: application/json" /
-     -d '{"name":"myvdc.yaml","content":"vdc__myvdc:\n  g8client: 'cl'\n  location: uk-g8-1"}'
-     https://{address}:5000/ays/repository/
+curl -X POST \
+     --header 'Content-Type: application/x-www-form-urlencoded' \
+     --header 'Accept: application/json'
+     -d 'accountId=23' \
+     https://$BASE_URL/restmachine/cloudapi/externalnetwork/list'
+```
+
+In order to get this list of available locations use the following Cloud API:
+```
+curl -X POST \
+     --header 'Content-Type: application/json' \
+     --header 'Accept: application/json' \
+     https://be-gen-1.demo.greenitglobe.com/restmachine/cloudapi/locations/list
+```
+
+```
+LOCATION="..."
+EXTERNAL_NETWORK="..."
+
+curl -H "Authorization: bearer $JWT" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"myvdc.yaml","content":"vdc__myvdc:\n  g8client: cl\n  location: '$LOCATION'\n  externalNetworkID: '$EXTERNAL_NETWORK'"}' \
+     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint
 ```
 
 <a id="vdc-execute"></a>
 ### Execute the VDC blueprint
 
 ```
-curl -H "Authorization: bearer JWT"  /  
-     https:/{address}:5000/ays/repository/{repository-name}/blueprint/myvdc.yaml
+curl -H "Authorization: bearer $JWT" \
+     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint/myvdc.yaml
 ```
+
+<a id="vdc-execute"></a>
+### Create a blueprint for calling the install actions
+
+```
+curl -H "Authorization: bearer $JWT" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"actions.yaml","content":"actions:\n  - action: install\n"}' \
+     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint
+```
+
+
+<a id="vdc-execute"></a>
+### Execute the install actions blueprint
+
+...
+
 
 <a id="install-VDC"></a>
 ### Start a run to actually deploy the VDC
 
 ```
 curl -X POST
-     -H "Authorization: bearer JWT" /
+     -H "Authorization: bearer $JWT" \
      http://{address}:5000/ays/repository/{repository-name}/aysrun | python -m json.tool
 ```

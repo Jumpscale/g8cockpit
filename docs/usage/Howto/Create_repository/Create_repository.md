@@ -45,5 +45,5 @@ For more information about the **API Console** go to the section about the [API 
 ```
 REPO_NAME="..."
 GIT_URL="https://github.com/<user>/<repository-name>"
-ays create_repo -n ${REPO_NAME} -p ${GIT_URL}
+ays create_repo -p ${REPO_NAME} -g ${GIT_URL}
 ```
