@@ -80,6 +80,13 @@ actions:
   - action: install
 ```
 
+Alternatively:
+```
+actions:
+  - action: install
+    force: True
+```
+
 ```
 ays blueprint actions.yaml
 ```
