@@ -38,14 +38,14 @@ sshkey__dns:
 
 # actually install the cockpit
 cockpit__main:
-   host_node: 'cockpit'
-   dns.sshkey: 'dns'
+   hostNode: 'cockpit'
+   dnsSshkey: 'dns'
    domain: 'mycockpit.aydo2.com'
-   caddy.email: 'me@mail.com'
-   flist: 'https://stor.jumpscale.org/stor2/flist/aysbuild/jumpscale.flist'
-   oauth.organization: 'myOrg'
-   oauth.client_id: 'myOrg'
-   oauth.client_secret: 'replace_me'
+   caddyEmail: 'me@mail.com'
+   flist: 'https://hub.gig.tech/jumpscale/opt82.flist'
+   oauthOrganization: 'myOrg'
+   oauthClient_id: 'myOrg'
+   oauthClientSecret: 'replace_me'
    oauth.jwt_key: |
        -----BEGIN PUBLIC KEY-----
        MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n2
