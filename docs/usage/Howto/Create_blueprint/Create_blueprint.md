@@ -1,25 +1,27 @@
-## How to create a blueprint
+# How to Create a Blueprints
 
 You can create a blueprint in multiple ways:
 
-- [Using the Telegram Chatbot](#telegram)
-- [In the Cockpit Portal](#portal)
-- [Using the Cockpit API](#api)
 - [At the CLI](#cli)
+- [Using the Cockpit API](#api)
+- [In the Cockpit Portal](#portal)
 
 All are discussed here below.
 
 Make sure to validate your blueprint first to have valid YAML format using a tool like [YAML Lint](http://www.yamllint.com/).
 
+<a id="cli"></a>
+## At the CLI
 
-<a id="portal"></a>
-### Using the Cockpit Portal
+In order to creating a blueprint you need to have repository, creating repositories is discussed in [How to Create Repositories](../Create_repository/Create_repository.md).
 
-See the [Getting started with blueprints](../../Getting_started_with_blueprints/getting_started_with_blueprints.md) section.
+```
+vi blueprints/blueprint.yaml
+```
 
 
 <a id="api"></a>
-### Using the Cockpit API
+## Using the Cockpit API
 
 In order to use the Cockpit API you first need to obtain an JWT, as documented in the section about [how to get a JWT](../Get_JWT/Get_JWT.md).
 
@@ -36,9 +38,7 @@ curl -H "Authorization: bearer JWT"  /
 
 Also see the section about the [API Console](../../API_Console/API_Console.md)
 
-<a id="cli"></a>
-### At the CLI
+<a id="portal"></a>
+## Using the Cockpit Portal
 
-@todo
-
-Also see [How to add a user](../Add_user/Add_user.md).
+See the [Getting started with blueprints](../../Getting_started_with_blueprints/getting_started_with_blueprints.md) section.

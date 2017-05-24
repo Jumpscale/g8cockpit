@@ -1,22 +1,45 @@
-## How to execute a blueprint
+# How to Execute Blueprints
 
 Executing a blueprint means that you will initialize all service instances as described in the blueprint.
 
 You can execute a blueprint in three ways:
 
-- [In the Cockpit Portal](#portal)
-- [Using the Cockpit API](#api)
 - [At the CLI](#cli)
+- [Using the Cockpit API](#api)
+- [In the Cockpit Portal](#portal)
 
 
-<a id="portal"></a>
-### Using the Cockpit Portal
+<a id="cli"></a>
+## At the CLI
 
-See the [Getting started with blueprints](../../Getting_started_with_blueprints/Getting_started_with_blueprints.md) section.
+Once you've created a new AYS repository, as documented in [How to Create a New Repository](../Create_repository/Create_repository.md), a new directory will have been created that contains two empty subdirectories:
+- `blueprints`
+- `actorTemplates`
+
+```
+REPO_NAME="..."
+cd $REPO_NAME
+```
+
+In order to execute a blueprint, you first need to create the blueprint, as documented in [How to Create Blueprints](../Create_blueprint/Create_blueprint.md).
+
+
+
+Once you add your first blueprint, and execute it, two more directories will be created:
+
+- `actors` containing the actor template files:
+  - `actions.py`: Python code implementing the actions
+  - `actor.json`: template for the AYS service state of each action
+  - `schema.capnp`: schema of the AYS service
+- `services` containing the actual state (files) for each AYS service (in a subdirectory):
+  - `data.json`: information of the AYS service, as set through the blueprint
+  - `schema.capnp`: schema of the AYS service
+  - `service.json`: the state of each of the actions
+
 
 
 <a id="api"></a>
-### Using the Cockpit API
+## Using the Cockpit API
 
 In order to use the Cockpit API you first need to obtain an JWT, as documented in the section about [how to get a JWT](../Get_JWT/Get_JWT.md).
 
@@ -38,7 +61,9 @@ curl -H "Authorization: bearer JWT"  /
 
 Also see the section about the [API Console](../../API_Console/API_Console.md)
 
-<a id="cli"></a>
-### At the CLI
 
-@todo
+
+<a id="portal"></a>
+## Using the Cockpit Portal
+
+See the [Getting started with blueprints](../../Getting_started_with_blueprints/Getting_started_with_blueprints.md) section.

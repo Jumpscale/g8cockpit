@@ -1,9 +1,16 @@
-## How to create a VDC
+# How to Create a VDC
 
 For creating a virtual datacenter (VDC) use the **vdc** actor template, available here: https://github.com/Jumpscale/ays_jumpscale8/tree/master/templates/ovc/vdc
 
+- [Minimal Blueprint](#minimal-blueprint)
+- [Full Blueprint](#full-blueprint)
+- [Values](#values)
+- [Example](#example)
+- [Using the AYS CLI tool](#cli)
+- [Using the AYS API](#api)
 
-**Minimal blueprint**:
+<a id="minimal-blueprint"></a>
+## Minimal Blueprint
 
 ```
 g8client__{environment}:
@@ -20,7 +27,8 @@ actions:
   - action: install    
 ```
 
-**Full blueprint**:
+<a id="full-blueprint"></a>
+## Full blueprint
 
 ```
 g8client__{environment}:
@@ -62,7 +70,8 @@ actions:
   - action: install    
 ```
 
-Values:
+<a id="values"></a>
+## Values
 
 - `{environment}`: environment name for referencing elsewhere in the same blueprint or other blueprint in the repository
 - `{url}`: URL to to the G8 environment, e.g. `gig.demo.greenitglobe.com`
@@ -87,7 +96,7 @@ Future attribute:
 
 
 Also possible:
-In stead of providing a login and password for the g8client actor, you can also provide a JWT string: `jwt= type:str default:''``
+Instead of providing a login and password for the g8client actor, you can also provide a JWT string: `jwt= type:str default:''``
 See: https://github.com/Jumpscale/ays_jumpscale8/blob/8.1.1/templates/clients/g8client/schema.hrd
 
 
@@ -95,11 +104,12 @@ Return values:
 cloudspaceID = type:int default:0
 ...
 
-
+<a id="example"></a>
+## Example
 
 Here's an example blueprint for creating a VDC:
 
-```
+```yaml
 g8client__cl:
   url: 'uk-g8-1.demo.greenitglobe.com'
   login: '***'
@@ -116,19 +126,214 @@ actions:
 ```
 
 
-Also:
+<a id="cli"></a>
+## Using the AYS CLI tool
 
+You first need to create an AYS repository, as documented in [How to Create a New Repository](Create_repository.md).
+
+Once created make the AYS directory of your repository the current directory:
+```bash
+REPO_NAME="..."
+cd /optvar/cockpit_repos/$REPO_NAME
 ```
-cd /optvar/cockpit_repos
-ays create-repo
+
+Create a blueprint:
+```bash
+VDC_NAME="..."
+vi blueprint blueprints/$VDC_NAME.yaml
+```
+
+Provide following blueprint to create `vdc1` in the G8 environment identified by `env`:
+```yaml
+g8client__env:
+  url: 'be-gen-1.demo.greenitglobe.com'
+  login: '***'
+  password: '***'
+  account: '***'
+
+vdc__vdc1:
+  g8client: 'env'
+  location: 'be-gen-1'
+
+actions:
+  - action: install
+```
+
+Have AYS process the new blueprint using the `ays blueprint` command.
+```bash
 ays blueprint
-ays run
-ays discover
-ays restore
-ays state
 ```
 
-Below we discuss creating a VDC step by step using curl commands:
+You can check the result using the `ays service list` command that will list all services:
+```bash
+ays service list
+```
+
+You will notice that there is a service `vdcfarm!auto_1` that is not defined in the blueprint. It is created implicitly for every new VDC if no VDC Farm was specified explicitly. A VDC Farm is an organizational AYS service for grouping VDC services.
+
+Using the `ays service show` command you can see that the new VDC service is indeed a child of the auto-created `vdcfarm` service named `auto_1`.
+
+```bash
+ays service show -r vdc
+```
+
+The same can be seen when checking the `services` directory:
+```bash
+tree -A services
+
+services
+├── account!***
+│   ├── data.json
+│   ├── schema.capnp
+│   └── service.json
+├── g8client!cl
+│   ├── data.json
+│   ├── schema.capnp
+│   └── service.json
+└── vdcfarm!auto_1
+    ├── data.json
+    ├── schema.capnp
+    ├── service.json
+    └── vdc!vdc1
+        ├── data.json
+        ├── schema.capnp
+        └── service.json
+```
+
+Using the `ays service state` command you can verify that `install` action of the VDC service is actually not yet executed, but rather `scheduled` to be executed, as indicated by the `scheduled` state next to the `install` action. So as a result of using the `ays blueprint` command only the `init` and `input` actions got executed successfully, indicated by `ok` next to these actions:
+```bash
+ays service state -r vdc
+
+State of service : vdc!vdc1
+        action_post_              : new
+        action_pre_               : new
+        check_down                : new
+        check_requirements        : new
+        check_up                  : new
+        cleanup                   : new
+        consume                   : new
+        data_export               : new
+        data_import               : new
+        halt                      : new
+        init                      : ok
+        init_actions_             : new
+        input                     : ok
+        install                   : scheduled
+        monitor                   : new
+        processChange             : new
+        removedata                : new
+        start                     : new
+        stop                      : new
+        uninstall                 : new
+```
+
+The same is confirmed when you check the file `service.json` in the service directory:
+```bash
+vi services/vdcfarm\!auto_1/vdc\!vdc1/service.json
+```
+
+Here you see more detailed information, like for instance for the `install` action:
+
+```json
+{
+ "actionKey":"921cc33036f00b3651188d236081a684",
+ "errorNr":0,
+ "isJob":true,
+ "lastRun":0,
+ "log":true,
+ "name":"install",
+ "period":0,
+ "state":"ok",
+ "timeout":0
+}
+```
+
+The value for `lastRun` is 0 indicating that the `install` action has not yet run. In order to actually run the scheduled `install` action you need execute the `ays run create` command that will start a run for all actions that are in the `scheduled` state:
+```bash
+ays run create -f
+```
+
+Using the `-f` option allows you to *follow* synchronously the process.
+
+To lists all runs use the `ays run list` command:
+```bash
+ays run list
+```
+
+To get the details for a run use the `ays run show` command specifying the run with `-k` option:
+```bash
+ays run show -k d1542eda4e69fca3989c8a11865a0172
+```
+
+To see the log for this run:
+```bash
+ays run show -k d1542eda4e69fca3989c8a11865a0172 --logs
+```
+
+In case an error condition is mentioned, and you've access to the Cloud Broker Portal, use following URL:
+https://be-gen-1.demo.greenitglobe.com/grid/error%20condition?id=fdc34b88-db89-8367-a682-fd7c42d88a74
+
+Also see logs in ``/optvar/log/`:
+```bash
+tail -f jumpscale.log
+```
+
+Once the VDC got installed successfully by a successful run of the `installed` action, you'll see a non-zero value next for `lastRun` when checking the `service.json` of :
+
+```json
+{
+ "actionKey":"921cc33036f00b3651188d236081a684",
+ "errorNr":0,
+ "isJob":true,
+ "lastRun":1495620203,
+ "log":true,
+ "name":"install",
+ "period":0,
+ "state":"ok",
+ "timeout":0
+}
+```
+
+The value for `lastRun` is non-zero, indicating that the `install` was already run. As a result, if you'd execute the blueprint again, or just another blueprint with only including the actions, it will not change the state of the `install` action to `scheduled`.
+
+In order to force this anyhow, you'll need to execute an `actions` blueprint that uses the `force` option:
+
+```bash
+vi blueprints/actions.yaml
+```
+
+```yaml
+actions:
+  - action: install
+    force: True
+```
+
+Or in order to only force a change for the vdc service:
+
+```yaml
+actions:
+  - action: install
+    actor: vdc
+    service: vdc1
+    force: True
+```
+
+Execute this new `actions.yaml`:
+```bash
+ays blueprint actions.yaml
+```
+
+Next you will want to learn about one of the following :
+- How to [Create a VDC using the AYS API](#api) in the next section here below
+- How to [Delete a VDC](../Delete_VDC/Delete_VDC.md)
+- How to [Grant User Access to a VDC](../Granting_user_access/Granting_user_access.md)
+- How to [Change VDC Resource Limits](../Change_VDC_Resource_Limits/Change_VDC_Resource_Limits.md)
+
+
+<a id="API"></a>
+## Using the AYS API
+
+The AYS command line tool discussed here above is actually a client of the AYS API. In this section we discuss how to create a VDC step by step by interacting directly with the AYS API using curl commands:
 
 - [Get an OAuth token with Client Credentials Flow](#get-token)
 - [Get a JWT to talk to the Cockpit](#get-JWT)
@@ -145,7 +350,7 @@ Below we discuss creating a VDC step by step using curl commands:
 <a id="get-token"></a>
 ### Get an OAuth token with Client Credentials Flow
 
-```
+```bash
 CLIENT_ID="..."
 CLIENT_SECRET="..."
 curl -d "grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}" \
@@ -157,7 +362,7 @@ echo $ACCESS_TOKEN
 <a id="get-JWT"></a>
 ### Get a JWT to talk to the Cockpit
 
-```
+```bash
 JWT=$(curl -H "Authorization: token ${ACCESS_TOKEN}" https://itsyou.online/v1/oauth/jwt?aud=${CLIENT_ID})
 echo $JWT
 ```
@@ -165,12 +370,13 @@ echo $JWT
 <a id="create-repository"></a>
 ### Create a new repository
 
-```
+```bash
 REPO_NAME="..."
 GIT_URL="https://github.com/user/reponame"
 BASE_URL="<IP-address>"
 AYS_PORT="5000"
-curl -H "Authorization: bearer $JWT" \
+curl -X POST
+     -H "Authorization: bearer $JWT" \
      -H "Content-Type: application/json" \
      -d '{"name":"'$REPO_NAME'", "git_url":"'$GIT_URL'"}' \
      https://$BASE_URL:$AYS_PORT/ays/repository
@@ -179,44 +385,47 @@ curl -H "Authorization: bearer $JWT" \
 <a id="g8client-blueprint"></a>
 ### Create blueprint for a g8client service instance
 
-```
+```bash
 G8_URL="..."
 LOGIN="..."
 PASSWORD="..."
 ACCOUNT="..."
-curl -H "Authorization: bearer $JWT" \
+curl -X POST \
+     -v \
+     -H "Authorization: bearer $JWT" \
      -H "Content-Type: application/json" \
-     -d '{"name":"cl.yaml", "content":"g8client__cl:\n  url: '$G8_URL'\n  login: '$LOGIN'\n  password: '$PASSWORD'\n  account: '$ACCOUNT'"}' \
+     -d '{"name":"cl.yaml","content":"g8client__cl:\n  url: '$G8_URL'\n  login: '$LOGIN'\n  password: '$PASSWORD'\n  account: '$ACCOUNT'"}' \
      https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint
 ```
-
 
 <a id="g8client-execute"></a>
 ### Execute the g8client blueprint
 
-```
-curl -H "Authorization: bearer $JWT" \
+```bash
+curl -X POST \
+     -H "Authorization: bearer $JWT" \
      https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint/cl.yaml
 ```
 
 <a id="user-blueprint"></a>
 ### Create blueprint for a user
 
-```
-USERNAME2="..."
+```bash
+USERNAME="..."
 EMAIL="..."
 curl -H "Authorization: bearer $JWT" \
      -H "Content-Type: application/json" \
-     -d '{"name":"user1.yaml","content":"ovc_user__user1:\n  g8.client.name: cl\n  username: '$USERNAME2'\n  email: '$EMAIL'\n  provider: itsyouonline"}' \
+     -d '{"name":"'$USERNAME'.yaml","content":"uservdc__'$USERNAME':\n  g8.client.name: cl\n  username: '$USERNAME'\n  email: '$EMAIL'\n  provider: itsyouonline"}' \
      https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint
 ```
 
 <a id="user-execute"></a>
 ### Execute the user blueprint
 
-```
-curl -H "Authorization: bearer $JWT" \  
-     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint/user1.yaml
+```bash
+curl -X POST \
+     -H "Authorization: bearer $JWT" \  
+     http://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint/$USERNAME.yaml
 ```
 
 <a id="vdc-blueprint"></a>
@@ -226,45 +435,50 @@ In order to create a VDC you need the name of the G8 location and the ID of the 
 
 In order to get a list of available external networks for a given account use the Cloud API, here for account with ID=23:
 
-```
+```bash
 curl -X POST \
-     --header 'Content-Type: application/x-www-form-urlencoded' \
-     --header 'Accept: application/json'
-     -d 'accountId=23' \
-     https://$BASE_URL/restmachine/cloudapi/externalnetwork/list'
+     --header "Content-Type: application/x-www-form-urlencoded" \
+     --header "Accept: application/json" \
+     -d "accountId=23" \
+     https://$BASE_URL/restmachine/cloudapi/externalnetwork/list
 ```
 
 In order to get this list of available locations use the following Cloud API:
-```
+
+```bash
 curl -X POST \
      --header 'Content-Type: application/json' \
      --header 'Accept: application/json' \
      https://be-gen-1.demo.greenitglobe.com/restmachine/cloudapi/locations/list
 ```
 
-```
+```bash
+VDC_NAME="..."
 LOCATION="..."
 EXTERNAL_NETWORK="..."
 
-curl -H "Authorization: bearer $JWT" \
+curl -X POST \
+     -H "Authorization: bearer $JWT" \
      -H "Content-Type: application/json" \
-     -d '{"name":"myvdc.yaml","content":"vdc__myvdc:\n  g8client: cl\n  location: '$LOCATION'\n  externalNetworkID: '$EXTERNAL_NETWORK'"}' \
+     -d '{"name":"'$VDC_NAME'.yaml","content":"vdc__'$VDC_NAME':\n  g8client: cl\n  location: '$LOCATION'\n  externalNetworkID: '$EXTERNAL_NETWORK'"}' \
      https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint
 ```
 
 <a id="vdc-execute"></a>
 ### Execute the VDC blueprint
 
-```
-curl -H "Authorization: bearer $JWT" \
-     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint/myvdc.yaml
+```bash
+curl -X POST \
+     -H "Authorization: bearer $JWT" \
+     https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint/$VDC_NAME.yaml
 ```
 
 <a id="vdc-execute"></a>
 ### Create a blueprint for calling the install actions
 
-```
-curl -H "Authorization: bearer $JWT" \
+```bash
+curl -X POST
+     -H "Authorization: bearer $JWT" \
      -H "Content-Type: application/json" \
      -d '{"name":"actions.yaml","content":"actions:\n  - action: install\n"}' \
      https://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint
@@ -274,14 +488,17 @@ curl -H "Authorization: bearer $JWT" \
 <a id="vdc-execute"></a>
 ### Execute the install actions blueprint
 
-...
+```bash
+curl -X POST \
+     http://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/blueprint/actions.yaml
+```
 
 
 <a id="install-VDC"></a>
 ### Start a run to actually deploy the VDC
 
-```
-curl -X POST
+```bash
+curl -X POST \
      -H "Authorization: bearer $JWT" \
-     http://{address}:5000/ays/repository/{repository-name}/aysrun | python -m json.tool
+     http://$BASE_URL:$AYS_PORT/ays/repository/$REPO_NAME/aysrun | python -m json.tool
 ```

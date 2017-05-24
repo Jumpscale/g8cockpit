@@ -10,15 +10,35 @@ And issue the following two commands to get your Cockpit up and running **locall
 
 ```
 cuisine = j.tools.cuisine.local
-cuisine.solutions.cockpit.install_all_in_one(start={True|False}, branch='8.1.1', reset={True|False}, ip='localhost|{ip-address}')
+cuisine.solutions.cockpit.install(start={True|False}, branch='8.1.1', reset={True|False}, ip='localhost|{ip-address}')
+
+
+cuisine.solutions.cockpit.install(start=True, branch='8.2.0', reset=False, ip='localhost', production=False, client_id='', ays_secret='', portal_secret='', organization='')
+
+and more parameters now
+
+Reem Khamis, [17 May 2017, 14:21]:
+Yes
 ```
 
-With the parameters:
+Parameters:
 
-- `start` (True|False) you control wether the Cockpit will start automatically once installed
-- `branch` you specify the Git repository branch you want to install from
-- `reset` (True|False) you control wether also the portal needs to be reinstalled
-- `ip` ('localhost'|{ip-address}) you set the IP address on which the REST API will be available for remote interactions; if you specify `localhost` the REST API will only be available locally
+- `start`: specifies (True|False) wether the Cockpit will start automatically once installed
+- `branch`: specifies the Git repository branch you want to install from
+- `reset`: controls (True|False) wether the [JumpScale Portal](https://github.com/Jumpscale/jumpscale_portal8) needs to be reinstalled
+- `ip`: sets the IP address ('localhost'|{ip-address}) on which the REST API will be available for remote interactions; if you specify `localhost` the REST API will only be available locally
+- `production`:
+- `client_id`: name (OAuth client_id) of the ItsYou.online organization for which you are setting up the Cockpit; in order for a user to be able to use the Cockpit he doesn't need be owner or member of this organization
+- `portal_secret`: API access key (OAuth client secret) created for the organization identified with `{client-id}` (the organization for which the Cockpit is setup), this key will be used in the Authorization Code grant type flow when the user logs in the Cockpit Portal in order to authenticate itself
+- `ays_secret`: API access key (OAuth client secret) created for the organization identified with `{client-id}` (the organization for which the Cockpit is setup), this key will be used in the Client Credentials Code grant type flow when AYS wants to operate on behalf of the organization for which the Cockpit was setup
+- `organization`: name (OAuth client_id) of the ItsYou.online organization of which a Cockpit user needs be member; can be the same organization as specified with `{client-id}`, but can also be different
+
+
+- **{client-id}**: name of the organization as set in ItsYou.online, typically the company/organization for which you are setting up the Cockpit; in order for a user to be able to use the Cockpit he doesn't need be owner or member of this organization
+- **{client-secret}**: the client secret that goes with the `{client-id}` of the organization for which the Cockpit is setup
+- **{cockpit-base-address}**: the IP address of domain name (FQDN) on which the Cockpit is active, e.g. `mycockpit.aydo2.com`
+- **{organization}**: name of the organization as set in ItsYou.online, of which a Cockpit user needs be member or owner; can be the same organization as specified with `{client-id}`, but can also be different
+
 
 Alternatively you can also get your Cockpit up and running in development mode, locally or on a **remote** machine by using an executor:
 

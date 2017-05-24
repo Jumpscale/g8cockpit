@@ -1,20 +1,39 @@
-## How to create a new repository
+# How to Create a New Repository
 
 You can create a repository in multiple ways:
 
+- [Using the AYS CLI client](#cli)
+- [Using the AYS/Cockpit API](#api)
 - [In the Cockpit Portal](#portal)
-- [Using the Cockpit API](#api)
-- [At the CLI](#cli)
 
 
-<a id="portal"></a>
-### Using the Cockpit Portal
+<a id="cli"></a>
+## Using the AYS CLI client
 
-See the [Getting started with blueprints](../../Getting_started_with_blueprints/getting_started_with_blueprints.md) section.
+```
+REPO_NAME="..."
+GIT_URL="https://github.com/<user>/<repository-name>"
+ays repo create -n $REPO_NAME -g $GIT_URL
+```
 
+As a result a new repository will be created:
+```
+cd REPO_NAME
+```
+
+It contains two empty directories:
+- `blueprints`
+- `actorTemplates`
+
+Once you add your first blueprint, and execute it, two more directories will be created:
+
+- `actors`
+- `services`
+
+See [How to Execute Blueprints](../Execute_blueprint/Execute_blueprint.md) for more details on this.
 
 <a id="api"></a>
-### Using the Cockpit API
+## Using the AYS API
 
 In order to use the Cockpit API you first need to obtain an JWT, as documented in the section about [how to get a JWT](../Get_JWT/Get_JWT.md).
 
@@ -39,11 +58,7 @@ In the **API Console**:
 For more information about the **API Console** go to the section about the [API Console](../../API_Console/API_Console.md).
 
 
-<a id="cli"></a>
-### At the CLI
+<a id="portal"></a>
+## Using the Cockpit Portal
 
-```
-REPO_NAME="..."
-GIT_URL="https://github.com/<user>/<repository-name>"
-ays create_repo -p ${REPO_NAME} -g ${GIT_URL}
-```
+See the [Getting started with blueprints](../../Getting_started_with_blueprints/getting_started_with_blueprints.md) section.

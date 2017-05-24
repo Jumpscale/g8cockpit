@@ -36,13 +36,13 @@ disk.ovc__{disk-name}:
 
 s3__{s3server}:
   vdc: {vdc-name}
-  sshkey: '{sshkey-name}''
+  sshkey: '{sshkey-name}'
   disk:
     - '{disk-name}'
   hostprefix: 'host-prefix'
   key.access: '{access}'
   key.secret: '{secret}'
-  enablehttps: '{True | False}'
+  enablehttps: {True | False}
 
 actions:
   - action: 'install'
@@ -125,23 +125,12 @@ curl -X POST -H "Authorization: bearer $JWT$" http://{address}:5000/ays/reposito
 
 You can check the result in three ways:
 
-- [Cockpit Portal](#cockpit-portal)
 - [JumpScale Interactice Shell](#js-shell)
 - [Cockpit-API](#cockpit-API)
+- [Cockpit Portal](#cockpit-portal)
+
 
 All discussed below.
-
-
-<a id="cockpit-portal"></a>
-### Check result via the Cockpit Portal
-
-In the **Cockpit** go to **Services** and select the `app` service of the `scalitity` actor:
-
-![](domain.png)
-
-Notice the value for `domain` which you will need in the configuration of `s3cmd` here below.
-
-This domain name is generated using **ipdns**, a stateless DNS server, see: https://github.com/0-complexity/ipdns
 
 
 <a id="js-shell"></a>
@@ -164,7 +153,12 @@ Out[3]: <schema_f9020c5a81a2021c_capnp:Schema builder (os = "app", domain = "mys
 
 Here's how using curl:
 
+```bash
+curl -X GET -H "Content-Type: application/json" http://localhost:5000/ays/repository/{repository-name}/service/s3/{actor-instance-name} | python -m json.tool
 ```
+
+
+```bash
 curl -X GET -H "Authorization: bearer $JWT$" -H "Content-Type: application/json" http://{address}:5000/ays/repository/{repository-name}/service/s3/{actor-instance-name} | python -m json.tool
 ```
 
@@ -182,6 +176,18 @@ The JSON result will include all details, including the `fqdn`, `keyAcces`, and 
 "vdc": "vdc4s3"
 ...
 ```
+
+<a id="cockpit-portal"></a>1
+### Check result via the Cockpit Portal
+
+In the **Cockpit** go to **Services** and select the `app` service of the `scalitity` actor:
+
+![](domain.png)
+
+Notice the value for `domain` which you will need in the configuration of `s3cmd` here below.
+
+This domain name is generated using **ipdns**, a stateless DNS server, see: https://github.com/0-complexity/ipdns
+
 
 <a id="s3cmd-test"></a>
 ###  Test using s3cmd
