@@ -10,45 +10,97 @@ Below we discuss 5 steps:
 - **Step 5**: [Run the install actions](#run-actions)
 
 <a id="prep"></a>
-### Step 1: Create an AYS service repository
+### Step 1: Preparation
 
-Go through the preparation steps as documented [here](/installation/prep/prep.md).
+Go through the preparation steps as documented [here](/docs/installation/prep/prep.md).
 
 Additionally you will need the private and public key of your DNS server. In the example below we assume you have them available in ```/root/.ssh```.
-
-
-Go to [https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint](https://github.com/Jumpscale/jscockpit/tree/8.1.0/blueprint) and copy the example blueprint into your local AYS blueprints repository.
-
-```bash
-curl https://raw.githubusercontent.com/Jumpscale/jscockpit/8.1.0/blueprint/ovc_blueprint.yaml > /path/to/my/repo/blueprints/cockpit.yaml
 
 <a id="create-repo"></a>
 ### Step 2: Create an AYS service repository
 
-On a (virtual) machine with JumpScale installed execute the ```ays create_repo``` command, specifying the local Git directory and the repository on the Git server:
+
+First create your Git repository on your Git server, or on GitHub.
+
+Then create an AYS service repository on your machine using the `ays repo create` command, specifying the name of the repo which by default will be created at `{/optvar/cockpit_repos/reponame}` and the repository on the Git server with `{account}/cockpit_{cockpit-name}`:
 
 ```
-ays create_repo -p {/path/to/my/repo} -g git@github.com:{account/{ays_repo}.git
+ays repo create -n {reponame} -g git@github.com:{account}/cockpit_{cockpit-name}.git
 ```
 
-Or alternatively, you can also do it all manually:
+Or alternatively, you can also do this manually:
 
 ```
-mkdir -p {/path/to/my/repo}/blueprints
-touch {/path/to/my/repo}/.ays
-cd {/path/to/my/repo}
+mkdir -p {/optvar/cockpit_repos/reponame}/blueprints
+mkdir -p {/optvar/cockpit_repos/reponame}/actorTemplates
+cd {/optvar/cockpit_repos/reponame}
+touch .ays
 git init
-vim {/path/to/my/repo}/.git/config
+vim {/optvar/cockpit_repos/reponame}/.git/config
 ```
+
+Add following configuration:
+
+```
+[remote "origin"]
+        url = git@github.com:{account}/cockpit_{cockpit-name}.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+```
+
+Make sure your Git `user.name` and `user.email` are set:
+
+```
+git config --global user.name "{your-full-name}"
+git config --global user.email "{your-email-address}"
+```
+
+If you're not logged in as root, you will need to reset ownership of the current directory and all subdirectories (recursively) to the currently logged in user, in this case for `cloudscalers`:
+
+```
+cd {/path/to/my/repo}
+sudo chown -R cloudscalers.cloudscalers .
+```
+
+Do your first commit:
+
+```
+git add .
+git commit -m "first commit"
+```
+
+Push your changes to the Git server, and since this is your first push you need to specify the up-stream branch you want to push to::
+
+```
+git push -u origin master
+```
+
+Or alternatively use:
+
+```
+git push --set-upstream origin master
+```
+
+This will add the following entry to your `.git/config`:
+
+```
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+```
+
+> Note: When you push to a remote and you use the `--set-upstream` flag Git sets the branch you are pushing to as the remote tracking branch of the branch you are pushing. Adding a remote tracking branch means that Git then knows what you want to do when you git fetch, git pull or git push in future. It assumes that you want to keep the local branch and the remote branch it is tracking in sync and does the appropriate thing to achieve this.
 
 <a id="create-blueprint"></a>
-### Step 3: Create an AYS blueprint for deploying a Cockpit
+### Step 3: Create an AYS blueprint for deploying a Cockpit]
 
-Go to [https://github.com/Jumpscale/jscockpit/tree/master/blueprint](https://github.com/Jumpscale/jscockpit/tree/master/blueprint) and copy the example blueprint into your local AYS blueprints repository:
+Go to [example blueprint](/blueprint/ovc_blueprint.yaml) and copy the example blueprint into your local AYS blueprints repository.
 
+```bash
+curl https://raw.githubusercontent.com/Jumpscale/jscockpit/8.2.0/blueprint/ovc_blueprint.yaml > /optvar/cockpit_repos/reponame/blueprints/cockpit.yaml
 ```
-curl https://raw.githubusercontent.com/Jumpscale/jscockpit/master/blueprint/ovc_blueprint.yaml > {/path/to/my/repo}/blueprints/cockpit.yaml
-```
+
+
+
 
 Depending on which platform you install the Cockpit the beginning of the blueprint can different. The only important thing to remember is that the Cockpit service always uses another server of role `node` has parent.
 This will indicate to the cockpit on which node it needs to be installed. This bring flexibility during installation cause any service of role `node` can be used.
@@ -62,17 +114,16 @@ sshkey__dns:
 
 # actually install the cockpit
 cockpit__main:
-   host_node: 'cockpit'
-   dns.sshkey: 'dns'
+   hostNode: 'cockpit'
+   dnsSshkey: 'dns'
    domain: 'mycockpit.aydo2.com'
    caddy.email: 'me@mail.com'
-   caddy.staging: false
+   flist: 'https://hub.gig.tech/jumpscale/opt82.flist'
+   oauthOrganization: 'myOrg'
+   oauthClientId: 'myOrg'
+   oauthClientSecret: 'replace_me'
+   oauthJwtKey:'MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n27MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny66+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv'
 
-   oauth.organization: 'myOrg'
-   oauth.client_id: 'myOrg'
-   oauth.client_secret: 'replace_me'
-   oauth.jwt_key:'MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAES5X8XrfKdx9gYayFITc89wad4usrk0n27MjiGYvqalizeSWTHEpnd7oea9IQ8T5oJjMVH5cc0H5tFSKilFFeh//wngxIyny66+Vq5t5B0V0Ehy01+2ceEon2Y0XDkIKv'
-```
 
 - **host_node**: Name of the node service you want to install the cockpit on.
 - **dns.sshkey**: Name fo the sshkey servier that point to a sshkey authorize on our DNS infrastructure (dns[1,2,3].aydo.com)
@@ -84,8 +135,8 @@ cockpit__main:
 - **oauth.client_id**: Name of the organization as set in ItsYou.online, typically the company/organization for which you are setting up the Cockpit; as a user you are not necessairly owner or member of this organization
 - **oauth.client_secret**: Client secret for your organization as generated by ItsYou.online
 - **oauth.jwt_key**: ItsYou.online public key for JWT signing; see https://github.com/itsyouonline/identityserver/blob/master/docs/oauth2/jwt.md for more details
-- **caddy.staging**: (true/false) enable stagging environement of Let's encrypt. Use this when doing test so you don't create real certificate. The number of certificate available for a domain is limited.
-
+- **flist**: Url of the flist to mount on the cockpit
+```
 <a id="execute-blueprint"></a>
 ### Step 4: Execute the blueprint
 
